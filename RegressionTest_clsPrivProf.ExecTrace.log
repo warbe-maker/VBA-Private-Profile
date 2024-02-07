@@ -1,0 +1,117 @@
+24-02-06 18:52:27 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-02-06 18:52:27 seconds seconds >> Regression Test class module clsPrivProf
+24-02-06 18:52:27 00,0000         |  >> mPrivProfTest.Test_000_Regression
+24-02-06 18:52:27 00,0028         |  >> mPrivProfTest. Test_010_Property_FileName
+24-02-06 18:52:27 00,0040 00,0012 |  << mPrivProfTest. Test_010_Property_FileName (Application Error 1 )
+24-02-06 18:52:27 00,0044         |  >> mPrivProfTest. Test_100_Method_IsValidFileFullName
+24-02-06 18:52:27 00,0058         |  |  >> clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,0061         |  |  |  > Re-load dctFiles
+24-02-06 18:52:27 00,0159 00,0098 |  |  |  < Re-load dctFiles
+24-02-06 18:52:27 00,0164 00,0107 |  |  << clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,0168 00,0124 |  << mPrivProfTest. Test_100_Method_IsValidFileFullName
+24-02-06 18:52:27 00,0173         |  >> mPrivProfTest.Test_130_Methods_xExists
+24-02-06 18:52:27 00,0186         |  |  >> mTest.TestProc_PrivateProfile_File
+24-02-06 18:52:27 00,0220         |  |  |  >> clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,0223         |  |  |  |  > Re-load dctFiles
+24-02-06 18:52:27 00,0255 00,0032 |  |  |  |  < Re-load dctFiles
+24-02-06 18:52:27 00,0258 00,0038 |  |  |  << clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,0261 00,0075 |  |  << mTest.TestProc_PrivateProfile_File
+24-02-06 18:52:27 00,0303 00,0130 |  << mPrivProfTest.Test_130_Methods_xExists
+24-02-06 18:52:27 00,0309         |  >> mPrivProfTest.Test_140_Method_SectionNames
+24-02-06 18:52:27 00,0321         |  |  >> mTest.TestProc_PrivateProfile_File
+24-02-06 18:52:27 00,0347         |  |  |  >> clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,0350         |  |  |  |  > Re-load dctFiles
+24-02-06 18:52:27 00,0376 00,0027 |  |  |  |  < Re-load dctFiles
+24-02-06 18:52:27 00,0380 00,0033 |  |  |  << clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,0382 00,0061 |  |  << mTest.TestProc_PrivateProfile_File
+24-02-06 18:52:27 00,0402 00,0093 |  << mPrivProfTest.Test_140_Method_SectionNames
+24-02-06 18:52:27 00,0412         |  >> mPrivProfTest.Test_150_Method_SectionsCopy
+24-02-06 18:52:27 00,0420         |  |  >> mTest.TestProc_PrivateProfile_File
+24-02-06 18:52:27 00,0446         |  |  |  >> clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,0449         |  |  |  |  > Re-load dctFiles
+24-02-06 18:52:27 00,0479 00,0030 |  |  |  |  < Re-load dctFiles
+24-02-06 18:52:27 00,0484 00,0039 |  |  |  << clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,0489 00,0069 |  |  << mTest.TestProc_PrivateProfile_File
+24-02-06 18:52:27 00,0535         |  |  >> clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,0539         |  |  |  > Re-load dctFiles
+24-02-06 18:52:27 00,0551 00,0012 |  |  |  < Re-load dctFiles
+24-02-06 18:52:27 00,0554 00,0019 |  |  << clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,0734         |  |  >> clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,0737         |  |  |  > Re-load dctFiles
+24-02-06 18:52:27 00,0753 00,0016 |  |  |  < Re-load dctFiles
+24-02-06 18:52:27 00,0756 00,0022 |  |  << clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,0982         |  |  >> clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,0987         |  |  |  > Re-load dctFiles
+24-02-06 18:52:27 00,1009 00,0022 |  |  |  < Re-load dctFiles
+24-02-06 18:52:27 00,1013 00,0031 |  |  << clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,1249         |  |  >> clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,1252         |  |  |  > Re-load dctFiles
+24-02-06 18:52:27 00,1265 00,0013 |  |  |  < Re-load dctFiles
+24-02-06 18:52:27 00,1269 00,0020 |  |  << clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,1292 00,0880 |  << mPrivProfTest.Test_150_Method_SectionsCopy
+24-02-06 18:52:27 00,1297         |  >> mPrivProfTest.Test_170_Method_Value2
+24-02-06 18:52:27 00,1304         |  |  >> mTest.TestProc_PrivateProfile_File
+24-02-06 18:52:27 00,1356         |  |  |  >> clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,1360         |  |  |  |  > Re-load dctFiles
+24-02-06 18:52:27 00,1391 00,0032 |  |  |  |  < Re-load dctFiles
+24-02-06 18:52:27 00,1396 00,0039 |  |  |  << clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,1399 00,0094 |  |  << mTest.TestProc_PrivateProfile_File
+24-02-06 18:52:27 00,1415         |  |  > Value (using GetPrivateProfileString)
+24-02-06 18:52:27 00,1420 00,0005 |  |  < Value (using GetPrivateProfileString)
+24-02-06 18:52:27 00,1422         |  |  > Value (using GetPrivateProfileString)
+24-02-06 18:52:27 00,1427 00,0004 |  |  < Value (using GetPrivateProfileString)
+24-02-06 18:52:27 00,1429         |  |  > Value2 (not using GetPrivateProfileString)
+24-02-06 18:52:27 00,1431 00,0002 |  |  < Value2 (not using GetPrivateProfileString)
+24-02-06 18:52:27 00,1433         |  |  > Value2 (not using GetPrivateProfileString)
+24-02-06 18:52:27 00,1436 00,0002 |  |  < Value2 (not using GetPrivateProfileString)
+24-02-06 18:52:27 00,1441 00,0144 |  << mPrivProfTest.Test_170_Method_Value2
+24-02-06 18:52:27 00,1446         |  >> mPrivProfTest.Test_190_Method_ValueNames
+24-02-06 18:52:27 00,1453         |  |  >> mTest.TestProc_PrivateProfile_File
+24-02-06 18:52:27 00,1491         |  |  |  >> clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,1496         |  |  |  |  > Re-load dctFiles
+24-02-06 18:52:27 00,1531 00,0035 |  |  |  |  < Re-load dctFiles
+24-02-06 18:52:27 00,1535 00,0044 |  |  |  << clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,1537 00,0085 |  |  << mTest.TestProc_PrivateProfile_File
+24-02-06 18:52:27 00,1586 00,0141 |  << mPrivProfTest.Test_190_Method_ValueNames
+24-02-06 18:52:27 00,1594         |  >> mPrivProfTest.Test_200_Method_Values
+24-02-06 18:52:27 00,1603         |  |  >> mTest.TestProc_PrivateProfile_File
+24-02-06 18:52:27 00,1631         |  |  |  >> clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,1633         |  |  |  |  > Re-load dctFiles
+24-02-06 18:52:27 00,1673 00,0039 |  |  |  |  < Re-load dctFiles
+24-02-06 18:52:27 00,1677 00,0047 |  |  |  << clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,1681 00,0078 |  |  << mTest.TestProc_PrivateProfile_File
+24-02-06 18:52:27 00,1744 00,0150 |  << mPrivProfTest.Test_200_Method_Values
+24-02-06 18:52:27 00,1749         |  >> mPrivProfTest.Test_200_Method_ValueNameRename
+24-02-06 18:52:27 00,1757         |  |  >> mTest.TestProc_PrivateProfile_File
+24-02-06 18:52:27 00,1783         |  |  |  >> clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,1785         |  |  |  |  > Re-load dctFiles
+24-02-06 18:52:27 00,1817 00,0032 |  |  |  |  < Re-load dctFiles
+24-02-06 18:52:27 00,1822 00,0039 |  |  |  << clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,1826 00,0069 |  |  << mTest.TestProc_PrivateProfile_File
+24-02-06 18:52:27 00,1893         |  |  >> clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,1896         |  |  |  > Re-load dctFiles
+24-02-06 18:52:27 00,1924 00,0028 |  |  |  < Re-load dctFiles
+24-02-06 18:52:27 00,1927 00,0034 |  |  << clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,2690         |  |  >> mTest.TestProc_PrivateProfile_File
+24-02-06 18:52:27 00,2777         |  |  |  >> clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,2783         |  |  |  |  > Re-load dctFiles
+24-02-06 18:52:27 00,2841 00,0058 |  |  |  |  < Re-load dctFiles
+24-02-06 18:52:27 00,2847 00,0070 |  |  |  << clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,2851 00,0161 |  |  << mTest.TestProc_PrivateProfile_File
+24-02-06 18:52:27 00,3262         |  |  >> clsPrivProf.FileAsDict
+24-02-06 18:52:27 00,3265         |  |  |  > Re-load dctFiles
+24-02-06 18:52:27 00,3294 00,0029 |  |  |  < Re-load dctFiles
+24-02-06 18:52:27 00,3298 00,0036 |  |  << clsPrivProf.FileAsDict
+24-02-06 18:52:28 00,4014 00,2265 |  << mPrivProfTest.Test_200_Method_ValueNameRename
+24-02-06 18:52:28 00,4019         |  >> mPrivProfTest.Test_220_Property_Value_Reorg
+24-02-06 18:52:28 00,4026         |  |  >> mTest.TestProc_PrivateProfile_File
+24-02-06 18:52:28 00,4082         |  |  |  >> clsPrivProf.FileAsDict
+24-02-06 18:52:28 00,4084         |  |  |  |  > Re-load dctFiles
+24-02-06 18:52:28 00,4115 00,0030 |  |  |  |  < Re-load dctFiles
+24-02-06 18:52:28 00,4118 00,0037 |  |  |  << clsPrivProf.FileAsDict
+24-02-06 18:52:28 00,4121 00,0095 |  |  << mTest.TestProc_PrivateProfile_File
+24-02-06 18:52:28 00,4913 00,0894 |  << mPrivProfTest.Test_220_Property_Value_Reorg
+24-02-06 18:52:28 00,4917 00,4917 << mPrivProfTest.Test_000_Regression
+24-02-06 18:52:28 00,4917 00,4917 << Regression Test class module clsPrivProf
+24-02-06 18:52:28                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-02-06 18:52:28                 Impact on the overall performance (caused by the trace itself): 0,3 milliseconds!
