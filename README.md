@@ -33,7 +33,7 @@ The service has the following named arguments:
 | Method   |_ValueNames_        | Returns a Dictionary of all value-names within sections provided as a comma delimited string or of all sections when no sections are provided, with the value name as the key and the value as item. Because any duplicate names are ignored, the value will be the value of the first found.|
 
 ## Installation
-1. [Download][4] and import [clsPrivProf.cls][1] to your VB project.
+1. Download and import [clsPrivProf.cls][1] to your VB project.
 2. In the VBE add a Reference to _Microsoft Scripting Runtime_ and _Microsoft VBScript Regular Expression 5.5_
 
 ### Usage
@@ -62,4 +62,3 @@ Any kind of contribution is welcome. Respecting the (more or less obvious) codin
 [1]:https://github.com/warbe-maker/VBA-Private-Profile/blob/main/source/clsPrivProf.cls
 [2]:https://warbe-maker.github.io/vba/common/2022/02/15/Personal-and-public-Common-Components.html
 [3]:https://github.com/warbe-maker/VBA-Private-Profile
-[4]:
