@@ -28,13 +28,7 @@ Option Compare Text
 '                   value-name into a provided section
 ' Public methods:
 ' ---------------
-' Exists          Universal existence function. Returns TRUE when the folde
-'                 folder, file, section ([xxxx]), or value name exists.
-' FileNameIsValid Returns TRUE when a file name is valid
-' NamesRemove
-' Reorg           Reorganizes all sections and their value-names in
-'                 ascending sequence.
-' RemoveNames     Removes provided value names, in a given Private
+' NamesRemove     Removes provided value names, in a given Private
 '                 Properties File, when provided in a specific section,
 '                 else in all sections.
 ' SectionExists   Returns TRUE when a given section exists in a given
@@ -65,7 +59,6 @@ Option Compare Text
 ' Values          Returns the value-names and values of a given section in a
 '                 Private Profile File as Dictionary with the value-name as
 '                 the key (in ascending order) and the value as item.
-' Value2          .
 '
 ' Requires:
 ' ---------
@@ -1394,8 +1387,8 @@ Public Function ValueNames(Optional ByVal v_file As String = vbNullString, _
                 If Len(sName) <> 0 Then
                     If Not dct.Exists(sName) _
                     Then dct.Add sName, Value(v_file:=fl _
-                                                        , v_section:=sSection _
-                                                        , v_value_name:=sName)
+                                            , v_section:=sSection _
+                                            , v_value_name:=sName)
                 End If
             Next i
         End If
@@ -1404,67 +1397,6 @@ Public Function ValueNames(Optional ByVal v_file As String = vbNullString, _
     Set ValueNames = KeySort(dct)
 
 xt: Set dct = Nothing
-    Exit Function
-    
-eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbResume:  Stop: Resume
-        Case Else:      GoTo xt
-    End Select
-End Function
-
-Public Function Values(Optional ByVal v_section As String = vbNullString, _
-                       Optional ByVal v_file As String = vbNullString) As Dictionary
-' ----------------------------------------------------------------------------
-' PrivateProfile file service: Returns all values in section (v_section) in
-' file (v_file) as Dictionary, with the value name as key and the value as
-' item, with the value names in asscending order. When the provided section
-' does not exist the returned Dictionary is empty.
-' When no file is provided it defaults to the file name specified with the
-' property FileName - which, when a vbNullString defaults to:
-' ThisWorkbook.Path & "\" ThisWorkbook's BaseName & ".dat.
-' ----------------------------------------------------------------------------
-    Const PROC = "Values"
-    
-    On Error GoTo eh
-    Dim asNames()   As String
-    Dim i           As Long
-    Dim lResult     As Long
-    Dim sNames      As String
-    Dim strBuffer   As String
-    Dim sName       As String
-    Dim fl          As String
-    Dim dct         As New Dictionary
-    Dim v           As Variant
-    
-    Set Values = New Dictionary ' may remain empty though
-    
-    If Not FileNameIsValid(v_file) _
-    Then Err.Raise AppErr(1), ErrSrc(PROC), "No valid files name is provided or available!"
-    
-    If v_section = vbNullString Then GoTo xt
-    '~~> Retrieve the names in the provided section
-    strBuffer = Space$(32767)
-    lResult = GetPrivateProfileString(lpg_ApplicationName:=v_section _
-                                    , lpg_KeyName:=vbNullString _
-                                    , lpg_Default:=vbNullString _
-                                    , lpg_ReturnedString:=strBuffer _
-                                    , nSize:=Len(strBuffer) _
-                                    , lpg_FileName:=v_file _
-                                     )
-    sNames = Left$(strBuffer, lResult)
-
-    If sNames <> vbNullString Then                                         ' If there were any names
-        With dct
-            For Each v In Split(sNames, vbNullChar)                      ' have them split into an array
-                If Len(v) <> 0 Then
-                    .Add v, Value(v, v_section)
-                End If
-            Next v
-        End With
-    End If
-    
-xt: Set Values = KeySort(dct)
-    Set dct = Nothing
     Exit Function
     
 eh: Select Case ErrMsg(ErrSrc(PROC))

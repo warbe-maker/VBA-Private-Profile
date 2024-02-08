@@ -13,6 +13,69 @@ Private Property Let Test_Status(ByVal s As String)
     End If
 End Property
 
+Private Sub BoC(ByVal b_id As String, _
+       Optional ByVal b_args As String = vbNullString)
+' ------------------------------------------------------------------------------
+' Common 'Bnd-of-Code' interface for the Common VBA Execution Trace Service.
+' Obligatory copy Private for any VB-Component using the service but not having
+' the mBasic common component installed.
+' ------------------------------------------------------------------------------
+#If mTrc = 1 Then         ' when mTrc is installed and active
+    mTrc.BoC b_id, b_args
+#ElseIf clsTrc = 1 Then   ' when clsTrc is installed and active
+    Trc.BoC b_id, b_args
+#End If
+End Sub
+
+Private Sub BoP(ByVal b_proc As String, _
+       Optional ByVal b_args As String = vbNullString)
+' ------------------------------------------------------------------------------
+' Common 'Begin of Procedure' interface serving the 'Common VBA Error Services'
+' and - if not installed/activated the 'Common VBA Execution Trace Service'.
+' Obligatory copy Private for any VB-Component using the service but not having
+' the mBasic common component installed.
+' ------------------------------------------------------------------------------
+#If mErh Then          ' serves the mTrc/clsTrc when installed and active
+    mErh.BoP b_proc, b_args
+#ElseIf XcTrc_clsTrc Then ' when only clsTrc is installed and active
+    If Trc Is Nothing Then Set Trc = New clsTrc
+    Trc.BoP b_proc, b_args
+#ElseIf XcTrc_mTrc Then   ' when only mTrc is installed and activate
+    mTrc.BoP b_proc, b_args
+#End If
+End Sub
+
+Private Sub EoC(ByVal e_id As String, _
+       Optional ByVal e_args As String = vbNullString)
+' ------------------------------------------------------------------------------
+' Common 'End-of-Code' interface for the Common VBA Execution Trace Service.
+' Obligatory copy Private for any VB-Component using the service but not having
+' the mBasic common component installed.
+' ------------------------------------------------------------------------------
+#If mTrc = 1 Then         ' when mTrc is installed and active
+    mTrc.EoC e_id, e_args
+#ElseIf clsTrc = 1 Then   ' when clsTrc is installed and active
+    Trc.EoC e_id, e_args
+#End If
+End Sub
+
+Private Sub EoP(ByVal e_proc As String, _
+      Optional ByVal e_args As String = vbNullString)
+' ------------------------------------------------------------------------------
+' Common 'Begin of Procedure' interface serving the 'Common VBA Error Services'
+' and - if not installed/activated the 'Common VBA Execution Trace Service'.
+' Obligatory copy Private for any VB-Component using the service but not having
+' the mBasic common component installed.
+' ------------------------------------------------------------------------------
+#If mErh = 1 Then          ' serves the mTrc/clsTrc when installed and active
+    mErh.EoP e_proc, e_args
+#ElseIf clsTrc = 1 Then ' when only clsTrc is installed and active
+    Trc.EoP e_proc, e_args
+#ElseIf mTrc = 1 Then   ' when only mTrc is installed and activate
+    mTrc.EoP e_proc, e_args
+#End If
+End Sub
+
 Private Function AppErr(ByVal app_err_no As Long) As Long
 ' ------------------------------------------------------------------------------
 ' Ensures that a programmed (i.e. an application) error numbers never conflicts
@@ -236,7 +299,8 @@ Public Sub Test_150_Method_SectionsCopy()
     sTargetFile = ThisWorkbook.Path & "\Test\CopyTarget.dat"
     If PP.FSo.FileExists(sTargetFile) Then PP.FSo.DeleteFile sTargetFile
     
-    '~~ Test 1a ------------------------------------
+    BoC "Test 1"
+    '~~ Test 1 ------------------------------------
     '~~ Copy a specific section to a new target file
     '~~ Assert before
     Debug.Assert PP.SectionExists(mTest.TestProc_SectionName(5), sSourceFile)
@@ -253,8 +317,10 @@ Public Sub Test_150_Method_SectionsCopy()
     Debug.Assert PP.SectionExists(mTest.TestProc_SectionName(5))
     Debug.Assert PP.SectionExists(mTest.TestProc_SectionName(7))
     Debug.Assert PP.ValueNameExists(TestProc_ValueName(5, 5), mTest.TestProc_SectionName(5))
+    EoC "Test 1"
     
-    '~~ Test 1b ------------------------------------
+    BoC "Test 2"
+    '~~ Test 1 ------------------------------------
     PP.Section = mTest.TestProc_SectionName(3)
     '~~ Copy another specific section to the target file of Test 1a
     PP.SectionsCopy s_source:=sSourceFile _
@@ -269,7 +335,9 @@ Public Sub Test_150_Method_SectionsCopy()
     Debug.Assert PP.ValueNameExists(TestProc_ValueName(3, 5), mTest.TestProc_SectionName(3))
     PP.FSo.DeleteFile sSourceFile
     PP.FSo.DeleteFile sTargetFile
+    EoC "Test 2"
     
+    BoC "Test 3"
     '~~ Test 3 -------------------------------
     '~~ Copy all sections to a new target file (will be re-ordered ascending thereby)
     If PP.FSo.FileExists(sTargetFile) Then PP.FSo.DeleteFile sTargetFile
@@ -281,6 +349,7 @@ Public Sub Test_150_Method_SectionsCopy()
     Debug.Assert FileAsString(sTargetFile) = FileAsString(sSourceFile)
     PP.FSo.DeleteFile sSourceFile
     PP.FSo.DeleteFile sTargetFile
+    EoC "Test 3"
             
 xt: TestProc_RemoveTestFiles
     Set PP = Nothing
