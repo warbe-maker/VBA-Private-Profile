@@ -460,3 +460,79 @@
 24-02-06 18:46:37 00,0055 00,0055 << End execution trace 
 24-02-06 18:46:37                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
 24-02-06 18:46:37                 Impact on the overall performance (caused by the trace itself): 0,4 milliseconds!
+===========================================================================================================================================
+24-02-07 15:59:50 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-02-07 15:59:50 seconds seconds >> Begin execution trace 
+24-02-07 15:59:50 00,0000         |  >> mPrivProfTest. Test_100_Method_IsValidFileFullName
+24-02-07 15:59:52 00,0075 00,0075 |  << mPrivProfTest. Test_100_Method_IsValidFileFullName (VB-Runtime Error 9 )
+24-02-07 15:59:52 00,0075 00,0075 << End execution trace 
+24-02-07 15:59:52                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-02-07 15:59:52                 Impact on the overall performance (caused by the trace itself): 3,8 milliseconds!
+===========================================================================================================================================
+24-02-07 16:08:40 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-02-07 16:08:40 seconds seconds >> Begin execution trace 
+24-02-07 16:08:40 00,0000         |  >> clsPrivProf.FileAsDict
+24-02-07 16:08:40 00,0018         |  |  > Re-load dctFiles
+24-02-07 16:10:13 93,4004 93,3986 |  |  < Re-load dctFiles
+24-02-07 16:10:13 93,4009 93,4009 |  << clsPrivProf.FileAsDict
+24-02-07 16:10:13 93,4009 93,4009 << End execution trace 
+24-02-07 16:10:13                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-02-07 16:10:13                 Impact on the overall performance (caused by the trace itself): 0,4 milliseconds!
+===========================================================================================================================================
+24-02-07 17:16:32 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-02-07 17:16:32 seconds seconds >> Begin execution trace 
+24-02-07 17:16:32 00,0000         |  >> mPrivProfTest.Test_120_Method_SectionNames
+24-02-07 17:16:32 00,0228         |  |  >> mTest.TestProc_PrivateProfile_File
+24-02-07 17:16:32 00,0242 00,0013 |  |  << mTest.TestProc_PrivateProfile_File
+===========================================================================================================================================
+24-02-07 17:21:36 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-02-07 17:21:36 seconds seconds >> Begin execution trace 
+24-02-07 17:21:36 00,0000         |  >> mPrivProfTest.Test_110_Methods_xExists
+24-02-07 17:21:36 00,0026         |  |  >> mTest.TestProc_PrivateProfile_File
+24-02-07 17:21:36 00,0030 00,0004 |  |  << mTest.TestProc_PrivateProfile_File
+===========================================================================================================================================
+24-02-07 17:31:07 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-02-07 17:31:07 seconds seconds >> Begin execution trace 
+24-02-07 17:31:07 00,0000         |  >> mPrivProfTest.Test_400_Method_ValueNameRename
+24-02-07 17:31:09 01,3781         |  |  >> mTest.TestProc_PrivateProfile_File
+24-02-07 17:31:09 01,3788 00,0008 |  |  << mTest.TestProc_PrivateProfile_File
+24-02-07 17:31:09 01,3862         |  |  >> clsPrivProf.FileAsDict
+24-02-07 17:31:09 01,3897 00,0034 |  |  << clsPrivProf.FileAsDict
+24-02-07 17:31:25 17,6426         |  |  >> mTest.TestProc_PrivateProfile_File
+24-02-07 17:31:25 17,6433 00,0007 |  |  << mTest.TestProc_PrivateProfile_File
+24-02-07 17:31:25 17,6468         |  |  >> clsPrivProf.FileAsDict
+24-02-07 17:31:25 17,6544 00,0076 |  |  << clsPrivProf.FileAsDict
+===========================================================================================================================================
+24-02-07 17:34:04 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-02-07 17:34:04 seconds seconds >> Begin execution trace 
+24-02-07 17:34:04 00,0000         |  >> mPrivProfTest.Test_400_Method_ValueNameRename
+24-02-07 17:34:04 00,0023         |  |  >> mTest.TestProc_PrivateProfile_File
+24-02-07 17:34:04 00,0028 00,0005 |  |  << mTest.TestProc_PrivateProfile_File
+24-02-07 17:34:04 00,0116         |  |  >> clsPrivProf.FileAsDict
+24-02-07 17:34:04 00,0195 00,0079 |  |  << clsPrivProf.FileAsDict
+24-02-07 17:34:04 00,0413         |  |  >> mTest.TestProc_PrivateProfile_File
+24-02-07 17:34:04 00,0429 00,0016 |  |  << mTest.TestProc_PrivateProfile_File
+24-02-07 17:34:04 00,0524         |  |  >> clsPrivProf.FileAsDict
+24-02-07 17:34:04 00,0582 00,0059 |  |  << clsPrivProf.FileAsDict
+===========================================================================================================================================
+24-02-07 17:38:17 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-02-07 17:38:17 seconds seconds >> Begin execution trace 
+24-02-07 17:38:17 00,0000         |  >> mPrivProfTest.Test_400_Method_ValueNameRename
+24-02-07 17:38:17 00,0019         |  |  >> mTest.TestProc_PrivateProfile_File
+24-02-07 17:38:17 00,0022 00,0003 |  |  << mTest.TestProc_PrivateProfile_File
+24-02-07 17:38:17 00,0069         |  |  >> clsPrivProf.FileAsDict
+24-02-07 17:38:17 00,0118 00,0049 |  |  << clsPrivProf.FileAsDict
+24-02-07 17:38:43 26,1428         |  |  >> mTest.TestProc_PrivateProfile_File
+24-02-07 17:38:43 26,1442 00,0013 |  |  << mTest.TestProc_PrivateProfile_File
+24-02-07 17:39:35 78,7268         |  |  >> clsPrivProf.FileAsDict
+24-02-07 17:39:48 91,3259 12,5991 |  |  << clsPrivProf.FileAsDict
+===========================================================================================================================================
+24-02-07 17:41:25 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-02-07 17:41:25 seconds seconds >> Begin execution trace 
+24-02-07 17:41:25 00,0000         |  >> mPrivProfTest.Test_400_Method_ValueNameRename
+24-02-07 17:41:25 00,0069         |  |  >> mTest.TestProc_PrivateProfile_File
+24-02-07 17:41:25 00,0080 00,0011 |  |  << mTest.TestProc_PrivateProfile_File
+24-02-07 17:41:28 02,3736         |  |  >> clsPrivProf.FileAsDict
+24-02-07 17:41:28 03,1951 00,8215 |  |  << clsPrivProf.FileAsDict
+24-02-07 17:41:39 13,5994         |  |  >> mTest.TestProc_PrivateProfile_File
+24-02-07 17:41:39 13,6002 00,0007 |  |  << mTest.TestProc_PrivateProfile_File

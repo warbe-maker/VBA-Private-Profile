@@ -158,7 +158,6 @@ Public Function TestProc_PrivateProfile_File(Optional ByVal t_sections As Long =
     Dim k           As Long
     
     mBasic.BoP ErrSrc(PROC)
-    If PP Is Nothing Then Set PP = New clsPrivProf
     sFolder = ThisWorkbook.Path & "\Test"
     If Not PP.FSo.FolderExists(sFolder) Then PP.FSo.CreateFolder (sFolder)
     

@@ -188,56 +188,6 @@ Public Property Let FileName(ByVal s As String)
 
 End Property
 
-Private Function FileAsString(Optional ByVal f_file_full_name As String, _
-                              Optional ByVal f_append As Boolean = False, _
-                              Optional ByRef f_split As String = vbCrLf, _
-                              Optional ByVal f_exclude_empty As Boolean = False) As String
-' ----------------------------------------------------------------------------
-' Returns the content of a file (f_file_full_name) as a single string plus the
-' records/lines delimiter (f_split) which may be vbCrLf, vbCr, or vbLf.
-' ----------------------------------------------------------------------------
-
-    Open f_file_full_name For Input As #1
-    FileAsString = Input$(lOf(1), 1)
-    Close #1
-    
-    Select Case True
-        Case InStr(FileAsString, vbCrLf) <> 0: f_split = vbCrLf
-        Case InStr(FileAsString, vbCr) <> 0:   f_split = vbCr
-        Case InStr(FileAsString, vbLf) <> 0:   f_split = vbLf
-    End Select
-    
-    '~~ Eliminate a trailing eof if any
-    If Right(FileAsString, 1) = VBA.Chr(26) Then
-        FileAsString = Left(FileAsString, Len(FileAsString) - 1)
-    End If
-    
-    '~~ Eliminate any trailing split string
-    If Right(FileAsString, Len(f_split)) = f_split Then
-        FileAsString = Left(FileAsString, Len(FileAsString) - Len(f_split))
-    End If
-    If f_exclude_empty Then
-        FileAsString = FileAsStringEmptyExcluded(FileAsString)
-    End If
-    
-End Function
-
-Private Sub FileFromString(ByVal f_file_full_name As String, _
-                           ByVal f_s As String, _
-                  Optional ByVal f_appended As Boolean = False)
-' ----------------------------------------------------------------------------
-' Writes a string (f_s) with multiple records/lines delimited by a vbCrLf to
-' a file (f_file_full_name).
-' ----------------------------------------------------------------------------
-    
-    If f_appended _
-    Then Open f_file_full_name For Append As #1 _
-    Else Open f_file_full_name For Output As #1
-    Print #1, f_s
-    Close #1
-    
-End Sub
-
 Public Property Get Section() As String:        Section = sSection: End Property
 
 Public Property Let Section(ByVal s As String)
@@ -411,53 +361,80 @@ Public Property Let Value(Optional ByVal v_value_name As String = vbNullString, 
                "Value file = '" & v_file & "'"
     End If
     
-    If bIsNew Then Reorg
+    If bIsNew Then Reorg v_file
     
 End Property
 
-Private Function NameStrings(Optional ByVal a_v As Variant = Nothing) As Collection
-' ----------------------------------------------------------------------------
-' Returns the name strings (section names or value names) provided as argument
-' (a_v) as Collection whereby the provided argument may be:
-' - a Collection of strings
-' - a Dictionary of keys
-' - a comma delimited string, a
-' Dictionary, or a Collection of string items.
-' ----------------------------------------------------------------------------
-    Const PROC = "NameStrings"
+Private Function ArrayIsAllocated(ByVal arry As Variant) As Boolean
     
-    On Error GoTo eh
-    Dim cll As New Collection
-    Dim v   As Variant
+    On Error Resume Next
+    ArrayIsAllocated = UBound(arry) >= LBound(arry)
+    On Error GoTo -1
     
-    Select Case TypeName(a_v)
-        Case "Collection"
-            Set cll = a_v
-        Case "Dictionary"
-            For Each v In a_v
-                cll.Add v
-            Next v
-        Case "String"
-            For Each v In Split(a_v, ",")
-                cll.Add VBA.Trim$(v)
-            Next v
-        Case "Array"
-            For Each v In a_v
-                cll.Add VBA.Trim$(v)
-            Next v
-        Case Else
-            Err.Raise AppErr(1), ErrSrc(PROC), "The argument is neither a String, an Array, a Collecton, nor a Dictionary!"
-    End Select
-            
-xt: Set NameStrings = cll
-    Set cll = Nothing
-    Exit Function
-
-eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbResume:  Stop: Resume
-        Case Else:      GoTo xt
-    End Select
 End Function
+
+Private Sub BoC(ByVal b_id As String, _
+       Optional ByVal b_args As String = vbNullString)
+' ------------------------------------------------------------------------------
+' Common 'Bnd-of-Code' interface for the Common VBA Execution Trace Service.
+' Obligatory copy Private for any VB-Component using the service but not having
+' the mBasic common component installed.
+' ------------------------------------------------------------------------------
+#If mTrc = 1 Then         ' when mTrc is installed and active
+    mTrc.BoC b_id, b_args
+#ElseIf clsTrc = 1 Then   ' when clsTrc is installed and active
+    Trc.BoC b_id, b_args
+#End If
+End Sub
+
+Private Sub BoP(ByVal b_proc As String, _
+       Optional ByVal b_args As String = vbNullString)
+' ------------------------------------------------------------------------------
+' Common 'Begin of Procedure' interface serving the 'Common VBA Error Services'
+' and - if not installed/activated the 'Common VBA Execution Trace Service'.
+' Obligatory copy Private for any VB-Component using the service but not having
+' the mBasic common component installed.
+' ------------------------------------------------------------------------------
+#If mErh Then          ' serves the mTrc/clsTrc when installed and active
+    mErh.BoP b_proc, b_args
+#ElseIf XcTrc_clsTrc Then ' when only clsTrc is installed and active
+    If Trc Is Nothing Then Set Trc = New clsTrc
+    Trc.BoP b_proc, b_args
+#ElseIf XcTrc_mTrc Then   ' when only mTrc is installed and activate
+    mTrc.BoP b_proc, b_args
+#End If
+End Sub
+
+Private Sub EoC(ByVal e_id As String, _
+       Optional ByVal e_args As String = vbNullString)
+' ------------------------------------------------------------------------------
+' Common 'End-of-Code' interface for the Common VBA Execution Trace Service.
+' Obligatory copy Private for any VB-Component using the service but not having
+' the mBasic common component installed.
+' ------------------------------------------------------------------------------
+#If mTrc = 1 Then         ' when mTrc is installed and active
+    mTrc.EoC e_id, e_args
+#ElseIf clsTrc = 1 Then   ' when clsTrc is installed and active
+    Trc.EoC e_id, e_args
+#End If
+End Sub
+
+Private Sub EoP(ByVal e_proc As String, _
+      Optional ByVal e_args As String = vbNullString)
+' ------------------------------------------------------------------------------
+' Common 'Begin of Procedure' interface serving the 'Common VBA Error Services'
+' and - if not installed/activated the 'Common VBA Execution Trace Service'.
+' Obligatory copy Private for any VB-Component using the service but not having
+' the mBasic common component installed.
+' ------------------------------------------------------------------------------
+#If mErh = 1 Then          ' serves the mTrc/clsTrc when installed and active
+    mErh.EoP e_proc, e_args
+#ElseIf clsTrc = 1 Then ' when only clsTrc is installed and active
+    Trc.EoP e_proc, e_args
+#ElseIf mTrc = 1 Then   ' when only mTrc is installed and activate
+    mTrc.EoP e_proc, e_args
+#End If
+End Sub
 
 Private Function ErrMsg(ByVal err_source As String, _
                Optional ByVal err_no As Long = 0, _
@@ -570,39 +547,42 @@ Private Function ErrSrc(ByVal sProc As String) As String
     ErrSrc = "clsPrivProf." & sProc
 End Function
 
-Private Sub BoP(ByVal b_proc As String, _
-       Optional ByVal b_args As String = vbNullString)
-' ------------------------------------------------------------------------------
-' Common 'Begin of Procedure' interface serving the 'Common VBA Error Services'
-' and - if not installed/activated the 'Common VBA Execution Trace Service'.
-' Obligatory copy Private for any VB-Component using the service but not having
-' the mBasic common component installed.
-' ------------------------------------------------------------------------------
-#If mErh Then          ' serves the mTrc/clsTrc when installed and active
-    mErh.BoP b_proc, b_args
-#ElseIf XcTrc_clsTrc Then ' when only clsTrc is installed and active
-    If Trc Is Nothing Then Set Trc = New clsTrc
-    Trc.BoP b_proc, b_args
-#ElseIf XcTrc_mTrc Then   ' when only mTrc is installed and activate
-    mTrc.BoP b_proc, b_args
-#End If
-End Sub
+Private Sub FileFromDict(ByVal f_file As String, _
+                         ByVal f_from As Dictionary)
+' ----------------------------------------------------------------------------
+' Replaces the content of a Private Profile file (f_file) with a reorganized
+' Directory structure, i.e. with all sections and value names in ascending
+' order.
+' ----------------------------------------------------------------------------
+    Const PROC = "FileFromDict"
+    
+    On Error GoTo eh
+    Dim arr()       As Variant
+    Dim dctValues   As Dictionary
+    Dim i           As Long
+    Dim vSect       As Variant
+    Dim vValue      As Variant
+        
+    i = -1
+    For Each vSect In f_from
+        i = i + 1
+        ReDim Preserve arr(i)
+        arr(i) = "[" & vSect & "]"
+        Set dctValues = f_from(vSect)
+        For Each vValue In dctValues
+            i = i + 1
+            ReDim Preserve arr(i)
+            arr(i) = vValue & "=" & dctValues(vValue)
+        Next vValue
+    Next vSect
+    FileFromString f_file, Join(arr, vbCrLf)
+    
+xt: Exit Sub
 
-Private Sub EoP(ByVal e_proc As String, _
-      Optional ByVal e_args As String = vbNullString)
-' ------------------------------------------------------------------------------
-' Common 'Begin of Procedure' interface serving the 'Common VBA Error Services'
-' and - if not installed/activated the 'Common VBA Execution Trace Service'.
-' Obligatory copy Private for any VB-Component using the service but not having
-' the mBasic common component installed.
-' ------------------------------------------------------------------------------
-#If mErh = 1 Then          ' serves the mTrc/clsTrc when installed and active
-    mErh.EoP e_proc, e_args
-#ElseIf clsTrc = 1 Then ' when only clsTrc is installed and active
-    Trc.EoP e_proc, e_args
-#ElseIf mTrc = 1 Then   ' when only mTrc is installed and activate
-    mTrc.EoP e_proc, e_args
-#End If
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
 End Sub
 
 Private Sub FileAsDict(ByVal f_file As String)
@@ -623,11 +603,7 @@ Private Sub FileAsDict(ByVal f_file As String)
     Dim sName       As String
     Dim sValue      As String
     
-    BoP ErrSrc(PROC)
-'    If Not FileNameIsValid(f_file) _
-'    Then Err.Raise AppErr(1), ErrSrc(PROC), "No valid files name is provided or available!"
-
-    BoC "Re-load dctFiles"
+    BoP ErrSrc(PROC), f_file
     arr = Split(FileAsString(f_file), vbCrLf)
     Set dct = New Dictionary
     
@@ -659,40 +635,45 @@ Private Sub FileAsDict(ByVal f_file As String)
     dctFiles.Add f_file, KeySort(dct)
     Set dct = Nothing
     Debug.Print "Re-loaded: " & f_file
-    EoC "Re-load dctFiles"
 
-xt: EoP ErrSrc(PROC)
+xt: EoP ErrSrc(PROC), f_file
     Exit Sub
     
 End Sub
 
-Private Sub EoC(ByVal e_id As String, _
-       Optional ByVal e_args As String = vbNullString)
-' ------------------------------------------------------------------------------
-' Common 'End-of-Code' interface for the Common VBA Execution Trace Service.
-' Obligatory copy Private for any VB-Component using the service but not having
-' the mBasic common component installed.
-' ------------------------------------------------------------------------------
-#If mTrc = 1 Then         ' when mTrc is installed and active
-    mTrc.EoC e_id, e_args
-#ElseIf clsTrc = 1 Then   ' when clsTrc is installed and active
-    Trc.EoC e_id, e_args
-#End If
-End Sub
+Private Function FileAsString(Optional ByVal f_file_full_name As String, _
+                              Optional ByVal f_append As Boolean = False, _
+                              Optional ByRef f_split As String = vbCrLf, _
+                              Optional ByVal f_exclude_empty As Boolean = False) As String
+' ----------------------------------------------------------------------------
+' Returns the content of a file (f_file_full_name) as a single string plus the
+' records/lines delimiter (f_split) which may be vbCrLf, vbCr, or vbLf.
+' ----------------------------------------------------------------------------
 
-Private Sub BoC(ByVal b_id As String, _
-       Optional ByVal b_args As String = vbNullString)
-' ------------------------------------------------------------------------------
-' Common 'Bnd-of-Code' interface for the Common VBA Execution Trace Service.
-' Obligatory copy Private for any VB-Component using the service but not having
-' the mBasic common component installed.
-' ------------------------------------------------------------------------------
-#If mTrc = 1 Then         ' when mTrc is installed and active
-    mTrc.BoC b_id, b_args
-#ElseIf clsTrc = 1 Then   ' when clsTrc is installed and active
-    Trc.BoC b_id, b_args
-#End If
-End Sub
+    Open f_file_full_name For Input As #1
+    FileAsString = Input$(lOf(1), 1)
+    Close #1
+    
+    Select Case True
+        Case InStr(FileAsString, vbCrLf) <> 0: f_split = vbCrLf
+        Case InStr(FileAsString, vbCr) <> 0:   f_split = vbCr
+        Case InStr(FileAsString, vbLf) <> 0:   f_split = vbLf
+    End Select
+    
+    '~~ Eliminate a trailing eof if any
+    If Right(FileAsString, 1) = VBA.Chr(26) Then
+        FileAsString = Left(FileAsString, Len(FileAsString) - 1)
+    End If
+    
+    '~~ Eliminate any trailing split string
+    If Right(FileAsString, Len(f_split)) = f_split Then
+        FileAsString = Left(FileAsString, Len(FileAsString) - Len(f_split))
+    End If
+    If f_exclude_empty Then
+        FileAsString = FileAsStringEmptyExcluded(FileAsString)
+    End If
+    
+End Function
 
 Private Function FileAsStringEmptyExcluded(ByVal s_s As String) As String
 ' ----------------------------------------------------------------------------
@@ -707,6 +688,22 @@ Private Function FileAsStringEmptyExcluded(ByVal s_s As String) As String
     FileAsStringEmptyExcluded = s_s
     
 End Function
+
+Private Sub FileFromString(ByVal f_file_full_name As String, _
+                           ByVal f_s As String, _
+                  Optional ByVal f_appended As Boolean = False)
+' ----------------------------------------------------------------------------
+' Writes a string (f_s) with multiple records/lines delimited by a vbCrLf to
+' a file (f_file_full_name).
+' ----------------------------------------------------------------------------
+    
+    If f_appended _
+    Then Open f_file_full_name For Append As #1 _
+    Else Open f_file_full_name For Output As #1
+    Print #1, f_s
+    Close #1
+    
+End Sub
 
 Public Function FileNameIsValid(ByRef s As String) As Boolean
 ' ----------------------------------------------------------------------------
@@ -724,10 +721,13 @@ Public Function FileNameIsValid(ByRef s As String) As Boolean
     '~~ hae a file name specified as argument.
     With FSo
         If .FileExists(s) Then
-            FileNameIsValid = True
-            sFileName = s
+            If IsTextFile(s) Then
+                FileNameIsValid = True
+                sFileName = s
+            End If
             GoTo xt
         End If
+        
         If InStr(s, ":") = 0 Then Exit Function
         If InStr(s, "\") = 0 Then Exit Function
         If .GetExtensionName(s) = vbNullString Then Exit Function
@@ -743,6 +743,73 @@ xt: If FileNameIsValid And Not dctFiles.Exists(sFileName) Then
         FileAsDict sFileName
     End If
     
+End Function
+
+Private Function FileStringTrimmed(ByVal s_s As String, _
+                          Optional ByRef s_as_dict As Dictionary = Nothing) As String
+' ----------------------------------------------------------------------------
+' Returns a file as string (s_s) with any leading and trailing empty items,
+' i.e. record, lines, excluded. When a Dictionary is provided
+' the string is additionally returned as items with the line number as key.
+' ----------------------------------------------------------------------------
+    Dim s As String
+    Dim i As Long
+    Dim v As Variant
+    
+    s = s_s
+    '~~ Eliminate any leading empty items
+    Do While Left(s, 2) = vbCrLf
+        s = Right(s, Len(s) - 2)
+    Loop
+    '~~ Eliminate a trailing eof if any
+    If Right(s, 1) = VBA.Chr(26) Then
+        s = Left(s, Len(s) - 1)
+    End If
+    '~~ Eliminate any trailing empty items
+    Do While Right(s, 2) = vbCrLf
+        s = Left(s, Len(s) - 2)
+    Loop
+    
+    FileStringTrimmed = s
+    If Not s_as_dict Is Nothing Then
+        With s_as_dict
+            For Each v In Split(s, vbCrLf)
+                i = i + 1
+                .Add i, v
+            Next v
+        End With
+    End If
+    
+End Function
+
+Private Function IsTextFile(ByVal i_file_full_name As String) As Boolean
+    
+    Dim iFileNumber As Integer
+    Dim sContent    As String
+    Dim sLine       As String
+    Dim i           As Long
+    
+    On Error Resume Next
+    iFileNumber = FreeFile
+    Open i_file_full_name For Input As #iFileNumber
+    If Err.Number <> 0 _
+    Then GoTo xt    ' Error opening the file (probably doesn't exist or is locked)
+        
+    Do Until EOF(iFileNumber)
+        Line Input #iFileNumber, sLine
+        sContent = sContent & sLine
+    Loop
+    Close #iFileNumber
+    
+    ' Check if the file content contains non-printable characters
+    For i = 1 To Len(sContent)
+        If Asc(Mid(sContent, i, 1)) < 32 Or Asc(Mid(sContent, i, 1)) > 126 _
+        Then GoTo xt ' not an ASCII character
+    Next i
+    
+    IsTextFile = True
+xt:
+
 End Function
 
 Private Function ItemIsSection(ByVal i_item As String, _
@@ -861,6 +928,50 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
+Private Function NameStrings(Optional ByVal a_v As Variant = Nothing) As Collection
+' ----------------------------------------------------------------------------
+' Returns the name strings (section names or value names) provided as argument
+' (a_v) as Collection whereby the provided argument may be:
+' - a Collection of strings
+' - a Dictionary of keys
+' - a comma delimited string, a
+' Dictionary, or a Collection of string items.
+' ----------------------------------------------------------------------------
+    Const PROC = "NameStrings"
+    
+    On Error GoTo eh
+    Dim cll As New Collection
+    Dim v   As Variant
+    
+    Select Case TypeName(a_v)
+        Case "Collection"
+            Set cll = a_v
+        Case "Dictionary"
+            For Each v In a_v
+                cll.Add v
+            Next v
+        Case "String"
+            For Each v In Split(a_v, ",")
+                cll.Add VBA.Trim$(v)
+            Next v
+        Case "Array"
+            For Each v In a_v
+                cll.Add VBA.Trim$(v)
+            Next v
+        Case Else
+            Err.Raise AppErr(1), ErrSrc(PROC), "The argument is neither a String, an Array, a Collecton, nor a Dictionary!"
+    End Select
+            
+xt: Set NameStrings = cll
+    Set cll = Nothing
+    Exit Function
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+End Function
+
 Public Sub README(Optional ByVal r_bookmark As String = vbNullString)
     
     If r_bookmark = vbNullString Then
@@ -872,9 +983,10 @@ Public Sub README(Optional ByVal r_bookmark As String = vbNullString)
         
 End Sub
 
-Private Sub Reorg(Optional ByVal r_file As String = vbNullString)
+Private Sub Reorg(ByVal r_file As String)
 ' ----------------------------------------------------------------------------
-' Private-Profile file service: Re-organizes all sections and all value-names
+' Reads all sections into a Dictionary in asscending order, with all
+' values as Private-Profile file service: Re-organizes all sections and all value-names
 ' therein in ascending order.
 ' When no file (n_file) is provided - either as full name or as file object
 ' a file selection dialog is displayed. When finally there's still no file
@@ -885,32 +997,8 @@ Private Sub Reorg(Optional ByVal r_file As String = vbNullString)
     Const PROC = "Reorg"
     
     On Error GoTo eh
-    Dim vSection    As Variant
-    Dim sSection    As String
-    Dim dctSections As Dictionary
-    Dim dctValues   As Dictionary
-    Dim vValue      As Variant
-    Dim fl          As String
     
-    If Not FileNameIsValid(r_file) _
-    Then Err.Raise AppErr(1), ErrSrc(PROC), "No valid files name is provided or available!"
-    
-    If dctSections Is Nothing Then Set dctSections = Sections(r_file)
-    For Each vSection In dctSections
-        Set dctValues = dctSections(vSection)
-        '~~ Delete section
-        DeletePrivateProfileSection Section:=vSection _
-                                  , NoKey:=0 _
-                                  , NoSetting:=0 _
-                                  , Name:=r_file
-        '~~ Re-write section
-        For Each vValue In dctValues
-            WritePrivateProfileString lpw_ApplicationName:=vSection _
-                                    , lpw_KeyName:=vValue _
-                                    , lpw_String:=dctValues(vValue) _
-                                    , lpw_FileName:=r_file
-        Next vValue
-    Next vSection
+    FileFromDict r_file, Sections(r_file)
 
 xt: Exit Sub
 
@@ -1123,43 +1211,6 @@ Private Function ShellRun(ByVal s_string As String, _
 
 End Function
 
-Private Function FileStringTrimmed(ByVal s_s As String, _
-                          Optional ByRef s_as_dict As Dictionary = Nothing) As String
-' ----------------------------------------------------------------------------
-' Returns a file as string (s_s) with any leading and trailing empty items,
-' i.e. record, lines, excluded. When a Dictionary is provided
-' the string is additionally returned as items with the line number as key.
-' ----------------------------------------------------------------------------
-    Dim s As String
-    Dim i As Long
-    Dim v As Variant
-    
-    s = s_s
-    '~~ Eliminate any leading empty items
-    Do While Left(s, 2) = vbCrLf
-        s = Right(s, Len(s) - 2)
-    Loop
-    '~~ Eliminate a trailing eof if any
-    If Right(s, 1) = VBA.Chr(26) Then
-        s = Left(s, Len(s) - 1)
-    End If
-    '~~ Eliminate any trailing empty items
-    Do While Right(s, 2) = vbCrLf
-        s = Left(s, Len(s) - 2)
-    Loop
-    
-    FileStringTrimmed = s
-    If Not s_as_dict Is Nothing Then
-        With s_as_dict
-            For Each v In Split(s, vbCrLf)
-                i = i + 1
-                .Add i, v
-            Next v
-        End With
-    End If
-    
-End Function
-
 Public Function Value2(ByVal v_value_name As String, _
               Optional ByVal v_section As String = vbNullString, _
               Optional ByVal v_file As String = vbNullString) As Variant
@@ -1279,7 +1330,7 @@ Public Function ValueNameRename(ByVal v_name_old As String, _
 xt: Set dct = Nothing
     If ValueNameRename Then
         If dctFiles.Exists(v_file) Then dctFiles.Remove v_file
-        Reorg
+        Reorg v_file
     End If
     Exit Function
     
