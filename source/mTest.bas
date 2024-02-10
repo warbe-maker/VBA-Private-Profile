@@ -20,7 +20,7 @@ Public Function FileAsString(Optional ByVal f_file_full_name As String, _
 ' ----------------------------------------------------------------------------
 
     Open f_file_full_name For Input As #1
-    FileAsString = Input$(lOf(1), 1)
+    FileAsString = Input$(LOF(1), 1)
     Close #1
     
     Select Case True
@@ -136,7 +136,7 @@ Private Function FileStringTrimmed(ByVal s_s As String, _
     
 End Function
 
-Public Function TestProc_PrivateProfile_File(Optional ByVal t_sections As Long = 10, _
+Public Function PrivateProfile_File(Optional ByVal t_sections As Long = 10, _
                                              Optional ByVal t_values As Long = 15, _
                                              Optional ByVal t_individual_names As Boolean = True) As String
 ' ----------------------------------------------------------------------------
@@ -147,7 +147,7 @@ Public Function TestProc_PrivateProfile_File(Optional ByVal t_sections As Long =
 ' When t_individual_names is FALSE all sections have the same set of value
 ' names.
 ' ----------------------------------------------------------------------------
-    Const PROC = "TestProc_PrivateProfile_File"
+    Const PROC = "PrivateProfile_File"
 
     On Error GoTo eh
     Dim i           As Long
@@ -157,7 +157,6 @@ Public Function TestProc_PrivateProfile_File(Optional ByVal t_sections As Long =
     Dim arr()       As Variant
     Dim k           As Long
     
-    mBasic.BoP ErrSrc(PROC)
     sFolder = ThisWorkbook.Path & "\Test"
     If Not PP.FSo.FolderExists(sFolder) Then PP.FSo.CreateFolder (sFolder)
     
@@ -166,24 +165,23 @@ Public Function TestProc_PrivateProfile_File(Optional ByVal t_sections As Long =
     
     ReDim Preserve arr((t_sections * t_values) + t_sections - 1)
     For i = t_sections To 1 Step -1
-        arr(k) = "[" & TestProc_SectionName(i) & "]"
+        arr(k) = "[" & SectionName(i) & "]"
         k = k + 1
         For j = t_values To 1 Step -1
             If t_individual_names _
-            Then arr(k) = TestProc_ValueName(i, j) & "=" & TestProc_ValueString(i, j) _
-            Else arr(k) = TestProc_ValueName(, j) & "=" & TestProc_ValueString(i, j)
+            Then arr(k) = ValueName(i, j) & "=" & ValueString(i, j) _
+            Else arr(k) = ValueName(, j) & "=" & ValueString(i, j)
             k = k + 1
         Next j
     Next i
     FileFromString sFileName, Join(arr, vbCrLf)
-    TestProc_PrivateProfile_File = sFileName
+    PrivateProfile_File = sFileName
     If cllTestFiles Is Nothing Then Set cllTestFiles = New Collection
     cllTestFiles.Add sFileName
     
-    PP.FileName = sFileName ' this assignment immediately loadds it as Dictionary
+    PP.FileName = sFileName ' this assignment immediately loads it as Dictionary
 
-xt: mBasic.EoP ErrSrc(PROC)
-    Exit Function
+xt: Exit Function
 
 eh: Select Case mErh.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
@@ -191,7 +189,7 @@ eh: Select Case mErh.ErrMsg(ErrSrc(PROC))
     End Select
 End Function
 
-Public Sub TestProc_RemoveTestFiles()
+Public Sub RemoveTestFiles()
 
     Dim v As Variant
     If cllTestFiles Is Nothing Then Set cllTestFiles = New Collection
@@ -205,22 +203,22 @@ Public Sub TestProc_RemoveTestFiles()
     
 End Sub
 
-Public Function TestProc_SectionName(ByVal l As Long) As String
-    TestProc_SectionName = SECTION_NAME & Format(l, "00")
+Public Function SectionName(ByVal l As Long) As String
+    SectionName = SECTION_NAME & Format(l, "00")
 End Function
 
-Public Function TestProc_TempFile() As String
+Public Function TempFile() As String
 ' ----------------------------------------------------------------------------
 '
 ' ----------------------------------------------------------------------------
-    Const PROC = "TestProc_TempFile"
+    Const PROC = "TempFile"
 
     On Error GoTo eh
     Dim sFileName   As String
 
     mBasic.BoP ErrSrc(PROC)
     sFileName = FileTemp(f_extension:=".dat")
-    TestProc_TempFile = sFileName
+    TempFile = sFileName
 
     If cllTestFiles Is Nothing Then Set cllTestFiles = New Collection
     cllTestFiles.Add sFileName
@@ -234,15 +232,15 @@ eh: Select Case mErh.ErrMsg(ErrSrc(PROC))
     End Select
 End Function
 
-Public Function TestProc_ValueName(Optional ByVal t_section_name As Long = 0, _
+Public Function ValueName(Optional ByVal t_section_name As Long = 0, _
                                    Optional ByVal t_value_name As Long = 0) As String
     If t_section_name <> 0 _
-    Then TestProc_ValueName = SECTION_NAME & Format(t_section_name, "00") & VALUE_NAME_INDIVIDUAL & Format(t_value_name, "00") _
-    Else TestProc_ValueName = VALUE_NAME & Format(t_value_name, "00")
+    Then ValueName = SECTION_NAME & Format(t_section_name, "00") & VALUE_NAME_INDIVIDUAL & Format(t_value_name, "00") _
+    Else ValueName = VALUE_NAME & Format(t_value_name, "00")
     
 End Function
 
-Public Function TestProc_ValueString(ByVal lS As Long, ByVal lV As Long) As String
-    TestProc_ValueString = SECTION_NAME & Format(lS, "00") & VALUE_STRING & Format(lV, "00")
+Public Function ValueString(ByVal lS As Long, ByVal lV As Long) As String
+    ValueString = SECTION_NAME & Format(lS, "00") & VALUE_STRING & Format(lV, "00")
 End Function
 

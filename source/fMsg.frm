@@ -11,7 +11,6 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
 Option Explicit
 ' -------------------------------------------------------------------------------
 ' UserForm fMsg: Provides all means for the setup of all message variants with
@@ -138,10 +137,10 @@ Private dctSectsMonoSpaced                  As New Dictionary   ' frmMsect speci
 Private dctSectsText                        As New Dictionary
 Private dctSectTextSetup                    As New Dictionary
 Private dctVisualizedForTest                As New Dictionary
-Private frmBarea                            As MSForms.Frame    ' The buttons area frame
-Private frmBttnsFrm                         As MSForms.Frame    ' Set with CollectDesignControls
-Private frmMarea                            As MSForms.Frame    ' The message area frame
-Private frmSteps                            As MSForms.Frame
+Private frmBarea                            As MsForms.Frame    ' The buttons area frame
+Private frmBttnsFrm                         As MsForms.Frame    ' Set with CollectDesignControls
+Private frmMarea                            As MsForms.Frame    ' The message area frame
+Private frmSteps                            As MsForms.Frame
 Private lBackColor                          As Long
 Private lLabelAllPos                        As enLabelPos       ' "global" Label position
 Private lMaxNoOfMsgSects                    As Long             ' Set with CollectDesignControls (number of message sections designed)
@@ -181,10 +180,10 @@ Private siMsectTextFrmWidthWithLposLblMax   As Single
 Private siMsectTextFrmWidthWithLposLblMin   As Single
 Private sMonitorProcess                     As String
 Private sMsgTitle                           As String
-Private tbxFooter                           As MSForms.TextBox
-Private tbxHeader                           As MSForms.TextBox
-Private tbxStep                             As MSForms.TextBox
-Private tbxTemp                             As MSForms.TextBox
+Private tbxFooter                           As MsForms.TextBox
+Private tbxHeader                           As MsForms.TextBox
+Private tbxStep                             As MsForms.TextBox
+Private tbxTemp                             As MsForms.TextBox
 Private TextMonitorFooter                   As udtMsgText
 Private TextMonitorHeader                   As udtMsgText
 Private TextMonitorStep                     As udtMsgText
@@ -242,11 +241,11 @@ End Sub
 
 Public Property Let ApplicationRunArgs(ByVal dct As Dictionary):    Set dctApplicationRunArgs = dct:                                        End Property
 
-Private Property Get AppliedButtonRetVal(Optional ByVal cmb As MSForms.CommandButton) As Variant
+Private Property Get AppliedButtonRetVal(Optional ByVal cmb As MsForms.CommandButton) As Variant
     AppliedButtonRetVal = AppliedBttnsRetVal(cmb)
 End Property
 
-Private Property Let AppliedButtonRetVal(Optional ByVal cmb As MSForms.CommandButton, _
+Private Property Let AppliedButtonRetVal(Optional ByVal cmb As MsForms.CommandButton, _
                                                   ByVal v As Variant)
     AppliedBttnsRetVal.Add cmb, v
 End Property
@@ -831,10 +830,10 @@ Private Function AppliedBttnRows() As Dictionary
     On Error GoTo eh
     Dim dct         As New Dictionary
     Dim lRow        As Long
-    Dim frmRow      As MSForms.Frame
+    Dim frmRow      As MsForms.Frame
     Dim v           As Variant
     Dim lButtons    As Long
-    Dim cmb         As MSForms.CommandButton
+    Dim cmb         As MsForms.CommandButton
     
     For lRow = 1 To dctBttnsRowFrm.Count
         Set frmRow = dctBttnsRowFrm(lRow)
@@ -859,7 +858,7 @@ End Function
 Private Function AppliedButtonRowHeight() As Single:         AppliedButtonRowHeight = siMaxButtonHeight + 2:    End Function
 
 Private Sub AutoSizeApplyLabelProperties(ByVal a_sect As Long, _
-                                         ByRef a_lbl As MSForms.Label, _
+                                         ByRef a_lbl As MsForms.Label, _
                                          ByRef a_text As String)
 ' ------------------------------------------------------------------------------
 ' Returns the section's (a_sect) Label control (a_lbl) and a temporary TextBox
@@ -869,7 +868,7 @@ Private Sub AutoSizeApplyLabelProperties(ByVal a_sect As Long, _
     Const PROC = "AutoSizeApplyLabelProperties"
     
     On Error GoTo eh
-    Dim frmSect As MSForms.Frame:   Set frmSect = MsectFrm(a_sect)
+    Dim frmSect As MsForms.Frame:   Set frmSect = MsectFrm(a_sect)
     
     MsgSectLbl = MsgLabel(a_sect)
     a_text = MsgSectLbl.Text
@@ -920,7 +919,7 @@ eh: If ErrMsg(ErrSrc(PROC)) = vbYes Then: Stop: Resume
 End Sub
 
 Private Sub AutoSizeApplyTextProperties(ByVal a_sect As Long, _
-                                        ByRef a_lbl As MSForms.Label, _
+                                        ByRef a_lbl As MsForms.Label, _
                                         ByRef a_text As String)
 ' ------------------------------------------------------------------------------
 '
@@ -928,7 +927,7 @@ Private Sub AutoSizeApplyTextProperties(ByVal a_sect As Long, _
     Const PROC = "AutoSizeApplyTextProperties"
     
     On Error GoTo eh
-    Dim frmText As MSForms.Frame: Set frmText = MsectTextFrm(a_sect)
+    Dim frmText As MsForms.Frame: Set frmText = MsectTextFrm(a_sect)
     
     a_text = Msg.Section(a_sect).Text.Text
     TempTbx a_lbl, t_remove:=True    ' remove any if existing
@@ -982,7 +981,7 @@ xt: Exit Sub
 eh: If ErrMsg(ErrSrc(PROC)) = vbYes Then: Stop: Resume
 End Sub
 
-Private Sub AutoSizeLabelViaTextBox(ByRef a_lbl As MSForms.Label, _
+Private Sub AutoSizeLabelViaTextBox(ByRef a_lbl As MsForms.Label, _
                                     ByVal a_text As String, _
                                     ByVal a_width_limit As Single, _
                            Optional ByVal a_align As Long = fmTextAlignLeft)
@@ -1022,7 +1021,7 @@ xt: Exit Sub
 eh: If ErrMsg(ErrSrc(PROC)) = vbYes Then: Stop: Resume
 End Sub
 
-Private Sub AutoSizeTextBox(ByRef a_tbx As MSForms.TextBox, _
+Private Sub AutoSizeTextBox(ByRef a_tbx As MsForms.TextBox, _
                             ByVal a_text As String, _
                             ByVal a_width_limit As Single, _
                    Optional ByVal a_append As Boolean = False, _
@@ -1090,7 +1089,7 @@ xt: Exit Sub
 
 End Sub
 
-Private Function BareaFrm(Optional b_properties As Boolean = True) As MSForms.Frame
+Private Function BareaFrm(Optional b_properties As Boolean = True) As MsForms.Frame
 ' ------------------------------------------------------------------------------
 ' Returns the Buttons area Frame, created if yet not existing.
 ' ------------------------------------------------------------------------------
@@ -1144,7 +1143,7 @@ Private Sub BareaFrmCenter()
 
 End Sub
 
-Private Function BareaFrmExists(ByRef b_frm As MSForms.Frame) As Boolean
+Private Function BareaFrmExists(ByRef b_frm As MsForms.Frame) As Boolean
     If Not frmBarea Is Nothing Then
         Set b_frm = frmBarea
         BareaFrmExists = True
@@ -1162,14 +1161,14 @@ Private Function BareaFrmTop() As Single
 
 End Function
 
-Private Function BttnsFrm() As MSForms.Frame
+Private Function BttnsFrm() As MsForms.Frame
 ' ------------------------------------------------------------------------------
 ' Returns the Frame of the message buttons, created in the BareaFrm if yet
 ' not existing.
 ' ------------------------------------------------------------------------------
     Const PROC = "BttnsFrm"
     
-    Dim frmBttns    As MSForms.Frame
+    Dim frmBttns    As MsForms.Frame
     Dim si          As Single
     
     If Not BttnsFrmExists(frmBttns) _
@@ -1190,14 +1189,14 @@ Private Function BttnsFrm() As MSForms.Frame
     
 End Function
 
-Private Function BttnsFrmExists(ByRef b_frm As MSForms.Frame) As Boolean
+Private Function BttnsFrmExists(ByRef b_frm As MsForms.Frame) As Boolean
     If Not frmBttnsFrm Is Nothing Then
         Set b_frm = frmBttnsFrm
         BttnsFrmExists = True
     End If
 End Function
 
-Private Function BttnsRowFrm(ByVal b_row As Long) As MSForms.Frame
+Private Function BttnsRowFrm(ByVal b_row As Long) As MsForms.Frame
 ' ------------------------------------------------------------------------------
 ' Returns the Frame of the buttons row (b_row), raises an error if not existing.
 ' ------------------------------------------------------------------------------
@@ -1210,7 +1209,7 @@ Private Function BttnsRowFrm(ByVal b_row As Long) As MSForms.Frame
 End Function
 
 Private Function BttnsRowFrmExists(ByVal b_row As Long, _
-                                   ByRef b_row_frm As MSForms.Frame) As Boolean
+                                   ByRef b_row_frm As MsForms.Frame) As Boolean
     If dctBttnsRowFrm.Exists(b_row) Then
         Set b_row_frm = dctBttnsRowFrm(b_row)
         BttnsRowFrmExists = True
@@ -1220,7 +1219,7 @@ End Function
 
 Private Function BttnsRowVerticalMargin() As Single:              BttnsRowVerticalMargin = 0:                                               End Function
 
-Private Sub ButtonClicked(ByVal cmb As MSForms.CommandButton)
+Private Sub ButtonClicked(ByVal cmb As MsForms.CommandButton)
 ' ------------------------------------------------------------------------------
 ' Provides the clicked button's (cmb) caption string or value for the caller
 ' via mMsg.Replied and additionally via the ReplyValue Property. When there is
@@ -1248,7 +1247,7 @@ Private Function ButtonsProvided() As Boolean
     ButtonsProvided = cllMsgBttns.Count > 0
 End Function
 
-Private Function ClickedButtonIndex(ByVal cmb As MSForms.CommandButton) As Long
+Private Function ClickedButtonIndex(ByVal cmb As MsForms.CommandButton) As Long
     
     Dim i   As Long
     Dim v   As Variant
@@ -1377,7 +1376,7 @@ Private Sub Collect(ByRef col_into As Variant, _
     Const PROC = "Collect"
     
     On Error GoTo eh
-    Dim ctl As MSForms.Control
+    Dim ctl As MsForms.Control
     Dim v   As Variant
     Dim i   As Long
     
@@ -1427,10 +1426,10 @@ Private Sub CollectDesignControls()
     Const PROC = "CollectDesignControls"
     
     On Error GoTo eh
-    Dim frm         As MSForms.Frame
+    Dim frm         As MsForms.Frame
     Dim lRow        As Long
     Dim lBttn       As Long
-    Dim cmb         As MSForms.CommandButton
+    Dim cmb         As MsForms.CommandButton
     Dim sKey        As String
     
     Collect col_into:=NewDict(dctAreas) _
@@ -1496,7 +1495,7 @@ Public Function ContentHeight(ByVal ch_frame_form As Variant, _
     Const PROC = "ContzentHeight"
     
     On Error GoTo eh
-    Dim ctl As MSForms.Control
+    Dim ctl As MsForms.Control
     Dim i   As Long
     Dim siMinTop    As Single
     Dim siMaxBottom As Single
@@ -1544,7 +1543,7 @@ Public Function ContentWidth(Optional ByVal c_frame_form As Variant = Nothing, _
     Const PROC = "ContentWidth"
     
     On Error GoTo eh
-    Dim ctl As MSForms.Control
+    Dim ctl As MsForms.Control
     Dim i   As Long
     Dim siMinLeft   As Single
     Dim siMaxRight  As Single
@@ -1747,7 +1746,7 @@ Private Sub FinalizeHeightsAndTopPositions()
     
     On Error GoTo eh
     Dim v           As Variant
-    Dim frmMarea    As MSForms.Frame
+    Dim frmMarea    As MsForms.Frame
     Dim si          As Single
     Dim siTopNext   As Single:          siTopNext = FormMarginTop
     
@@ -1782,7 +1781,7 @@ xt: Exit Sub
 eh: If ErrMsg(ErrSrc(PROC)) = vbYes Then: Stop: Resume
 End Sub
 
-Private Sub FinalizeWidthFrame(ByVal f_frm As MSForms.Frame, _
+Private Sub FinalizeWidthFrame(ByVal f_frm As MsForms.Frame, _
                                ByVal f_margin_left As Single, _
                                ByVal f_margin_right As Single, _
                                ByRef f_finalized As Boolean, _
@@ -1833,8 +1832,8 @@ Private Sub FinalizeWidths(ByRef f_finalized As Boolean)
     Const PROC = "FinalizeWidths"
     
     On Error GoTo eh
-    Dim frmMarea    As MSForms.Frame
-    Dim frmText     As MSForms.Frame
+    Dim frmMarea    As MsForms.Frame
+    Dim frmText     As MsForms.Frame
     Dim si          As Single
     Dim v           As Variant
     
@@ -1900,8 +1899,8 @@ Private Function FormWidthInsideMonospaced(ByVal m_sect As Long, _
       
 End Function
 
-Private Sub FrameCenterHorizontal(ByVal f_center As MSForms.Frame, _
-                         Optional ByVal f_within As MSForms.Frame = Nothing, _
+Private Sub FrameCenterHorizontal(ByVal f_center As MsForms.Frame, _
+                         Optional ByVal f_within As MsForms.Frame = Nothing, _
                          Optional ByVal f_margin_left As Single = 0)
 ' ------------------------------------------------------------------------------
 ' Center the frame (f_center) horizontally within the frame (f_within)
@@ -1916,7 +1915,7 @@ Private Sub FrameCenterHorizontal(ByVal f_center As MSForms.Frame, _
 End Sub
 
 Private Function FrameHeightExeedsThreshold(ByVal m_percentage_threshold As Single, _
-                                            ByRef m_frm As MSForms.Frame) As Boolean
+                                            ByRef m_frm As MsForms.Frame) As Boolean
 ' ------------------------------------------------------------------------------
 ' Returns TRUE, the exceeding height (m_exceeding) and the section's text frame
 ' (m_frm) in the message area which exceeds the threshold percentage height
@@ -1929,9 +1928,9 @@ Private Function FrameHeightExeedsThreshold(ByVal m_percentage_threshold As Sing
     On Error GoTo eh
     Dim i                   As Long
     Dim siThresholdHeight   As Single
-    Dim frm                 As MSForms.Frame
-    Dim frmMarea            As MSForms.Frame
-    Dim frmBarea            As MSForms.Frame
+    Dim frm                 As MsForms.Frame
+    Dim frmMarea            As MsForms.Frame
+    Dim frmBarea            As MsForms.Frame
     
     siThresholdHeight = HeightThreshold(m_percentage_threshold)
     
@@ -1941,7 +1940,8 @@ Private Function FrameHeightExeedsThreshold(ByVal m_percentage_threshold As Sing
         '~~ is the one with the dominating height
         For i = 1 To lMaxNoOfMsgSects
             If MsectFrmIsActive(i, frm) Then
-                If MsectTextFrmIsActive(i, , frm) Then
+                If MsectTextFrmIsActive(m_sect:=i _
+                                      , m_text_frm:=frm) Then
                     If frm.Height >= siThresholdHeight Then
                         If frm.Height - siThresholdHeight > 100 Then
                             '~~ Only when the height can be reduced with a positive heoght result
@@ -2031,7 +2031,7 @@ Private Sub IndicateCntrlCaptions(Optional ByVal b As Boolean = True)
 ' visible as designed.
 ' ----------------------------------------------------------------------------
             
-    Dim ctl As MSForms.Control
+    Dim ctl As MsForms.Control
        
     If Not b Then
         For Each ctl In Me.Controls
@@ -2093,7 +2093,7 @@ Private Function IsCursorType(CursorType As CursorTypes) As Boolean
 End Function
 
 Private Function IsFrameOrForm(ByVal v As Object) As Boolean
-    IsFrameOrForm = TypeOf v Is MSForms.UserForm Or TypeOf v Is MSForms.Frame
+    IsFrameOrForm = TypeOf v Is MsForms.UserForm Or TypeOf v Is MsForms.Frame
 End Function
 
 Private Sub laMsgSection1Label_Click():                                                                                                 OnClickActionLabel 1:               End Sub
@@ -2160,7 +2160,7 @@ Private Sub laMsgSection8Text_Click():                                          
 
 Private Sub laMsgSection8Text_MouseMove(ByVal Button As Integer, ByVal Shift As Integer, ByVal x As Single, ByVal Y As Single):         CursorForTextWithOnClickAction 8:   End Sub
 
-Private Function MareaFrm(Optional b_properties As Boolean = True) As MSForms.Frame
+Private Function MareaFrm(Optional b_properties As Boolean = True) As MsForms.Frame
 ' ------------------------------------------------------------------------------
 ' Returns the Frame of the message area section, created if yet not existing.
 ' ------------------------------------------------------------------------------
@@ -2200,7 +2200,7 @@ xt: Exit Function
 eh: If ErrMsg(ErrSrc(PROC)) = vbYes Then: Stop: Resume
 End Function
 
-Private Function MareaFrmExists(ByRef m_frm As MSForms.Frame) As Boolean
+Private Function MareaFrmExists(ByRef m_frm As MsForms.Frame) As Boolean
 ' ------------------------------------------------------------------------------
 '
 ' ------------------------------------------------------------------------------
@@ -2223,7 +2223,7 @@ Private Function Max(ParamArray va() As Variant) As Variant
     
 End Function
 
-Private Function MaxWidthSectTxtBox(ByVal frm_text As MSForms.Frame) As Single
+Private Function MaxWidthSectTxtBox(ByVal frm_text As MsForms.Frame) As Single
 ' ------------------------------------------------------------------------------
 ' The maximum with of a sections text-box depends on whether or not the frame of
 ' the TextBox (frm_text) has a vertical scrollbar which reduces the available
@@ -2383,7 +2383,7 @@ Public Sub MonitorInit()
     Const PROC = "MonitorInit"
     
     On Error GoTo eh
-    Dim ctl                 As MSForms.Control
+    Dim ctl                 As MsForms.Control
     Dim siTop               As Single
     Dim i                   As Long
     Dim siStepsHeightMax    As Single
@@ -2436,7 +2436,7 @@ xt: Exit Sub
 eh: If ErrMsg(ErrSrc(PROC)) = vbYes Then: Stop: Resume
 End Sub
 
-Private Sub MonitorSetupTextProperties(ByVal ctl As MSForms.Control, _
+Private Sub MonitorSetupTextProperties(ByVal ctl As MsForms.Control, _
                                        ByVal kind_of_text As KindOfText)
 ' ------------------------------------------------------------------------------
 ' Setup the Font properties for a Label or TextBox (ctl) according to the
@@ -2477,7 +2477,7 @@ Public Sub MonitorStep()
     
     On Error GoTo eh
     Dim siMaxWidth          As Single
-    Dim tbx                 As MSForms.TextBox
+    Dim tbx                 As MsForms.TextBox
     Dim i                   As Long
     Dim siTop               As Single
     Dim siNetHeight         As Single
@@ -2590,7 +2590,7 @@ Private Sub MonitorStepsAdjustTopPosition()
     
     On Error GoTo eh
     Dim siTop   As Single
-    Dim ctl     As MSForms.Control
+    Dim ctl     As MsForms.Control
     Dim v       As Variant
     
     siTop = 0
@@ -2606,7 +2606,7 @@ eh: If ErrMsg(ErrSrc(PROC)) = vbYes Then: Stop: Resume
 End Sub
 
 Private Function MsectFrameHeight(ByVal m_sect As Long)
-    Dim frm As MSForms.Frame:   Set frm = MsectFrm(m_sect)
+    Dim frm As MsForms.Frame:   Set frm = MsectFrm(m_sect)
 
     If Not ScrollVerApplied(frm) _
     Then MsectFrameHeight = ContentHeight(frm) _
@@ -2615,7 +2615,7 @@ Private Function MsectFrameHeight(ByVal m_sect As Long)
 End Function
 
 Private Function MsectFrm(ByVal m_sect As Long, _
-                 Optional ByVal m_properties As Boolean = True) As MSForms.Frame
+                 Optional ByVal m_properties As Boolean = True) As MsForms.Frame
 ' ------------------------------------------------------------------------------
 ' Returns a message section's (m_sect) Frame with the properties .Top and .Width
 ' already set.
@@ -2668,7 +2668,7 @@ eh: If ErrMsg(ErrSrc(PROC)) = vbYes Then: Stop: Resume
 End Function
 
 Private Function MsectFrmAbove(ByVal m_sect As Long, _
-                               ByRef m_sect_frm As MSForms.Frame) As Long
+                               ByRef m_sect_frm As MsForms.Frame) As Long
 ' ------------------------------------------------------------------------------
 ' Returns a message section's (m_sect) frame above section number (m_sect_above)
 ' when the provided section (m_sect) is the first one active the function
@@ -2688,7 +2688,7 @@ Private Function MsectFrmAbove(ByVal m_sect As Long, _
 End Function
 
 Private Function MsectFrmExists(ByVal m_sect As Long, _
-                                ByRef m_frm As MSForms.Frame) As Boolean
+                                ByRef m_frm As MsForms.Frame) As Boolean
     
     If dctMsectFrm.Exists(m_sect) Then
         Set m_frm = dctMsectFrm(m_sect)
@@ -2698,7 +2698,7 @@ Private Function MsectFrmExists(ByVal m_sect As Long, _
 End Function
 
 Private Function MsectFrmHeight(ByVal m_sect As Long) As Single
-    Dim frm As MSForms.Frame
+    Dim frm As MsForms.Frame
     
     Set frm = MsectFrm(m_sect)
     MsectFrmHeight = frm.Height
@@ -2709,7 +2709,7 @@ Private Function MsectFrmHeight(ByVal m_sect As Long) As Single
 End Function
 
 Private Function MsectFrmIsActive(ByVal m_sect As Long, _
-                         Optional ByRef m_frm As MSForms.Frame) As Boolean
+                         Optional ByRef m_frm As MsForms.Frame) As Boolean
     
     If dctMsectFrm.Exists(m_sect) Then
         Set m_frm = dctMsectFrm(m_sect)
@@ -2724,7 +2724,7 @@ Private Function MsectFrmTop(ByVal m_sect As Long) As Single
 ' FormMarginTop when it is the top most section or the top position is based on
 ' the vertical distance to the above message section's frame.
 ' ------------------------------------------------------------------------------
-    Dim frm     As MSForms.Frame
+    Dim frm     As MsForms.Frame
     Dim iAbove  As Long
     
     MsectFrmTop = FormMarginTop
@@ -2775,7 +2775,7 @@ Private Function MsectHasOnlyText(ByVal m_sect As Long) As Boolean
 End Function
 
 Private Function MsectLabel(ByVal m_sect As Long, _
-                   Optional ByVal m_properties As Boolean = True) As MSForms.Label
+                   Optional ByVal m_properties As Boolean = True) As MsForms.Label
 ' ------------------------------------------------------------------------------
 ' Returns the Label of the message section (m_sect), created in the
 ' corresponding MsectFrm when not yet existing.
@@ -2824,7 +2824,7 @@ Private Function MsectLabelAlign(ByVal m_sect As Long) As Long
 End Function
 
 Private Function MsectLabelExists(ByVal m_sect As Long, _
-                                  ByRef m_lbl As MSForms.Label) As Boolean
+                                  ByRef m_lbl As MsForms.Label) As Boolean
                                 
     If dctMsectLabel.Exists(m_sect) Then
         Set m_lbl = dctMsectLabel(m_sect)
@@ -2867,11 +2867,11 @@ Private Function MsectLabelFontSize(ByVal m_sect As Long) As Single
 End Function
 
 Private Function MsectLabelIsActive(ByVal m_sect As Long, _
-                           Optional ByRef m_sect_lbl As MSForms.Label, _
-                           Optional ByRef m_sect_frm As MSForms.Frame) As Boolean
+                           Optional ByRef m_sect_lbl As MsForms.Label, _
+                           Optional ByRef m_sect_frm As MsForms.Frame) As Boolean
     
-    Dim frm As MSForms.Frame
-    Dim lbl As MSForms.Label
+    Dim frm As MsForms.Frame
+    Dim lbl As MsForms.Label
     
     Set frm = MsectFrm(m_sect)
     If frm.Visible Then
@@ -2891,7 +2891,7 @@ Private Function MsectLabelPos(ByVal m_sect As Long) As enLabelPos
     Else MsectLabelPos = LabelAllPos
 End Function
 
-Private Function MsectLabelTbx(ByVal m_sect As Long) As MSForms.TextBox
+Private Function MsectLabelTbx(ByVal m_sect As Long) As MsForms.TextBox
     Const PROC = "MsectLabelTbx"
     
     On Error Resume Next
@@ -2965,23 +2965,19 @@ Private Function MsectTextFontSize(ByVal m_sect As Long) As Single
 End Function
 
 Private Function MsectTextFrm(ByVal m_sect As Long, _
-                     Optional ByVal m_properties As Boolean = True) As MSForms.Frame
+                     Optional ByVal m_properties As Boolean = True) As MsForms.Frame
 ' ------------------------------------------------------------------------------
-' Returns the frame of the TextBox of the section (m_sect), created in the
-' corresponding MsectFrm when not yet existing. The Frame's top
+' Returns the frame of the TextBox of the section (m_sect). The Frame's top
 ' position is 0 or, when there is a visible above Label underneath it.
 ' ------------------------------------------------------------------------------
     Const PROC = "MsectTextFrm"
     
-    On Error GoTo eh
     Dim si As Single
+    
     If Not MsectTextFrmExists(m_sect, MsectTextFrm) _
     Then Err.Raise AppErr(1), ErrSrc(PROC), "Userform design does not conform with expectations! " & vbLf & _
                                             "(section provided = " & m_sect & ")"
-    If MsectHasOnlyLabel(m_sect) _
-    Then Err.Raise AppErr(2), ErrSrc(PROC), "Obtaining a section's text frame when it has only a Label is regarded a severe logic error!"
-
-    
+    On Error GoTo eh
     If m_properties Then
         With MsectTextFrm
             .Visible = True
@@ -3028,7 +3024,7 @@ eh: If ErrMsg(ErrSrc(PROC)) = vbYes Then: Stop: Resume
 End Function
 
 Private Function MsectTextFrmExists(ByVal m_sect As Long, _
-                                    ByRef m_frm As MSForms.Frame) As Boolean
+                                    ByRef m_frm As MsForms.Frame) As Boolean
                                 
     If dctMsectTextFrm.Exists(m_sect) Then
         Set m_frm = dctMsectTextFrm(m_sect)
@@ -3038,20 +3034,20 @@ Private Function MsectTextFrmExists(ByVal m_sect As Long, _
 End Function
 
 Private Function MsectTextFrmIsActive(ByVal m_sect As Long, _
-                             Optional ByRef m_sect_frm As MSForms.Frame, _
-                             Optional ByRef m_text_frm As MSForms.Frame) As Boolean
+                             Optional ByRef m_sect_frm As MsForms.Frame = Nothing, _
+                             Optional ByRef m_text_frm As MsForms.Frame = Nothing) As Boolean
 ' ------------------------------------------------------------------------------
 '
 ' ------------------------------------------------------------------------------
-    Dim frmSect As MSForms.Frame
-    Dim frmText As MSForms.Frame
+    Dim frmSect As MsForms.Frame
+    Dim frmText As MsForms.Frame
     
     Set frmSect = MsectFrm(m_sect)
     If frmSect.Visible Then
-        Set m_sect_frm = frmSect
+        Set m_sect_frm = frmSect ' return the visible section frame
         Set frmText = MsectTextFrm(m_sect)
         If frmText.Visible Then
-            Set m_text_frm = frmText
+            Set m_text_frm = frmText ' return the visible text frame
             MsectTextFrmIsActive = True
         End If
     End If
@@ -3076,7 +3072,7 @@ End Function
 Private Function MsectTextFrmTop() As Single:                   MsectTextFrmTop = 0:                                            End Function
 
 Private Function MsectTextLbl(ByVal m_sect As Long, _
-                     Optional ByVal m_properties As Boolean = True) As MSForms.Label
+                     Optional ByVal m_properties As Boolean = True) As MsForms.Label
 ' ------------------------------------------------------------------------------
 ' Returns the Label control representing a message section's (m_sect) Text.
 ' ------------------------------------------------------------------------------
@@ -3109,7 +3105,7 @@ eh: If ErrMsg(ErrSrc(PROC)) = vbYes Then: Stop: Resume
 End Function
 
 Private Function MsectTextLblExists(ByVal m_sect As Long, _
-                                    ByRef m_lbl As MSForms.Label) As Boolean
+                                    ByRef m_lbl As MsForms.Label) As Boolean
 ' ------------------------------------------------------------------------------
 '
 ' ------------------------------------------------------------------------------
@@ -3454,7 +3450,7 @@ Private Sub ScrollVerForHeightExceedingFrames(ByVal exceeding_height As Single, 
     
     On Error GoTo eh
     Dim bScrollApplied      As Boolean
-    Dim frm                 As MSForms.Frame
+    Dim frm                 As MsForms.Frame
     Dim siExceedingHeight   As Single
     Dim siPercentageBarea   As Single
     Dim siPercentageMarea   As Single
@@ -3678,7 +3674,7 @@ Const PROC = "Setup04MonoSpacedSection"
     
     On Error GoTo eh
     Dim sText   As String
-    Dim lbl     As MSForms.Label:   Set lbl = MsectTextLbl(s_sect)
+    Dim lbl     As MsForms.Label:   Set lbl = MsectTextLbl(s_sect)
     
     AutoSizeApplyTextProperties s_sect, lbl, sText
     
@@ -3705,10 +3701,10 @@ Private Sub Setup05Buttons()
     Const PROC = "Setup05Buttons"
     
     On Error GoTo eh
-    Dim cmbBttn     As MSForms.CommandButton
-    Dim frmBarea    As MSForms.Frame
-    Dim frmBttnRow  As MSForms.Frame
-    Dim frmBttns    As MSForms.Frame
+    Dim cmbBttn     As MsForms.CommandButton
+    Dim frmBarea    As MsForms.Frame
+    Dim frmBttnRow  As MsForms.Frame
+    Dim frmBttns    As MsForms.Frame
     Dim v           As Variant
     
     If cllMsgBttns.Count = 0 Then GoTo xt
@@ -3785,12 +3781,12 @@ Private Sub Setup05ButtonsSizeAndPosition1Buttons()
     
     On Error GoTo eh
     Dim siLeft          As Single
-    Dim frmRow          As MSForms.Frame    ' Frame for the buttons in a row
+    Dim frmRow          As MsForms.Frame    ' Frame for the buttons in a row
     Dim v               As Variant
     Dim lRow            As Long
     Dim lButton         As Long
     Dim siHeightBarea   As Single
-    Dim cmb             As MSForms.CommandButton
+    Dim cmb             As MsForms.CommandButton
     
     For lRow = 1 To dctBttnsRowFrm.Count
         siLeft = BttnRowMarginLeft
@@ -3836,7 +3832,7 @@ Private Sub Setup05ButtonsSizeAndPosition2ButtonRows()
     Const PROC = "Setup05ButtonsSizeAndPosition2ButtonRows"
     
     On Error GoTo eh
-    Dim frmRow          As MSForms.Frame
+    Dim frmRow          As MsForms.Frame
     Dim siTop           As Single
     Dim v               As Variant
     Dim lButtons        As Long
@@ -3877,7 +3873,7 @@ Private Sub Setup05ButtonsSizeAndPosition3ButtonsFrame()
     Dim v           As Variant
     Dim siWidth     As Single
     Dim siHeight    As Single
-    Dim frm         As MSForms.Frame
+    Dim frm         As MsForms.Frame
     
     If frmBttnsFrm.Visible Then
         siWidth = ContentWidth(frmBttnsFrm)
@@ -3913,7 +3909,7 @@ Private Sub Setup06Button(ByVal sb_row As Long, _
     Const PROC = "Setup06Button"
     
     On Error GoTo eh
-    Dim cmb As MSForms.CommandButton
+    Dim cmb As MsForms.CommandButton
     
     If sb_row = 0 Then sb_row = 1
     Set cmb = dctBttns(sb_row & "-" & sb_button)
@@ -4040,9 +4036,9 @@ Private Sub Setup12PropSpacedSection(ByVal s_sect As Long)
     Const PROC = "Setup12PropSpacedSection"
     
     On Error GoTo eh
-    Dim lblText As MSForms.Label:   Set lblText = MsectTextLbl(s_sect)
+    Dim lblText As MsForms.Label:   Set lblText = MsectTextLbl(s_sect)
     Dim sText   As String:          sText = Msg.Section(s_sect).Text.Text
-    Dim frmText As MSForms.Frame:   Set frmText = MsectTextFrm(s_sect)
+    Dim frmText As MsForms.Frame:   Set frmText = MsectTextFrm(s_sect)
     
     AutoSizeApplyTextProperties s_sect, lblText, sText
     tbxTemp.Left = 0
@@ -4088,7 +4084,7 @@ Private Sub Setup14Label(ByVal s_sect As Long)
 ' ------------------------------------------------------------------------------
 '
 ' ------------------------------------------------------------------------------
-    Dim lbl     As MSForms.Label
+    Dim lbl     As MsForms.Label
     Dim sText   As String
     
     If MsgLabel(s_sect).Text <> vbNullString Then
@@ -4162,7 +4158,7 @@ Public Function StringLengthPt(ByVal s_string As String, _
                       Optional ByVal s_Font_name As String = vbNullString, _
                       Optional ByVal s_Font_size As Single = 0) As Single
     
-    Dim tbx As MSForms.Label
+    Dim tbx As MsForms.Label
     
     If s_Font_name = vbNullString Then s_Font_name = Me.Font.Name
     If s_Font_size = 0 Then s_Font_size = Me.Font.Size
@@ -4181,7 +4177,7 @@ Public Function StringLengthPt(ByVal s_string As String, _
     
 End Function
 
-Private Sub TempTbx(ByVal t_lbl As MSForms.Label, _
+Private Sub TempTbx(ByVal t_lbl As MsForms.Label, _
            Optional ByVal t_remove As Boolean = False)
 ' ------------------------------------------------------------------------------
 ' Removes from - or provides in - a frame control (t_frm) a temporary TextBox
@@ -4240,7 +4236,7 @@ Private Sub UserForm_Activate()
     If Not bSetUpDone Then Setup
 End Sub
 
-Private Sub VisualizationsForTestOnly(Optional ByVal v_ctl As MSForms.Control, _
+Private Sub VisualizationsForTestOnly(Optional ByVal v_ctl As MsForms.Control, _
                                       Optional ByVal v_backcolor As Long, _
                                       Optional ByVal v_reset As Boolean = False)
 ' ------------------------------------------------------------------------------

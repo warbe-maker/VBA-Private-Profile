@@ -128,7 +128,7 @@ Public Sub Test_000_Regression()
     mTrc.Title = "Regression Test class module clsPrivProf"
     mTrc.NewFile
     mErh.Regression = True
-    Set PP = New clsPrivProf ' the test runs with the default file name
+    Set PP = Nothing: Set PP = New clsPrivProf ' the test runs with the default file name
     
     mBasic.BoP ErrSrc(PROC)
     sTestStatus = "clsPrivProf Regression Test: "
@@ -144,7 +144,7 @@ Public Sub Test_000_Regression()
     mPrivProfTest.Test_210_Method_ValueNameRename
     mPrivProfTest.Test_220_Property_Value_Reorg
 
-xt: mTest.TestProc_RemoveTestFiles
+xt: mTest.RemoveTestFiles
     mBasic.EoP ErrSrc(PROC)
     mErh.Regression = False
     mTrc.Dsply
@@ -158,7 +158,7 @@ eh: Select Case mErh.ErrMsg(ErrSrc(PROC))
 End Sub
 
 Public Sub Test_010_Property_FileName()
-    Const PROC = " Test_010_Property_FileName"
+    Const PROC = "Test_010_Property_FileName"
     
     On Error GoTo eh:
     Dim s   As String
@@ -179,7 +179,7 @@ Public Sub Test_010_Property_FileName()
     PP.FileName = ThisWorkbook.Path & "\Test\" & PP.FSo.GetBaseName(ThisWorkbook.Name) & ".dat"
     
 xt: mBasic.EoP ErrSrc(PROC)
-    TestProc_RemoveTestFiles
+    mTest.RemoveTestFiles
     Set PP = Nothing
     Exit Sub
     
@@ -190,7 +190,7 @@ eh: Select Case mErh.ErrMsg(ErrSrc(PROC))
 End Sub
 
 Public Sub Test_100_Method_IsValidFileFullName()
-    Const PROC = " Test_100_Method_IsValidFileFullName"
+    Const PROC = "Test_100_Method_IsValidFileFullName"
 
     mBasic.BoP ErrSrc(PROC)
     If PP Is Nothing Then Set PP = New clsPrivProf
@@ -215,28 +215,18 @@ Public Sub Test_130_Methods_xExists()
     mBasic.BoP ErrSrc(PROC)
     '~~ Test preparation
     If PP Is Nothing Then Set PP = New clsPrivProf
-    PP.FileName = mTest.TestProc_PrivateProfile_File(mTest.NO_OF_TEST_SECTIONS, mTest.NO_OF_TEST_VALUE_NAMES)
+    PP.FileName = mTest.PrivateProfile_File(mTest.NO_OF_TEST_SECTIONS, mTest.NO_OF_TEST_VALUE_NAMES)
        
     '~~ Section not exists
-    Debug.Assert PP.SectionExists(s_file:=PP.FileName _
-                                , s_section:=TestProc_SectionName(100) _
-                                 ) = False
+    Debug.Assert PP.Exists(PP.FileName, mTest.SectionName(100)) = False
     '~~ Section exists
-    Debug.Assert PP.SectionExists(s_file:=sFileName _
-                                , s_section:=TestProc_SectionName(9) _
-                                 ) = True
+    Debug.Assert PP.Exists(PP.FileName, mTest.SectionName(9)) = True
     '~~ Value-Name exists
-    Debug.Assert PP.ValueNameExists(v_file:=sFileName _
-                                  , v_section:=TestProc_SectionName(7) _
-                                  , v_value_name:=TestProc_ValueName(7, 3) _
-                                   ) = True
+    Debug.Assert PP.Exists(PP.FileName, mTest.SectionName(7), mTest.ValueName(7, 3)) = True
     '~~ Value-Name not exists
-    Debug.Assert PP.ValueNameExists(v_file:=sFileName _
-                                  , v_section:=TestProc_SectionName(7) _
-                                  , v_value_name:=TestProc_ValueName(6, 3) _
-                                   ) = False
+    Debug.Assert PP.Exists(PP.FileName, mTest.SectionName(7), mTest.ValueName(6, 3)) = False
     
-xt: TestProc_RemoveTestFiles
+xt: mTest.RemoveTestFiles
     Set PP = Nothing
     mBasic.EoP ErrSrc(PROC)
     Exit Sub
@@ -259,16 +249,16 @@ Public Sub Test_140_Method_SectionNames()
     
     mBasic.BoP ErrSrc(PROC)
     If PP Is Nothing Then Set PP = New clsPrivProf
-    sFileName = mTest.TestProc_PrivateProfile_File(mTest.NO_OF_TEST_SECTIONS, mTest.NO_OF_TEST_VALUE_NAMES)
+    sFileName = mTest.PrivateProfile_File(mTest.NO_OF_TEST_SECTIONS, mTest.NO_OF_TEST_VALUE_NAMES)
     PP.FileName = sFileName
     Set dct = PP.SectionNames()
     Debug.Assert dct.Count = NO_OF_TEST_SECTIONS
-    Debug.Assert dct.Keys()(0) = mTest.TestProc_SectionName(1)
-    Debug.Assert dct.Keys()(1) = mTest.TestProc_SectionName(2)
-    Debug.Assert dct.Keys()(2) = mTest.TestProc_SectionName(3)
+    Debug.Assert dct.Keys()(0) = mTest.SectionName(1)
+    Debug.Assert dct.Keys()(1) = mTest.SectionName(2)
+    Debug.Assert dct.Keys()(2) = mTest.SectionName(3)
 
 xt: mBasic.EoP ErrSrc(PROC)
-    TestProc_RemoveTestFiles
+    mTest.RemoveTestFiles
     Set dct = Nothing
     Exit Sub
     
@@ -295,7 +285,7 @@ Public Sub Test_150_Method_SectionsCopy()
     
     mBasic.BoP ErrSrc(PROC)
     If PP Is Nothing Then Set PP = New clsPrivProf
-    sSourceFile = mTest.TestProc_PrivateProfile_File(mTest.NO_OF_TEST_SECTIONS, mTest.NO_OF_TEST_VALUE_NAMES) ' prepare PrivateProfile test file
+    sSourceFile = mTest.PrivateProfile_File(mTest.NO_OF_TEST_SECTIONS, mTest.NO_OF_TEST_VALUE_NAMES) ' prepare PrivateProfile test file
     sTargetFile = ThisWorkbook.Path & "\Test\CopyTarget.dat"
     If PP.FSo.FileExists(sTargetFile) Then PP.FSo.DeleteFile sTargetFile
     
@@ -303,36 +293,35 @@ Public Sub Test_150_Method_SectionsCopy()
     '~~ Test 1 ------------------------------------
     '~~ Copy a specific section to a new target file
     '~~ Assert before
-    Debug.Assert PP.SectionExists(mTest.TestProc_SectionName(5), sSourceFile)
-    Debug.Assert PP.SectionExists(mTest.TestProc_SectionName(7), sSourceFile)
-    Debug.Assert Not PP.SectionExists(mTest.TestProc_SectionName(5), sTargetFile)
-    Debug.Assert Not PP.SectionExists(mTest.TestProc_SectionName(7), sTargetFile)
+    Debug.Assert PP.Exists(sSourceFile, mTest.SectionName(5)) = True
+    Debug.Assert PP.Exists(sSourceFile, mTest.SectionName(7)) = True
+    Debug.Assert PP.Exists(sTargetFile, mTest.SectionName(5)) = False
+    Debug.Assert PP.Exists(sTargetFile, mTest.SectionName(7)) = False
     
     PP.SectionsCopy s_source:=sSourceFile _
                   , s_target:=sTargetFile _
-                  , s_sections:=mTest.TestProc_SectionName(5) & "," & mTest.TestProc_SectionName(7)
+                  , s_sections:=mTest.SectionName(5) & "," & mTest.SectionName(7)
     
     '~~ Assert result
-    PP.FileName = sTargetFile
-    Debug.Assert PP.SectionExists(mTest.TestProc_SectionName(5))
-    Debug.Assert PP.SectionExists(mTest.TestProc_SectionName(7))
-    Debug.Assert PP.ValueNameExists(TestProc_ValueName(5, 5), mTest.TestProc_SectionName(5))
+    Debug.Assert PP.Exists(sTargetFile, mTest.SectionName(5)) = True
+    Debug.Assert PP.Exists(sTargetFile, mTest.SectionName(7)) = True
+    Debug.Assert PP.Exists(sTargetFile, mTest.SectionName(5), mTest.ValueName(5, 5))
     EoC "Test 1"
     
     BoC "Test 2"
     '~~ Test 1 ------------------------------------
-    PP.Section = mTest.TestProc_SectionName(3)
+    PP.Section = mTest.SectionName(3)
     '~~ Copy another specific section to the target file of Test 1a
     PP.SectionsCopy s_source:=sSourceFile _
                   , s_target:=sTargetFile _
                   , s_sections:=PP.Section
     '~~ Assert result
-    Debug.Assert PP.SectionExists(mTest.TestProc_SectionName(5))
-    Debug.Assert PP.ValueNameExists(TestProc_ValueName(5, 5), mTest.TestProc_SectionName(5))
-    Debug.Assert PP.SectionExists(mTest.TestProc_SectionName(7))
-    Debug.Assert PP.ValueNameExists(TestProc_ValueName(7, 5), mTest.TestProc_SectionName(7))
-    Debug.Assert PP.SectionExists(mTest.TestProc_SectionName(3))
-    Debug.Assert PP.ValueNameExists(TestProc_ValueName(3, 5), mTest.TestProc_SectionName(3))
+    Debug.Assert PP.Exists(sTargetFile, mTest.SectionName(5))
+    Debug.Assert PP.Exists(sTargetFile, mTest.SectionName(5), mTest.ValueName(5, 5))
+    Debug.Assert PP.Exists(sTargetFile, mTest.SectionName(7))
+    Debug.Assert PP.Exists(sTargetFile, mTest.SectionName(7), mTest.ValueName(7, 5))
+    Debug.Assert PP.Exists(sTargetFile, mTest.SectionName(3))
+    Debug.Assert PP.Exists(sTargetFile, mTest.SectionName(3), mTest.ValueName(3, 5))
     PP.FSo.DeleteFile sSourceFile
     PP.FSo.DeleteFile sTargetFile
     EoC "Test 2"
@@ -346,12 +335,12 @@ Public Sub Test_150_Method_SectionsCopy()
                   , s_sections:=PP.SectionNames(sSourceFile) _
                   , s_merge:=False
     '~~ Assert result
-    Debug.Assert FileAsString(sTargetFile) = FileAsString(sSourceFile)
+    Debug.Assert StrComp(FileAsString(sTargetFile), FileAsString(sSourceFile), vbBinaryCompare) = 0
     PP.FSo.DeleteFile sSourceFile
     PP.FSo.DeleteFile sTargetFile
     EoC "Test 3"
             
-xt: TestProc_RemoveTestFiles
+xt: mTest.RemoveTestFiles
     Set PP = Nothing
     mBasic.EoP ErrSrc(PROC)
     Exit Sub
@@ -375,7 +364,7 @@ Public Sub Test_170_Method_Value2()
     mBasic.BoP ErrSrc(PROC)
     '~~ Test preparation
     If PP Is Nothing Then Set PP = New clsPrivProf
-    PP.FileName = mTest.TestProc_PrivateProfile_File(mTest.NO_OF_TEST_SECTIONS, mTest.NO_OF_TEST_VALUE_NAMES)
+    PP.FileName = mTest.PrivateProfile_File(mTest.NO_OF_TEST_SECTIONS, mTest.NO_OF_TEST_VALUE_NAMES)
             
     '~~ Test 1: Read non-existing value from a non-existing file
     mBasic.BoC "Value (using GetPrivateProfileString)"
@@ -386,21 +375,21 @@ Public Sub Test_170_Method_Value2()
     
     '~~ Test 2: Read existing value
     mBasic.BoC "Value (using GetPrivateProfileString)"
-    Debug.Assert mTest.TestProc_ValueString(3, 2) = PP.Value(v_value_name:=mTest.TestProc_ValueName(3, 2) _
-                                                           , v_section:=mTest.TestProc_SectionName(3))
+    Debug.Assert mTest.ValueString(3, 2) = PP.Value(v_value_name:=mTest.ValueName(3, 2) _
+                                                           , v_section:=mTest.SectionName(3))
     mBasic.EoC "Value (using GetPrivateProfileString)"
     
     '~~ Test 3: Read non-existing without Lib functions
     mBasic.BoC "Value2 (not using GetPrivateProfileString)"
     Debug.Assert vbNullString = PP.Value2(v_value_name:="x" _
-                                        , v_section:=mTest.TestProc_SectionName(3))
+                                        , v_section:=mTest.SectionName(3))
     mBasic.EoC "Value2 (not using GetPrivateProfileString)"
     mBasic.BoC "Value2 (not using GetPrivateProfileString)"
-    Debug.Assert mTest.TestProc_ValueString(3, 2) = PP.Value2(v_value_name:=mTest.TestProc_ValueName(3, 2) _
-                                                            , v_section:=mTest.TestProc_SectionName(3))
+    Debug.Assert mTest.ValueString(3, 2) = PP.Value2(v_value_name:=mTest.ValueName(3, 2) _
+                                                            , v_section:=mTest.SectionName(3))
     mBasic.EoC "Value2 (not using GetPrivateProfileString)"
     
-xt: TestProc_RemoveTestFiles
+xt: mTest.RemoveTestFiles
     Set PP = Nothing
     mBasic.EoP ErrSrc(PROC)
     Exit Sub
@@ -423,16 +412,16 @@ Public Sub Test_190_Method_ValueNames()
     
     mBasic.BoP ErrSrc(PROC)
     If PP Is Nothing Then Set PP = New clsPrivProf
-    PP.FileName = mTest.TestProc_PrivateProfile_File(mTest.NO_OF_TEST_SECTIONS, mTest.NO_OF_TEST_VALUE_NAMES)
+    PP.FileName = mTest.PrivateProfile_File(mTest.NO_OF_TEST_SECTIONS, mTest.NO_OF_TEST_VALUE_NAMES)
     
-    Set dct = PP.Values(v_section:=TestProc_SectionName(2))
+    Set dct = PP.Values(PP.FileName, mTest.SectionName(2))
     mBasic.EoP ErrSrc(PROC)
     Debug.Assert dct.Count = mTest.NO_OF_TEST_VALUE_NAMES
-    Debug.Assert dct.Keys()(0) = TestProc_ValueName(2, 1)
-    Debug.Assert dct.Keys()(1) = TestProc_ValueName(2, 2)
-    Debug.Assert dct.Keys()(2) = TestProc_ValueName(2, 3)
+    Debug.Assert dct.Keys()(0) = mTest.ValueName(2, 1)
+    Debug.Assert dct.Keys()(1) = mTest.ValueName(2, 2)
+    Debug.Assert dct.Keys()(2) = mTest.ValueName(2, 3)
        
-xt: TestProc_RemoveTestFiles
+xt: mTest.RemoveTestFiles
     Exit Sub
 
 eh: Select Case mErh.ErrMsg(ErrSrc(PROC))
@@ -452,29 +441,27 @@ Public Sub Test_200_Method_Values()
     
     mBasic.BoP ErrSrc(PROC)
     If PP Is Nothing Then Set PP = New clsPrivProf
-    PP.FileName = mTest.TestProc_PrivateProfile_File(mTest.NO_OF_TEST_SECTIONS, mTest.NO_OF_TEST_VALUE_NAMES)
+    PP.FileName = mTest.PrivateProfile_File(mTest.NO_OF_TEST_SECTIONS, mTest.NO_OF_TEST_VALUE_NAMES)
 
     '~~ Test 1: All values of one section
-    Set dct = PP.Values(v_section:=TestProc_SectionName(2))
+    Set dct = PP.Values(PP.FileName, mTest.SectionName(2))
     '~~ Test 1: Assert the content of the result Dictionary
     Debug.Assert dct.Count = mTest.NO_OF_TEST_VALUE_NAMES
-    Debug.Assert dct.Keys()(0) = TestProc_ValueName(2, 1)
-    Debug.Assert dct.Keys()(1) = TestProc_ValueName(2, 2)
-    Debug.Assert dct.Keys()(2) = TestProc_ValueName(2, 3)
-    Debug.Assert dct.Items()(0) = TestProc_ValueString(2, 1)
-    Debug.Assert dct.Items()(1) = TestProc_ValueString(2, 2)
-    Debug.Assert dct.Items()(2) = TestProc_ValueString(2, 3)
+    Debug.Assert dct.Keys()(0) = mTest.ValueName(2, 1)
+    Debug.Assert dct.Keys()(1) = mTest.ValueName(2, 2)
+    Debug.Assert dct.Keys()(2) = mTest.ValueName(2, 3)
+    Debug.Assert dct.Items()(0) = mTest.ValueString(2, 1)
+    Debug.Assert dct.Items()(1) = mTest.ValueString(2, 2)
+    Debug.Assert dct.Items()(2) = mTest.ValueString(2, 3)
     
     '~~ Test 2: No section provided
-    Debug.Assert PP.Values().Count = 0
+    Debug.Assert PP.Values(PP.FileName, vbNullString).Count = 0
 
     '~~ Test 3: Section does not exist
-    Debug.Assert PP.Values(v_file:=PP.FileName _
-                         , v_section:="xxxxxxx").Count = 0
+    Debug.Assert PP.Values(PP.FileName, "xxxxxx").Count = 0
 
-xt: TestProc_RemoveTestFiles
+xt: mTest.RemoveTestFiles
     Set dct = Nothing
-    Set PP = Nothing
     mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
@@ -499,33 +486,34 @@ Public Sub Test_210_Method_ValueNameRename()
     
     mBasic.BoP ErrSrc(PROC)
     
-    '~~ Test 1: Rename in a specific section only
+    BoC "Test 1: Rename a value name in a specific section only"
     '~~         Prepare
     If PP Is Nothing Then Set PP = New clsPrivProf
-    PP.FileName = mTest.TestProc_PrivateProfile_File(mTest.NO_OF_TEST_SECTIONS, mTest.NO_OF_TEST_VALUE_NAMES)
-    sSection = mTest.TestProc_SectionName(2)
-    sNameOld = TestProc_ValueName(2, 3)
-    sNameNew = "Renamed_" & TestProc_ValueName(2, 3)
+    PP.FileName = mTest.PrivateProfile_File(mTest.NO_OF_TEST_SECTIONS, mTest.NO_OF_TEST_VALUE_NAMES)
+    sSection = mTest.SectionName(2)
+    sNameOld = mTest.ValueName(2, 3)
+    sNameNew = "Renamed_" & mTest.ValueName(2, 3)
     '~~        Rename in a specific section only
     PP.ValueNameRename sNameOld, sNameNew, sSection
-    Debug.Assert Not PP.ValueNameExists(sNameOld, sSection)
-    Debug.Assert PP.ValueNameExists(sNameNew, sSection)
+    Debug.Assert PP.Exists(PP.FileName, sSection, sNameOld) = False
+    Debug.Assert PP.Exists(PP.FileName, sSection, sNameNew) = True
+    EoC "Test 1: Rename a value name in a specific section only"
     
-    '~~ Test 2: Rename in all sections
+    BoC "Test 2: Rename in all sections"
     '~~         Prepare
     Set PP = Nothing: Set PP = New clsPrivProf ' same file with different content !!!
-    PP.FileName = mTest.TestProc_PrivateProfile_File(mTest.NO_OF_TEST_SECTIONS, mTest.NO_OF_TEST_VALUE_NAMES, False)
-    sNameOld = TestProc_ValueName(, 3)
-    sNameNew = "Renamed_" & TestProc_ValueName(, 3)
+    PP.FileName = mTest.PrivateProfile_File(mTest.NO_OF_TEST_SECTIONS, mTest.NO_OF_TEST_VALUE_NAMES, False)
+    sNameOld = mTest.ValueName(, 3)
+    sNameNew = "Renamed_" & mTest.ValueName(, 3)
     PP.ValueNameRename sNameOld, sNameNew
     For i = 1 To NO_OF_TEST_SECTIONS
-        Debug.Assert Not PP.ValueNameExists(sNameOld, mTest.TestProc_SectionName(i))
-        Debug.Assert PP.ValueNameExists(sNameNew, mTest.TestProc_SectionName(i))
+        Debug.Assert PP.Exists(PP.FileName, mTest.SectionName(i), sNameOld) = False
+        Debug.Assert PP.Exists(PP.FileName, mTest.SectionName(i), sNameNew) = True
     Next i
+    EoC "Test 2: Rename in all sections"
     
-xt: TestProc_RemoveTestFiles
+xt: mTest.RemoveTestFiles
     Set dct = Nothing
-    Set PP = Nothing
     mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
@@ -547,21 +535,20 @@ Public Sub Test_220_Property_Value_Reorg()
     
     mBasic.BoP ErrSrc(PROC)
     If PP Is Nothing Then Set PP = New clsPrivProf
-    PP.FileName = mTest.TestProc_PrivateProfile_File(mTest.NO_OF_TEST_SECTIONS, mTest.NO_OF_TEST_VALUE_NAMES) ' prepare PrivateProfile test file
+    PP.FileName = mTest.PrivateProfile_File(mTest.NO_OF_TEST_SECTIONS, mTest.NO_OF_TEST_VALUE_NAMES) ' prepare PrivateProfile test file
     vFile = mTest.FileAsArray(PP.FileName)
-    Debug.Assert vFile(UBound(vFile)) = TestProc_ValueName(1, 1) & "=" & TestProc_ValueString(1, 1)
+    Debug.Assert vFile(UBound(vFile)) = mTest.ValueName(1, 1) & "=" & mTest.ValueString(1, 1)
     
     '~~ Test: Adding a new value reorgs
     PP.Value("New_Value_Name", "New_Section") = "New_Value"
     
     '~~ Assert reorganized result
     vFile = mTest.FileAsArray(PP.FileName)
-    Debug.Assert vFile(UBound(vFile)) = TestProc_ValueName(NO_OF_TEST_SECTIONS, NO_OF_TEST_VALUE_NAMES) & "=" & TestProc_ValueString(NO_OF_TEST_SECTIONS, NO_OF_TEST_VALUE_NAMES)
+    Debug.Assert vFile(UBound(vFile)) = mTest.ValueName(NO_OF_TEST_SECTIONS, NO_OF_TEST_VALUE_NAMES) & "=" & mTest.ValueString(NO_OF_TEST_SECTIONS, NO_OF_TEST_VALUE_NAMES)
     
             
-xt: TestProc_RemoveTestFiles
+xt: mTest.RemoveTestFiles
     mBasic.EoP ErrSrc(PROC)
-    Set PP = Nothing
     Exit Sub
     
 eh: Select Case mErh.ErrMsg(ErrSrc(PROC))
