@@ -185,6 +185,11 @@ End Property
 
 Public Property Get Section() As String:        Section = sSection: End Property
 
+Private Function SectionAsDict(ByVal s_file As String, _
+                               ByVal s_sect As String) As Dictionary
+                               
+End Function
+
 Public Property Let Section(ByVal s As String)
     Const PROC = "Section-Let"
     
@@ -566,7 +571,7 @@ Public Function Exists(ByVal e_file As String, _
     
 End Function
 
-Private Function FileAsDict(ByVal f_file As String) As Dictionary
+Private Function FileAsDictOld(ByVal f_file As String) As Dictionary
 ' ----------------------------------------------------------------------------
 ' Adds the file (f_file) as Dictionary structure to the dctFiles Dictionary
 ' with the file-name as the key. An already existing entry is removed first.
@@ -574,12 +579,12 @@ Private Function FileAsDict(ByVal f_file As String) As Dictionary
 ' property FileName - which, when a vbNullString defaults to:
 ' ThisWorkbook.Path & "\" ThisWorkbook's BaseName & ".dat.
 ' ----------------------------------------------------------------------------
-    Const PROC = "FileAsDict"
+    Const PROC = "FileAsDictOld"
     
     On Error GoTo eh
     Dim arr         As Variant
     Dim dctValues   As Dictionary
-    Dim dct         As Dictionary
+    Dim dctFile     As Dictionary
     Dim i           As Long
     Dim s           As String
     Dim sFileStrng  As String
@@ -590,12 +595,12 @@ Private Function FileAsDict(ByVal f_file As String) As Dictionary
     sFileStrng = FileAsString(f_file)
     
     arr = Split(sFileStrng, vbCrLf)
-    Set dct = New Dictionary
+    Set dctFile = New Dictionary
     
     For i = LBound(arr) To UBound(arr)
         If ItemIsSection(arr(i), s) Then
             If Not dctValues Is Nothing Then
-                dct.Add sSection, KeySort(dctValues)
+                dctFile.Add sSection, KeySort(dctValues)
                 Set dctValues = Nothing
             End If
             sSection = s
@@ -612,13 +617,13 @@ Private Function FileAsDict(ByVal f_file As String) As Dictionary
         End If
     Next i
     If Not dctValues Is Nothing Then
-        If dct.Exists(sSection) Then dct.Remove sSection
-        dct.Add sSection, KeySort(dctValues)
+        If dctFile.Exists(sSection) Then dctFile.Remove sSection
+        dctFile.Add sSection, KeySort(dctValues)
         Set dctValues = Nothing
     End If
     
-    Set FileAsDict = dct
-    Set dct = Nothing
+    Set FileAsDictOld = dctFile
+    Set dctFile = Nothing
 
 xt: EoP ErrSrc(PROC), f_file
     Exit Function
@@ -696,24 +701,53 @@ Private Sub FileFromDict(ByVal f_file As String, _
     
     On Error GoTo eh
     Dim arr()       As Variant
+    Dim cll         As Collection
     Dim dctValues   As Dictionary
-    Dim i           As Long
-    Dim vSect       As Variant
-    Dim vValue      As Variant
+    Dim i           As Long:        i = -1
+    Dim j           As Long
     Dim s           As String
+    Dim sName       As String
+    Dim sValue      As String
+    Dim v           As Variant
+    Dim vSect       As Variant
     
-    i = -1
     For Each vSect In f_from
-        i = i + 1
-        ReDim Preserve arr(i)
-        arr(i) = "[" & vSect & "]"
+        Select Case TypeName(vSect)
+            Case "String":      i = i + 1
+                                ReDim Preserve arr(i)
+                                arr(i) = "[" & vSect & "]"
+            Case "Collection":  Set cll = vSect
+                                For j = 1 To cll.Count - 1
+                                    i = i + 1
+                                    ReDim Preserve arr(i)
+                                    arr(i) = "; " & cll(j)
+                                Next j
+                                i = i + 1
+                                ReDim Preserve arr(i)
+                                arr(i) = "[" & cll(cll.Count) & "]"
+        End Select
+        
         Set dctValues = f_from(vSect)
-        For Each vValue In dctValues
-            i = i + 1
-            ReDim Preserve arr(i)
-            arr(i) = vValue & "=" & dctValues(vValue)
-        Next vValue
+        For Each v In dctValues
+            sName = v
+            Select Case TypeName(dctValues(v))
+                Case "String":      sValue = dctValues(sName)
+                                    i = i + 1
+                                    ReDim Preserve arr(i)
+                                    arr(i) = sName & "=" & sValue
+                Case "Collection":  Set cll = dctValues(v)
+                                    For j = 1 To cll.Count - 1
+                                        i = i + 1
+                                        ReDim Preserve arr(i)
+                                        arr(i) = "; " & cll(j)
+                                    Next j
+                                    i = i + 1
+                                    ReDim Preserve arr(i)
+                                    arr(i) = sName & "=" & cll(cll.Count)
+            End Select
+        Next v
     Next vSect
+    
     s = Join(arr, vbCrLf)
     FileFromString f_file, s
     If dctFilesStrng.Exists(f_file) Then dctFilesStrng.Remove f_file
@@ -766,6 +800,8 @@ Public Function FileNameIsValid(ByRef s As String) As Boolean
     Const PROC = "FileNameIsValid"
     
     On Error GoTo eh
+    Dim cll As Collection
+
     If s = vbNullString And sFileName <> vbNullString Then
         s = sFileName
         FileNameIsValid = True
@@ -790,21 +826,12 @@ Public Function FileNameIsValid(ByRef s As String) As Boolean
         .CreateTextFile s
         If Err.Number = 0 Then
             FileNameIsValid = True
+            .DeleteFile s ' the value will be created with the first value added
         End If
     End With
         
 xt: If FileNameIsValid Then
-        '~~ FileHasChanged takes into consideration that the file may
-        '~~ have changed by an action "outside" this module, e.g. manually.
-        If Not dctFiles.Exists(s) Then
-            dctFiles.Add s, FileAsDict(s)
-            If dctFilesStrng.Exists(s) Then dctFilesStrng.Remove s
-            dctFilesStrng.Add s, FileAsString(s)
-        ElseIf FileHasChanged(s) Then
-            FileAsDictRemove s
-            dctFiles.Add s, FileAsDict(sFileName)
-            dctFilesStrng.Add s, FileAsString(s)
-        End If
+        FileAsDictManage s
         sFileName = s
     End If
     Exit Function
@@ -815,6 +842,39 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Function
 
+Private Sub FileAsDictManage(ByVal f_file As String)
+' ----------------------------------------------------------------------------
+' When the file (f_file) yet not exists in the Dictionary of files (dctFiles)
+' or when in exists but it has changed, add it as Dictionary to the Dictionary
+' of files dctFiles.
+' ----------------------------------------------------------------------------
+       
+    If Not dctFiles.Exists(f_file) Then
+        FileAsDictAdd f_file
+    ElseIf FileHasChanged(f_file) Then
+        FileAsDictRemove f_file
+        FileAsDictAdd f_file
+    End If
+
+End Sub
+
+Private Sub FileAsDictAdd(ByVal f_file As String)
+' ----------------------------------------------------------------------------
+' Add a new created file (f_file) as Dictionary to the Directory of files
+' dctFiles.
+' ----------------------------------------------------------------------------
+
+'    Set dct = FileAsDict(f_file, cllHeader, cllFooter)
+'    cll.Add cllHeader
+'    cll.Add dct
+'    cll.Add cllFooter
+'    dctFiles.Add f_file, cll
+
+    dctFiles.Add f_file, FileAsDictOld(f_file)
+    If dctFilesStrng.Exists(f_file) Then dctFilesStrng.Remove f_file
+    dctFilesStrng.Add f_file, FileAsString(f_file)
+
+End Sub
 Private Function FileStringTrimmed(ByVal s_s As String, _
                           Optional ByRef s_as_dict As Dictionary = Nothing) As String
 ' ----------------------------------------------------------------------------
@@ -872,6 +932,20 @@ Private Function IsTextFile(ByVal i_file_full_name As String) As Boolean
     IsTextFile = True
 xt:
 
+End Function
+
+Private Function ItemIsHeaderDelimiter(ByVal i_item As String) As Boolean
+    ItemIsHeaderDelimiter = i_item Like "; =====*"
+End Function
+
+Private Function ItemIsFooterDelimiter(ByVal i_item As String) As Boolean
+    ItemIsFooterDelimiter = i_item Like "; ----*"
+End Function
+
+Private Function ItemIsComment(ByVal i_item As String) As Boolean
+    ItemIsComment = i_item Like ";*" _
+    And Not ItemIsFooterDelimiter(i_item) _
+    And Not ItemIsHeaderDelimiter(i_item)
 End Function
 
 Private Function ItemIsSection(ByVal i_item As String, _
@@ -1053,7 +1127,7 @@ Private Function SectionExists(ByVal s_file As String, _
 ' ----------------------------------------------------------------------------
     
     If Not dctFiles.Exists(s_file) _
-    Then dctFiles.Add s_file, FileAsDict(s_file)
+    Then dctFiles.Add s_file, FileAsDictOld(s_file)
     SectionExists = dctFiles(s_file).Exists(s_section)
     
 End Function
@@ -1150,7 +1224,7 @@ Public Sub SectionsCopy(ByVal s_source As String, _
 
 xt: Set dct = Nothing
     FileAsDictRemove s_target
-    dctFiles.Add s_target, FileAsDict(s_target)
+    dctFiles.Add s_target, FileAsDictOld(s_target)
     dctFilesStrng.Add s_target, FileAsString(s_target)
     '~~ Re-write all sections in order to maintain asscending sequence
     FileFromDict s_target, Sections(s_target)
@@ -1354,7 +1428,7 @@ xt: Set dct = Nothing
     If ValueNameRename Then
         '~~ At least one value name has been re-named
         FileAsDictRemove v_file
-        dctFiles.Add v_file, FileAsDict(v_file)
+        dctFiles.Add v_file, FileAsDictOld(v_file)
         dctFilesStrng.Add v_file, FileAsString(v_file)
         '~~ Re-write all sections in order to maintain asscending sequence
         FileFromDict v_file, Sections(v_file)
@@ -1442,10 +1516,11 @@ End Function
 Public Function Values(ByVal v_file As String, _
                        ByVal v_section As String) As Dictionary
 ' ----------------------------------------------------------------------------
-' Returns all values in a section (v_section) in a Private Profile file
-' (v_file) as Dictionary, with the value name as key and the value as
-' item, in asscending order. When the provided section does not exist the
-' returned Dictionary is empty.
+' Returns all values in a section (v_section) of Private Profile file (v_file)
+' as Dictionary, with the value name as key and a Collection as item. The
+' Collection contains 0 to n comment lines and as last (or only) item the
+' value. In order to consider a possible value header the Values are derrived
+' from the dcfFile in dctFiles.
 ' Note: The method is public mainly for test purpose.
 ' ----------------------------------------------------------------------------
     Const PROC = "Values"
@@ -1510,4 +1585,142 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
         Case Else:      GoTo xt
     End Select
 End Function
+
+Private Function FileAsDict(ByVal f_file As String, _
+                             ByRef f_file_header As Collection, _
+                             ByRef f_file_footer As Collection) As Dictionary
+' ----------------------------------------------------------------------------
+' Adds the file (f_file) as a Dictionary structure to the dctFiles Dictionary
+' with the file name (f_file) as the key. The below Directory structure of
+' a Private Profile file accepts comment lines as file, section, and value
+' header:
+'
+' dctFiles               Directory
+'   Key:  file_name      String
+'   Item: cllFile        Collection
+'           0-n comments String
+'           dctFile      Directory
+' dctFile                Directory
+'   Key:  section        String
+'   Item: cllSection     Collection
+'           0-n comments Strings
+'           dctSection   Directory
+' dctSection             Directory
+'  Key:  value_name      String
+'  Item: cllValue        Collection
+'          0-n comments  String
+'          value         String
+'
+' Note:
+' In the Collections, all but the last item represent comment lines. Thus, a
+' Collection with 1 item only represents 0 comment lines. I.e. comment lines
+' are: For i = 1 to cll.Count - 1
+'      the Directory item: Set dct = cll(cll.Count)
+'      the value item    : value = cll(cll.Count)
+' ----------------------------------------------------------------------------
+    Const PROC = "FileAsDict"
+    
+    On Error GoTo eh
+    Dim arr         As Variant
+    Dim cll         As New Collection
+    Dim cllFile     As New Collection
+    Dim cllFooter   As New Collection
+    Dim cllHeader   As New Collection
+    Dim cllSect     As New Collection
+    Dim cllValue    As New Collection
+    Dim dctFile     As New Dictionary
+    Dim dctSect     As New Dictionary
+    Dim dctSects    As New Dictionary
+    Dim i           As Long
+    Dim s           As String
+    Dim sFileStrng  As String
+    Dim sName       As String
+    Dim sValue      As String
+    
+    BoP ErrSrc(PROC), f_file
+    sFileStrng = FileAsString(f_file)
+    arr = Split(sFileStrng, vbCrLf)
+    
+    For i = LBound(arr) To UBound(arr)
+        Select Case True
+            Case ItemIsComment(arr(i)):                 If cllFooter.Count <> 0 _
+                                                        Then cllFooter.Add arr(i) _
+                                                        Else cll.Add arr(i)
+            Case ItemIsHeaderDelimiter(arr(i)):         cll.Add arr(i)
+                                                        Set cllHeader = cll
+                                                        Set cll = New Collection
+            Case ItemIsFooterDelimiter(arr(i)):         cllFooter.Add arr(i)
+            Case ItemIsSection(arr(i), s):              FileAsDictSectn fs_sect:=sSection _
+                                                                      , fs_sect_dct:=dctSect _
+                                                                      , fs_comments:=cll _
+                                                                      , fs_file_dct:=dctFile
+                                                        sSection = s
+            Case ItemIsValue(arr(i), sName, sValue):    FileAsDictValue fv_value_name:=sName _
+                                                                      , fv_value:=sValue _
+                                                                      , fv_comments:=cll _
+                                                                      , fv_sect_dct:=dctSect
+        End Select
+    Next i
+    
+    FileAsDictValue fv_value_name:=sName _
+                  , fv_value:=sValue _
+                  , fv_comments:=cll _
+                  , fv_sect_dct:=dctSect
+    FileAsDictSectn fs_sect:=sSection _
+                , fs_sect_dct:=dctSect _
+                , fs_comments:=cll _
+                , fs_file_dct:=dctFile
+    
+    Set FileAsDict = dctFile
+    Set f_file_header = cllHeader
+    Set f_file_footer = cllFooter
+    Set dctSect = Nothing
+    Set dctFile = Nothing
+    Set cllHeader = Nothing
+    Set cllFooter = Nothing
+
+xt: EoP ErrSrc(PROC), f_file
+    Exit Function
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+End Function
+
+Private Sub FileAsDictValue(ByVal fv_value_name As String, _
+                          ByVal fv_value As String, _
+                          ByRef fv_sect_dct As Dictionary, _
+                          ByRef fv_comments As Collection)
+' ----------------------------------------------------------------------------
+' This is the first and only, the last one, or a subsequent value name/value
+' in a section which needs to be added to the section Directory (fv_sect_dct)
+' together with possibly collected comments (fv_comments).
+' ----------------------------------------------------------------------------
+    Dim cll As Collection
+    
+    Set cll = fv_comments           ' transfer possible comments to the value Collection
+    cll.Add fv_value                ' add the value as the last item to the Collection
+    fv_sect_dct.Add fv_value, cll   ' add the value to the section Dictionary
+    Set fv_comments = New Collection
+    
+End Sub
+
+Private Sub FileAsDictSectn(ByVal fs_sect As String, _
+                            ByRef fs_sect_dct As Dictionary, _
+                            ByRef fs_file_dct As Dictionary, _
+                            ByRef fs_comments As Collection)
+' ----------------------------------------------------------------------------
+' Adds a section (fs_dct_sect) to the file Dictionary (fs_file_dct).
+' ----------------------------------------------------------------------------
+    Dim cll As Collection
+    
+    If fs_sect_dct.Count = 0 Then Exit Sub ' empty section
+    Set cll = fs_comments                   ' transfer possible comments to the section Collection
+    cll.Add KeySort(fs_sect_dct)            ' add the section as the last item to the Collection
+    fs_file_dct.Add fs_sect, fs_sect_dct    ' add the Collection with the section name as key to the file Dictionary
+    Set fs_comments = New Collection
+    Set fs_sect_dct = New Dictionary
+    
+End Sub
 

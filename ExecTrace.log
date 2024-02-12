@@ -677,3 +677,16 @@
 24-02-10 18:05:19 00,0000         |  >> mPrivProfTest.Test_200_Method_ValueNameRename
 24-02-10 18:05:20 00,0187         |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
 24-02-10 18:05:20 00,0238 00,0051 |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+===========================================================================================================================================
+24-02-12 18:36:12 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-02-12 18:36:12 seconds seconds >> Begin execution trace 
+24-02-12 18:36:12 00,0000         |  >> mPrivProfTest.Test_150_Method_SectionsCopy
+24-02-12 18:36:13 01,6599         |  |  >> clsPrivProf.FileAsDictOld (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-02-12 18:36:13 01,6624 00,0025 |  |  << clsPrivProf.FileAsDictOld (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+===========================================================================================================================================
+24-02-12 18:36:55 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-02-12 18:36:55 seconds seconds >> Begin execution trace 
+24-02-12 18:36:55 00,0000         |  >> mPrivProfTest.Test_150_Method_SectionsCopy
+24-02-12 18:36:56 00,8283         |  |  >> clsPrivProf.FileAsDictOld (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-02-12 18:36:56 00,8311 00,0028 |  |  << clsPrivProf.FileAsDictOld (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-02-12 18:37:03 08,4876         |  |  > Test 1
