@@ -1,9 +1,38 @@
-Attribute VB_Name = "mTest"
+VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = "clsTestPrivProf"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = False
+Attribute VB_Exposed = False
 Option Explicit
-Public Const NO_OF_TEST_SECTIONS    As Long = 10
-Public Const NO_OF_TEST_VALUE_NAMES As Long = 16
-
-Public TestPPf                 As clsPrivProf
+' ----------------------------------------------------------------------------
+' Class Module clsTestPrivProf: Services supporting the test of methods and
+' ============================= properties of the clsPrivProf class module.
+'
+' Public services:
+' ----------------
+' NoOfTestSections           P The number of test sections used in the test
+'                              Private Profile file.
+' NoOfTestValues             P The number of test values used in the test
+'                              Private Profile file.
+' ExpectedTestResultFile       The test Private Profile file's full name.
+' ExpectedTestResultFileName M :::
+' PrivProfFile                 The Private Profile file used for tests as
+'                              file object.
+' PrivProfFileFullName
+' PrivateProfile_File        M Creates a test Private Profile file.
+' RemoveTestFiles              Removes test files created for a series of
+'                              tests.
+' SectionName
+' ValueName
+' ValueString
+'
+' W. Rauschenberger, Berlin Mar 2024
+' ----------------------------------------------------------------------------
+Public PP                           As clsPrivProf
 Public Test                         As clsTestAid
 Public Fso                          As New FileSystemObject
 
@@ -12,39 +41,28 @@ Private Const VALUE_NAME_INDIVIDUAL As String = "_Name_"        ' for PrivatePro
 Private Const VALUE_NAME            As String = "Value_Name_"   ' for PrivateProfile services test
 Private Const VALUE_STRING          As String = "-Value-"       ' for PrivateProfile services test
 
+Private lNoOfTestSections           As Long
+Private lNoOfTestValues             As Long
 Private cllTestFiles                As Collection
-Private sPrivProfFile               As String
-Private sFileName                   As String
+Private sPrivProfFileFullName       As String
+Private sFolder                     As String
 
-Public Function ExpectedTestResultFileName(ByVal e_test_folder As String, _
-                                           ByVal e_test_no As String) As String
-    ExpectedTestResultFileName = e_test_folder & "\ResultExpected-" & e_test_no & ".dat"
-
-End Function
-
-Public Function ExpectedTestResultFile(ByVal e_test_folder As String, _
-                                       ByVal e_test_no As String) As File
-     Set ExpectedTestResultFile = Fso.GetFile(ExpectedTestResultFileName(e_test_folder, e_test_no))
-     
-End Function
-
-Public Property Get FileName() As String:   FileName = sFileName:   End Property
-
-Public Sub Init(Optional ByVal i_default As Boolean = False)
+Private Sub Class_Initialize()
     
-    If TestPPf Is Nothing Then Set TestPPf = New clsPrivProf
-    If Test Is Nothing Then Set Test = New clsTestAid
-    Test.TestedComp = "clsPrivProf"
-    sFileName = mTest.PrivateProfile_File(mTest.NO_OF_TEST_SECTIONS, mTest.NO_OF_TEST_VALUE_NAMES)
-    If Not i_default Then
-        TestPPf.FileName = sFileName
-    End If
+    lNoOfTestSections = 10
+    lNoOfTestValues = 16
+    sFolder = ThisWorkbook.Path & "\Test"
+    sPrivProfFileFullName = sFolder & "\" & Fso.GetBaseName(ThisWorkbook.Name) & ".dat"
+    
+    If TestAid Is Nothing Then Set Test = New clsTestAid
+    TestAid.TestedComp = "clsPrivProf"
+
 End Sub
 
-Public Property Let FileString(Optional ByVal f_file_full_name As String, _
-                               Optional ByVal f_append As Boolean = False, _
-                               Optional ByVal f_exclude_empty As Boolean = False, _
-                                        ByVal f_s As String)
+Private Property Let FileString(Optional ByVal f_file_full_name As String, _
+                                Optional ByVal f_append As Boolean = False, _
+                                Optional ByVal f_exclude_empty As Boolean = False, _
+                                         ByVal f_s As String)
 ' ----------------------------------------------------------------------------
 ' Writes a string (f_s) with multiple records/lines delimited by a vbCrLf to
 ' a file (f_file_full_name).
@@ -58,10 +76,66 @@ Public Property Let FileString(Optional ByVal f_file_full_name As String, _
         
 End Property
 
-Public Function FileAsString(Optional ByVal f_file_full_name As String, _
-                             Optional ByVal f_append As Boolean = False, _
-                             Optional ByRef f_split As String = vbCrLf, _
-                             Optional ByVal f_exclude_empty As Boolean = False) As String
+Private Property Get FileTemp(Optional ByVal f_path As String = vbNullString, _
+                              Optional ByVal f_extension As String = ".tmp") As String
+' ------------------------------------------------------------------------------
+' Returns the full file name of a temporary randomly named file. When a path
+' (f_path) is omitted in the CurDir path, else in at the provided folder.
+' ------------------------------------------------------------------------------
+    Dim sTemp As String
+    
+    If VBA.Left$(f_extension, 1) <> "." Then f_extension = "." & f_extension
+    sTemp = Replace(PP.Fso.GetTempName, ".tmp", f_extension)
+    If f_path = vbNullString Then f_path = CurDir
+    sTemp = VBA.Replace(f_path & "\" & sTemp, "\\", "\")
+    FileTemp = sTemp
+    
+End Property
+
+Public Property Get NoOfTestSections() As Long:         NoOfTestSections = lNoOfTestSections:           End Property
+
+Public Property Get NoOfTestValues() As Long:           NoOfTestValues = lNoOfTestValues:               End Property
+
+Public Property Get PrivProfFile() As File
+    Set PrivProfFile = Fso.GetFile(sPrivProfFileFullName)
+End Property
+
+Public Property Get PrivProfFileFullName() As String:   PrivProfFileFullName = sPrivProfFileFullName:   End Property
+
+Private Sub ArrayAdd(ByRef a_array As Variant, _
+                     ByVal a_str As String)
+    On Error Resume Next
+    ReDim Preserve a_array(UBound(a_array) + 1)
+    If Err.Number <> 0 Then ReDim a_array(0)
+    a_array(UBound(a_array)) = a_str
+    
+End Sub
+
+Private Function ErrSrc(ByVal sProc As String) As String
+    ErrSrc = "mTest." & sProc
+End Function
+
+Public Function ExpectedTestResultFile(ByVal e_test_folder As String, _
+                                       ByVal e_test_no As String) As File
+     Set ExpectedTestResultFile = Fso.GetFile(ExpectedTestResultFileName(e_test_folder, e_test_no))
+     
+End Function
+
+Public Function ExpectedTestResultFileName(ByVal e_test_folder As String, _
+                                           ByVal e_test_no As String) As String
+    ExpectedTestResultFileName = e_test_folder & "\ResultExpected-" & e_test_no & ".dat"
+
+End Function
+
+Private Function FileAsArray(ByVal f_file_full_name As String) As Variant
+    Dim sSplit As String
+    FileAsArray = Split(FileAsString(f_file_full_name, , sSplit), sSplit)
+End Function
+
+Private Function FileAsString(Optional ByVal f_file_full_name As String, _
+                              Optional ByVal f_append As Boolean = False, _
+                              Optional ByRef f_split As String = vbCrLf, _
+                              Optional ByVal f_exclude_empty As Boolean = False) As String
 ' ----------------------------------------------------------------------------
 ' Returns the content of a file (f_file_full_name) as a single string plus the
 ' records/lines delimiter (f_split) which may be vbCrLf, vbCr, or vbLf.
@@ -92,47 +166,6 @@ Public Function FileAsString(Optional ByVal f_file_full_name As String, _
     
 End Function
 
-Public Function FileAsArray(ByVal f_file_full_name As String) As Variant
-    Dim sSplit As String
-    FileAsArray = Split(FileAsString(f_file_full_name, , sSplit), sSplit)
-End Function
-
-Public Sub FileFromString(ByVal f_file_full_name As String, _
-                          ByVal f_s As String, _
-                 Optional ByVal f_appended As Boolean = False)
-' ----------------------------------------------------------------------------
-' Writes a string (f_s) with multiple records/lines delimited by a vbCrLf to
-' a file (f_file_full_name).
-' ----------------------------------------------------------------------------
-    
-    If f_appended _
-    Then Open f_file_full_name For Append As #1 _
-    Else Open f_file_full_name For Output As #1
-    Print #1, f_s
-    Close #1
-    
-End Sub
-
-Private Property Get FileTemp(Optional ByVal f_path As String = vbNullString, _
-                              Optional ByVal f_extension As String = ".tmp") As String
-' ------------------------------------------------------------------------------
-' Returns the full file name of a temporary randomly named file. When a path
-' (f_path) is omitted in the CurDir path, else in at the provided folder.
-' ------------------------------------------------------------------------------
-    Dim sTemp As String
-    
-    If VBA.Left$(f_extension, 1) <> "." Then f_extension = "." & f_extension
-    sTemp = Replace(TestPPf.Fso.GetTempName, ".tmp", f_extension)
-    If f_path = vbNullString Then f_path = CurDir
-    sTemp = VBA.Replace(f_path & "\" & sTemp, "\\", "\")
-    FileTemp = sTemp
-    
-End Property
-
-Private Function ErrSrc(ByVal sProc As String) As String
-    ErrSrc = "mTest." & sProc
-End Function
-
 Private Function FileAsStringEmptyExcluded(ByVal s_s As String) As String
 ' ----------------------------------------------------------------------------
 ' Returns a string (s_s) with any empty elements excluded. I.e. the string
@@ -146,6 +179,22 @@ Private Function FileAsStringEmptyExcluded(ByVal s_s As String) As String
     FileAsStringEmptyExcluded = s_s
     
 End Function
+
+Private Sub FileFromString(ByVal f_file_full_name As String, _
+                           ByVal f_s As String, _
+                  Optional ByVal f_appended As Boolean = False)
+' ----------------------------------------------------------------------------
+' Writes a string (f_s) with multiple records/lines delimited by a vbCrLf to
+' a file (f_file_full_name).
+' ----------------------------------------------------------------------------
+    
+    If f_appended _
+    Then Open f_file_full_name For Append As #1 _
+    Else Open f_file_full_name For Output As #1
+    Print #1, f_s
+    Close #1
+    
+End Sub
 
 Private Function FileStringTrimmed(ByVal s_s As String, _
                           Optional ByRef s_as_dict As Dictionary = Nothing) As String
@@ -184,21 +233,8 @@ Private Function FileStringTrimmed(ByVal s_s As String, _
     
 End Function
 
-Public Property Get PrivProfFile() As File
-    Set PrivProfFile = Fso.GetFile(sPrivProfFile)
-End Property
-
-Private Sub ArrayAdd(ByRef a_array As Variant, _
-                     ByVal a_str As String)
-    On Error Resume Next
-    ReDim Preserve a_array(UBound(a_array) + 1)
-    If Err.Number <> 0 Then ReDim a_array(0)
-    a_array(UBound(a_array)) = a_str
-    
-End Sub
-
-Public Function PrivateProfile_File(Optional ByVal t_sections As Long = NO_OF_TEST_SECTIONS, _
-                                    Optional ByVal t_values As Long = NO_OF_TEST_VALUE_NAMES, _
+Public Function PrivateProfile_File(Optional ByVal t_sections As Long = 0, _
+                                    Optional ByVal t_values As Long = 0, _
                                     Optional ByVal t_individual_names As Boolean = True) As String
 ' ----------------------------------------------------------------------------
 ' Returns the name of a temporary file with n (t_sections) sections, each
@@ -213,14 +249,13 @@ Public Function PrivateProfile_File(Optional ByVal t_sections As Long = NO_OF_TE
     On Error GoTo eh
     Dim i           As Long
     Dim j           As Long
-    Dim sFolder     As String
     Dim arr()       As Variant
     
-    sFolder = ThisWorkbook.Path & "\Test"
-    If Not TestPPf.Fso.FolderExists(sFolder) Then TestPPf.Fso.CreateFolder (sFolder)
+    If Not Fso.FolderExists(sFolder) Then Fso.CreateFolder sFolder
+    If t_sections = 0 Then t_sections = lNoOfTestSections
+    If t_values = 0 Then t_values = lNoOfTestValues
     
-    sPrivProfFile = sFolder & "\" & TestPPf.Fso.GetBaseName(ThisWorkbook.Name) & ".dat"
-    If TestPPf.Fso.FileExists(sPrivProfFile) Then TestPPf.Fso.DeleteFile sPrivProfFile
+    If Fso.FileExists(sPrivProfFileFullName) Then Fso.DeleteFile sPrivProfFileFullName
     
     For i = t_sections To 1 Step -2
         ArrayAdd arr, "[" & SectionName(i) & "]"
@@ -230,10 +265,10 @@ Public Function PrivateProfile_File(Optional ByVal t_sections As Long = NO_OF_TE
             Else ArrayAdd arr, ValueName(, j) & "=" & ValueString(i, j)
         Next j
     Next i
-    FileFromString sPrivProfFile, Join(arr, vbCrLf)
+    FileFromString sPrivProfFileFullName, Join(arr, vbCrLf)
     If cllTestFiles Is Nothing Then Set cllTestFiles = New Collection
-    cllTestFiles.Add sPrivProfFile
-    PrivateProfile_File = sPrivProfFile
+    cllTestFiles.Add sPrivProfFileFullName
+    PrivateProfile_File = sPrivProfFileFullName
     
 xt: Exit Function
 
@@ -248,7 +283,7 @@ Public Sub RemoveTestFiles()
     Dim v As Variant
     If cllTestFiles Is Nothing Then Set cllTestFiles = New Collection
     For Each v In cllTestFiles
-        If TestPPf.Fso.FileExists(v) Then
+        If Fso.FileExists(v) Then
             Kill v
         End If
     Next v
@@ -261,7 +296,7 @@ Public Function SectionName(ByVal l As Long) As String
     SectionName = SECTION_NAME & Format(l, "00")
 End Function
 
-Public Function TempFile() As String
+Private Function TempFile() As String
 ' ----------------------------------------------------------------------------
 '
 ' ----------------------------------------------------------------------------
@@ -275,7 +310,7 @@ Public Function TempFile() As String
     TempFile = sFileName
 
     If cllTestFiles Is Nothing Then Set cllTestFiles = New Collection
-    cllTestFiles.Add sPrivProfFile
+    cllTestFiles.Add sPrivProfFileFullName
 
 xt: mBasic.EoP ErrSrc(PROC)
     Exit Function
@@ -287,7 +322,7 @@ eh: Select Case mErh.ErrMsg(ErrSrc(PROC))
 End Function
 
 Public Function ValueName(Optional ByVal t_section_name As Long = 0, _
-                                   Optional ByVal t_value_name As Long = 0) As String
+                          Optional ByVal t_value_name As Long = 0) As String
     If t_section_name <> 0 _
     Then ValueName = SECTION_NAME & Format(t_section_name, "00") & VALUE_NAME_INDIVIDUAL & Format(t_value_name, "00") _
     Else ValueName = VALUE_NAME & Format(t_value_name, "00")
