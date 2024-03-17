@@ -1,0 +1,30 @@
+Summary Regression-Test 2024.03.17 20.05.17
+-------------------------------------------
+100-1 Property clsPrivProf.FileName Get ... Default name.....................................................................:  Passed 
+100-2 Property clsPrivProf.FileName Let ... Specifying a file valid name.....................................................:  Passed 
+110-1 Method   clsPrivProf.Exists ......... Section not exists...............................................................:  Passed 
+110-3 Method   clsPrivProf.Exists ......... Section exists...................................................................:  Passed 
+110-3 Method   clsPrivProf.Exists ......... Value-Name exists................................................................:  Passed 
+110-4 Method   clsPrivProf.Exists ......... Value-Name not exists............................................................:  Passed 
+120-1 Property clsPrivProf.Value Get ...... Read non-existing value from a non-existing file.................................:  Passed 
+120-2 Property clsPrivProf.Value Get ...... Read existing value..............................................................:  Passed 
+120-3 Property clsPrivProf.Value Let ...... Write changed value..............................................................:  Passed 
+120-4 Property clsPrivProf.Value Let ...... Write new value in existing section..............................................:  Passed 
+120-5 Property clsPrivProf.Value Let ...... Write new value in new section...................................................:  Passed 
+200-1 Property clsPrivProf.Header Let ..... File header write................................................................:  Passed 
+200-2 Property clsPrivProf.Header Get ..... File header read.................................................................:  Passed 
+200-3 Property clsPrivProf.Header Let ..... Write section header.............................................................:  Passed 
+200-4 Property clsPrivProf.Header Get ..... Read section header..............................................................:  Passed 
+200-5 Property clsPrivProf.Header Let ..... Write value header...............................................................:  Passed 
+200-6 Property clsPrivProf.Header Get ..... Read value header................................................................:  Passed 
+200-7 Property clsPrivProf.Value Let ...... Write a new value including a value header.......................................:  Passed 
+200-8 Property clsPrivProf.Value Get ...... Read a value together with its header............................................:  Passed 
+300-1 Function clsPrivProf.SectionNames ... Get all section names in a Dictionary............................................:  Passed 
+400-1 Function clsPrivProf.ValueNames ..... Get all value names of all sections in a Dictionary..............................:  Passed 
+400-2 Function clsPrivProf.ValueNames ..... Get all value names of a certain section in a Dictionary.........................:  Passed 
+410-1 Method   clsPrivProf.ValueNameRename  Rename a value name in each section..............................................:  Passed 
+500-1 Method   clsPrivProf.Reorg .......... Reorganizes a Private Profile file considering headers and a file footer.........:  Passed 
+600-1 Method   clsPrivProf.ValueRemove .... Removes a value from a section including its header comment(s)...................:  Passed 
+600-2 Method   clsPrivProf.SectionRemove .. Removes a section including its header comment(s)................................:  Passed 
+700-1 Method   clsPrivProf.SectionsCopy ... Copies two sections from a soure to a traget Private Profile file................:  Passed 
+700-2 Method   clsPrivProf.SectionsCopy ... Copies an additional sections from a soure to a traget Private Profile file......:  Passed 
