@@ -16,19 +16,16 @@ Option Compare Text
 '
 ' Public properties:
 ' ------------------
-' FileFooter  r/w
-' FileName    r/w - Specifies a Private Profile file full name
-'                 - Returns a valid Private Profile file's full name
-' Header      r/w
-' Section     r/w - Returns the current specified Section name
-'                 - Specifies the Section name valid for all subsequent
-'                   methods and properties until another section name is
-'                   specified.
-' Sections    r
-' Value       r/w - Reads from a Private Profile File a value with a
-'                   provided value-name from a provided section
-'                 - Writes to a Private Profile File a value with a provided
-'                   value-name into a provided section
+' FileName    r/w Specifies/returns a Private Profile file full name
+' Footer      r/w Reads/writes a file footer
+' Header      r/w Reads(writes) a file, section, or value header
+' Section     r/w Specifies/returns the current Section name used
+'                 for subsequent services which have the section argument
+'                 omitted.
+' Sections    r   Returns a list of all sections in a Provate Profile fle
+' Value       r/w Reads/writes a value from/to a Private Profile File,
+'                 optionally reads/writes a value header
+'
 ' Public methods:
 ' ---------------
 ' NamesRemove     Removes provided value names, in a given Private
@@ -65,6 +62,15 @@ Option Compare Text
 ' Values          Returns the value-names and values of a given section in a
 '                 Private Profile File as Dictionary with the value-name as
 '                 the key (in ascending order) and the value as item.
+' VarItems        Universal service providing variant items - which may be an
+'                 Array of items, a Collection of items, a Dictionary of keys,
+'                 a TestStream, or a string with items delimited by: vbCrLf,
+'                 vbLf, ||, |, or a , (comma)as Array (v_arr) - as Array,
+'                 Collection, Dictionary (with the item as the key),
+'                 TextStream, or as String delimited by vbCrLf.
+'                 Note: When as Array is requested but one of the (v_var)
+'                       items is an object, an error is raised and the
+'                       function is terminated.
 '
 ' Requires:
 ' ---------
@@ -120,12 +126,12 @@ Private Declare PtrSafe Function GetPrivateProfileString _
                 ByVal nSize As Long, _
                 ByVal lpg_FileName As String) As Long
 
-Private Declare PtrSafe Function DeletePrivateProfileSection _
-                Lib "kernel32" Alias "WritePrivateProfileStringA" _
-               (ByVal Section As String, _
-                ByVal NoKey As Long, _
-                ByVal NoSetting As Long, _
-                ByVal Name As String) As Long
+'Private Declare PtrSafe Function DeletePrivateProfileSection _
+'                Lib "kernel32" Alias "WritePrivateProfileStringA" _
+'               (ByVal Section As String, _
+'                ByVal NoKey As Long, _
+'                ByVal NoSetting As Long, _
+'                ByVal Name As String) As Long
 
 Private Declare PtrSafe Function DeletePrivateProfileKey _
                 Lib "kernel32" Alias "WritePrivateProfileStringA" _
@@ -134,11 +140,11 @@ Private Declare PtrSafe Function DeletePrivateProfileKey _
                 ByVal Setting As Long, _
                 ByVal Name As String) As Long
                  
-Private Declare PtrSafe Function GetPrivateProfileSectionNames _
-                Lib "kernel32.dll" Alias "GetPrivateProfileSectionNamesA" _
-               (ByVal lpszReturnBuffer As String, _
-                ByVal nSize As Long, _
-                ByVal lpName As String) As Long
+'Private Declare PtrSafe Function GetPrivateProfileSectionNames _
+'                Lib "kernel32.dll" Alias "GetPrivateProfileSectionNamesA" _
+'               (ByVal lpszReturnBuffer As String, _
+'                ByVal nSize As Long, _
+'                ByVal lpName As String) As Long
 
 Private Declare PtrSafe Function apiShellExecute _
                 Lib "shell32.dll" Alias "ShellExecuteA" _
@@ -156,7 +162,16 @@ Private dctValues               As Dictionary ' value name as key, item is value
 Private Reg                     As RegExp
 Private sFileName               As String
 Private sSection                As String
-Private sDelimChar              As String
+Private sDelimCharHeader        As String
+Private sDelimCharFooter        As String
+
+Public Enum enVarItems
+    enAsCollection
+    enAsArray
+    enAsString
+    enAsDictionary
+    enAsTextFile
+End Enum
 
 Private Sub Class_Initialize()
     Const PROC = "Class_Initialize"
@@ -173,7 +188,8 @@ Private Sub Class_Initialize()
                                                                    "The current Application.Name is not Excel " & _
                                                                    "and any other application is yet not supported!"
     End Select
-    sDelimChar = "="
+    sDelimCharHeader = "="
+    sDelimCharFooter = "-"
     
 End Sub
 
@@ -182,65 +198,71 @@ Private Sub Class_Terminate()
     Set dctFiles = Nothing
 End Sub
 
-Public Property Get FileFooter(Optional ByVal name_file As String = vbNullString) As Variant
+Public Property Get Footer(Optional ByVal name_file As String = vbNullString) As Variant
 ' ----------------------------------------------------------------------------
-' When the file has no footer an empty Collection is returned.
+' When the file has no footer an empty Collection is returned. A footer is
+' at least one comment line with a footer delimiter lin above.
 ' ----------------------------------------------------------------------------
-    Const PROC = "FileFooter-Get"
+    Const PROC = "Footer-Get"
     
     Dim bActive As Boolean
     Dim cll     As New Collection
     Dim i       As Long
     Dim arr     As Variant
     
-    Set FileFooter = cll
+    Set Footer = cll
     If Not IsValidFileName(name_file, arr, bActive) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
-    If Not bActive Then GoTo xt
     
     i = UBound(arr)
     Do While IsComment(arr(i)) And i >= LBound(arr)
         '~~ Any bottom comment up to the first non-comment is regarded a file footer
         cll.Add arr(i)
+        If i = LBound(arr) Then Exit Do
         i = i - 1
     Loop
+    If IsDelimiterFileFooter(arr(i)) Then cll.Add arr(i)
+    
     If cll.Count > 0 _
-    Then Set FileFooter = RevertOrder(cll)
+    Then Set Footer = RevertOrder(cll)
 
 xt: Set cll = Nothing
     
 End Property
 
-Public Property Let FileFooter(Optional ByVal name_file As String = vbNullString, _
-                                        ByVal file_footer As Variant)
+Public Property Let Footer(Optional ByVal name_file As String = vbNullString, _
+                                    ByVal file_footer As Variant)
 ' ----------------------------------------------------------------------------
 ' Replaces an old footer in file (name_file) - if any - with the new footer
 ' (file_footer) - which may be a series of strings delimited by vbCrLf, vbLf,
 ' "|" or "||".
 ' ----------------------------------------------------------------------------
-    Const PROC = "FileFooter-Let"
+    Const PROC = "Footer-Let"
     
     Dim arr         As Variant
     Dim arrOut      As Variant
     Dim bActive     As Boolean
-    Dim cllFootOld  As Collection
+    Dim cll         As Collection
     Dim i           As Long
     Dim v           As Variant
+    Dim lLenMax     As Long
     
     If Not IsValidFileName(name_file, arr, bActive) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
-    If Not bActive _
-    Then Err.Raise AppErr(2), ErrSrc(PROC), _
-         "The file is not ready adding a footer since it apparently does not have any Section nor any Value!"
-    
-    Set cllFootOld = FileFooter(name_file)
     
     '~~ Transfer all except the old footer (if any)
-    For i = LBound(arr) To UBound(arr) - cllFootOld.Count
+    For i = LBound(arr) To UBound(arr) - Footer(name_file).Count
         ArrayAdd arrOut, arr(i)
     Next i
     
     '~~ Add the file footer in case one has been provided
-    For Each v In VarItemsAsCollection(file_footer)
-        ArrayAdd arrOut, v
+    Set cll = VarItems(file_footer, enAsCollection)
+    '~~ Get the max footer length
+    For Each v In cll
+        If Not IsDelimiterFileFooter(v) Then lLenMax = Max(lLenMax, Len(v))
+    Next v
+    '~~ Write the footer delimiter
+    ArrayAdd arrOut, DelimiterFileFooter(lLenMax)
+    For Each v In cll
+        If Not IsDelimiterFileFooter(v) Then ArrayAdd arrOut, Comment(v)
     Next v
     
     '~~ Re-write Private Profile File with new/replaced fime header if any
@@ -316,14 +338,11 @@ Private Property Get HeaderFile(Optional ByVal h_file_name As String) As Variant
 ' Returns a Collection with the file header lines (may be empty). The provided
 ' (h_file_name) may be an array already with the file's content.
 ' ----------------------------------------------------------------------------
-    Const PROC = "HeaderFile-Get"
     
     Dim arr         As Variant
-    Dim bActive     As Boolean
     Dim cll         As New Collection
     Dim i           As Long
     Dim j           As Long
-    Dim lLBoundTop  As Long
     
     Set HeaderFile = cll
     arr = Split(FileAsString(h_file_name), vbCrLf)
@@ -342,7 +361,7 @@ xt: Set cll = Nothing
     
 End Property
 
-Private Property Let HeaderFile(Optional ByVal h_file_name As String, _
+Private Property Let HeaderFile(Optional ByVal h_file_name As String = vbNullString, _
                                          ByVal h_file_header As Variant)
 ' ----------------------------------------------------------------------------
 ' Replaces any existing file header comments with new ones (h_file_header),
@@ -350,25 +369,21 @@ Private Property Let HeaderFile(Optional ByVal h_file_name As String, _
 ' of strings delimited by vbCrLf, vbLf, "|" or "||", a Collection of
 ' strings, or a Dictionary with the header comments a key.
 ' ----------------------------------------------------------------------------
-    Const PROC = "HeaderFile-Let"
     
     Dim cllHeaderOld    As Collection
     Dim arr             As Variant
     Dim arrOut          As Variant
     Dim i               As Long
     Dim v               As Variant
-    Dim lFrst           As Long
-    Dim lLast           As Long
-    Dim bActive         As Boolean
     Dim lLenMax         As Long
     Dim sComment        As String
     
     Set cllHeaderOld = HeaderFile(h_file_name)
-    If cllHeaderOld.Count = 0 And VarItemsAsCollection(h_file_header).Count = 0 Then Exit Property
+    If cllHeaderOld.Count = 0 And VarItems(h_file_header, enAsCollection).Count = 0 Then Exit Property
         
     '~~ Insert the new file header comments excluding a possibly provided header delimiter
     '~~ and subsequently insert a header delimiter adjusted to the longest haeder comment
-    For Each v In VarItemsAsCollection(h_file_header)
+    For Each v In VarItems(h_file_header, enAsCollection)
         If Not IsDelimiterFileHeader(v) Then
             sComment = Comment(v)
             lLenMax = Max(lLenMax, Len(sComment) - 2)
@@ -388,16 +403,14 @@ Private Property Let HeaderFile(Optional ByVal h_file_name As String, _
 End Property
 
 Private Property Get HeaderSection(Optional ByVal h_sect_name As String, _
-                                   Optional ByVal h_file_name As String = vbNullString, _
-                                   Optional ByRef h_sect_indx As Long) As Variant
+                                   Optional ByVal h_file_name As String = vbNullString) As Variant
 ' ----------------------------------------------------------------------------
-' Returns a Collection with the section's (h_sect_name_name) header lines (possibly
-' empty).The provided (name_file) may be an array already with the file's content.
+' Returns a Collection with the section's (h_sect_name_name) header lines
+' (possibly empty).The provided (name_file) may be an array already with the
+' file's content.
 ' ----------------------------------------------------------------------------
-    Const PROC = "HeaderSection-Get"
     
     Dim arr     As Variant
-    Dim bActive As Boolean
     Dim cll     As New Collection
     Dim i       As Long
     
@@ -412,19 +425,15 @@ End Property
 
 Private Property Let HeaderSection(Optional ByVal h_sect_name As String, _
                                    Optional ByVal h_file_name As String = vbNullString, _
-                                   Optional ByRef h_sect_indx As Long, _
                                             ByVal h_sect_head As Variant)
 ' ----------------------------------------------------------------------------
-' Replaces in file (h_file_name) an old section header - if any - with the a new
-' one (h_header) - which may be a series of strings delimited by vbCrLf,
+' Replaces in file (h_file_name) an old section header - if any - with the a
+' new one (h_header) - which may be a series of strings delimited by vbCrLf,
 ' vbLf, "|" or "||", or a Collection of strings.
 ' ----------------------------------------------------------------------------
-    Const PROC = "HeaderSection-Let"
     
-    Dim bActive      As Boolean
     Dim cllHeaderOld As Collection
     Dim i            As Long
-    Dim j            As Long
     Dim k            As Long
     Dim arr          As Variant
     Dim v            As Variant
@@ -439,7 +448,7 @@ Private Property Let HeaderSection(Optional ByVal h_sect_name As String, _
     Next i
     
     '~~ Insert new header
-    For Each v In VarItemsAsCollection(h_sect_head)
+    For Each v In VarItems(h_sect_head, enAsCollection)
         ArrayAdd arrOut, Comment(v)
     Next v
     
@@ -457,14 +466,14 @@ Private Property Get HeaderValue(Optional ByVal h_valu_name As String, _
                                  Optional ByVal h_sect_name As String = vbNullString, _
                                  Optional ByVal h_file_name As String = vbNullString) As Variant
 ' ----------------------------------------------------------------------------
-' Returns a Collection with the value's (h_sect_name) header lines (may be empty).
-' The provided (name_file) may be an array already with the file's content.
+' Returns a Collection with the value's (h_sect_name) header lines (may be
+' empty). The provided (name_file) may be an array already with the file's
+' content.
 ' ----------------------------------------------------------------------------
     Const PROC = "HeaderValue-Get"
                                   
     On Error GoTo eh
     Dim arr     As Variant
-    Dim bActive As Boolean
     Dim cll     As New Collection
     Dim i       As Long
     Dim sValue  As String
@@ -498,7 +507,6 @@ Private Property Let HeaderValue(Optional ByVal h_valu_name As String, _
     On Error GoTo eh
     Dim arrOut          As Variant
     Dim arr             As Variant
-    Dim bActive         As Boolean
     Dim i               As Long
     Dim j               As Long
     Dim cllHeaderOld    As Collection
@@ -514,7 +522,7 @@ Private Property Let HeaderValue(Optional ByVal h_valu_name As String, _
         ArrayAdd arrOut, arr(i)
     Next i
     '~~ Insert the new header
-    For Each v In VarItemsAsCollection(h_valu_head)
+    For Each v In VarItems(h_valu_head, enAsCollection)
         ArrayAdd arrOut, Comment(v)
     Next v
     '~~ Transfer all remaining lines
@@ -549,11 +557,11 @@ End Property
 
 Public Property Get Sections(Optional ByVal name_file As String = vbNullString) As Dictionary
 ' ----------------------------------------------------------------------------
-' Returns a Dictionary with all named sections (pp_sections) in file (pp_file) -
-' provided as full name string or as file object - whereby each section is a
-' Dictionary with the section name as the key - in ascending
-' order - and a Dictionary of the section's values as item with the value name
-' as key and the value as item.
+' Returns a Dictionary with all named sections (pp_sections) in file (pp_file)
+' - provided as full name string or as file object - whereby each section is
+' a Dictionary with the section name as the key - in ascending order - and a
+' Dictionary of the section's values as item with the value name as key and
+' the value as item.
 ' When no file is provided it defaults to the file name specified with the
 ' property FileName - which, when a vbNullString defaults to:
 ' ThisWorkbook.Path & "\" ThisWorkbook's BaseName & ".dat.
@@ -601,7 +609,6 @@ Private Property Let Sections(Optional ByVal name_file As String = vbNullString,
     Dim dctValues   As Dictionary
     Dim sSection    As String
     Dim sName       As String
-    Dim fl          As String
     Dim vValue      As Variant
     
     If Not IsValidFileName(name_file) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
@@ -643,8 +650,6 @@ Public Property Get Value(Optional ByVal name_value As String = vbNullString, _
     
     Dim lResult As Long
     Dim sRetVal As String
-    Dim vValue  As Variant
-    Dim fl      As String
     
     If Not IsValidFileName(name_file) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
     If Not IsValidSectName(name_section) Then Err.Raise AppErr(2), ErrSrc(PROC), ErrInvalidSectName(name_section)
@@ -660,7 +665,7 @@ Public Property Get Value(Optional ByVal name_value As String = vbNullString, _
                                      )
     Value = Left$(sRetVal, lResult)
     '~~ Return the value header - if any
-    value_header = VarItemsAsString(HeaderValue(name_value, name_section, name_file), "||")
+    value_header = VarItems(HeaderValue(name_value, name_section, name_file), enAsString)
     
 End Property
 
@@ -678,10 +683,11 @@ Public Property Let Value(Optional ByVal name_value As String = vbNullString, _
 ' ----------------------------------------------------------------------------
     Const PROC = "Value-Let"
         
-    Dim bIsNew  As Boolean
-    Dim lChars  As Long
-    Dim sValue  As String
-    Dim fl      As String
+    Dim bIsNew      As Boolean
+    Dim lChars      As Long
+    Dim sValue      As String
+    Dim cllFooter   As New Collection
+    Dim cllHeader   As New Collection
     
     If Not IsValidFileName(name_file) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
     If Not IsValidSectName(name_section) Then Err.Raise AppErr(2), ErrSrc(PROC), ErrInvalidSectName(name_section)
@@ -693,6 +699,10 @@ Public Property Let Value(Optional ByVal name_value As String = vbNullString, _
     End Select
     
     bIsNew = Not Exists(name_file, name_section, name_value)
+    If Fso.FileExists(name_file) Then
+        Set cllHeader = HeaderSave(name_file)
+        Set cllFooter = FooterSave(name_file)
+    End If
     
     lChars = WritePrivateProfileString(lpw_ApplicationName:=name_section _
                                      , lpw_KeyName:=name_value _
@@ -706,12 +716,86 @@ Public Property Let Value(Optional ByVal name_value As String = vbNullString, _
                "Value file = '" & name_file & "'"
     End If
     
+    HeaderRestore name_file, cllHeader
+    FooterRestore name_file, cllFooter
     Header(name_file, name_section, name_value) = value_header
     If bIsNew Then
         FileAsDictMan name_file ' re-write the file in order to maintain ascending value name sequence
     End If
     
 End Property
+
+Private Function HeaderSave(ByVal f_file_name As String) As Collection
+    Dim arrIn   As Variant
+    Dim arrOut  As Variant
+    Dim cll     As Collection
+    Dim i       As Long
+    
+    Set cll = Header(f_file_name)
+    If cll.Count = 0 Then GoTo xt
+    arrIn = Split(FileAsString(f_file_name), vbCrLf)
+    For i = cll.Count To UBound(arrIn)
+        ArrayAdd arrOut, arrIn(i)
+    Next i
+    If Not ArrayIsAllocated(arrOut) Then
+        Fso.DeleteFile f_file_name
+        Fso.CreateTextFile f_file_name
+    Else
+        FileFromString f_file_name, Join(arrOut, vbCrLf)
+    End If
+
+xt: Set HeaderSave = cll
+    Set cll = Nothing
+    
+End Function
+
+Private Function FooterSave(ByVal f_file_name As String) As Collection
+    Dim arrIn   As Variant
+    Dim arrOut  As Variant
+    Dim cll     As Collection
+    Dim i       As Long
+    
+    Set cll = Footer(f_file_name)
+    arrIn = Split(FileAsString(f_file_name), vbCrLf)
+    For i = LBound(arrIn) To UBound(arrIn) - cll.Count
+        ArrayAdd arrOut, arrIn(i)
+    Next i
+    If Not ArrayIsAllocated(arrOut) Then
+        Fso.DeleteFile f_file_name
+        Fso.CreateTextFile f_file_name
+    Else
+        FileFromString f_file_name, Join(arrOut, vbCrLf)
+    End If
+    Set FooterSave = cll
+    Set cll = Nothing
+    
+End Function
+
+Private Sub FooterRestore(ByVal f_file_name As String, _
+                          ByVal f_file_footer As Collection)
+    Dim s As String
+    s = VarItems(f_file_footer, enAsString)
+    FileFromString f_file_name, s, True
+    
+End Sub
+
+Private Sub HeaderRestore(ByVal f_file_name As String, _
+                          ByVal f_file_header As Collection)
+    Dim arrIn   As Variant
+    Dim arrOut  As Variant
+    Dim i       As Long
+    Dim v       As Variant
+    
+    arrIn = Split(FileAsString(f_file_name), vbCrLf)
+    For Each v In f_file_header
+        ArrayAdd arrOut, v
+    Next v
+    For i = LBound(arrIn) To UBound(arrIn)
+        ArrayAdd arrOut, arrIn(i)
+    Next i
+    FileFromString f_file_name, Join(arrOut, vbCrLf)
+    
+End Sub
 
 Private Sub ArrayAdd(ByRef a_arr As Variant, _
                      ByVal a_str As String)
@@ -756,8 +840,8 @@ Private Sub BoP(ByVal b_proc As String, _
 ' Obligatory copy Private for any VB-Component using the service but not having
 ' the mBasic common component installed.
 ' ------------------------------------------------------------------------------
-#If mErh Then          ' serves the mTrc/clsTrc when installed and active
-    mErh.BoP b_proc, b_args
+#If mErH Then          ' serves the mTrc/clsTrc when installed and active
+    mErH.BoP b_proc, b_args
 #ElseIf XcTrc_clsTrc Then ' when only clsTrc is installed and active
     If Trc Is Nothing Then Set Trc = New clsTrc
     Trc.BoP b_proc, b_args
@@ -776,7 +860,11 @@ Private Function Comment(ByVal s As String) As String
 End Function
 
 Private Function DelimiterFileHeader(Optional ByVal lMax As Long = 2) As String
-    DelimiterFileHeader = "; " & String(lMax, sDelimChar)
+    DelimiterFileHeader = "; " & String(lMax, sDelimCharHeader)
+End Function
+
+Private Function DelimiterFileFooter(Optional ByVal lMax As Long = 2) As String
+    DelimiterFileFooter = "; " & String(lMax, sDelimCharFooter)
 End Function
 
 Private Sub EoC(ByVal e_id As String, _
@@ -801,8 +889,8 @@ Private Sub EoP(ByVal e_proc As String, _
 ' Obligatory copy Private for any VB-Component using the service but not having
 ' the mBasic common component installed.
 ' ------------------------------------------------------------------------------
-#If mErh = 1 Then          ' serves the mTrc/clsTrc when installed and active
-    mErh.EoP e_proc, e_args
+#If mErH = 1 Then          ' serves the mTrc/clsTrc when installed and active
+    mErH.EoP e_proc, e_args
 #ElseIf clsTrc = 1 Then ' when only clsTrc is installed and active
     Trc.EoP e_proc, e_args
 #ElseIf mTrc = 1 Then   ' when only mTrc is installed and activate
@@ -851,14 +939,14 @@ Private Function ErrMsg(ByVal err_source As String, _
 ' W. Rauschenberger Berlin, Jan 2024
 ' See: https://github.com/warbe-maker/VBA-Error
 ' ------------------------------------------------------------------------------
-#If mErh = 1 Then
+#If mErH = 1 Then
     '~~ ------------------------------------------------------------------------
     '~~ When the Common VBA Error Handling Component (mErH) is installed in the
     '~~ VB-Project (which includes the mMsg component) the mErh.ErrMsg service
     '~~ is preferred since it provides some enhanced features like a path to the
     '~~ error.
     '~~ ------------------------------------------------------------------------
-    ErrMsg = mErh.ErrMsg(err_source, err_no, err_dscrptn, err_line)
+    ErrMsg = mErH.ErrMsg(err_source, err_no, err_dscrptn, err_line)
     GoTo xt
 #ElseIf mMsg = 1 Then
     '~~ ------------------------------------------------------------------------
@@ -943,12 +1031,13 @@ Private Function ErrSrc(ByVal sProc As String) As String
 End Function
 
 Public Function Exists(ByVal name_file As String, _
-              Optional ByRef name_section As String = vbNullString, _
+              Optional ByVal name_section As String = vbNullString, _
               Optional ByVal name_value As String = vbNullString, _
-              Optional ByRef head_value As Collection, _
               Optional ByRef e_valu As String, _
-              Optional ByRef head_section As Collection, _
-              Optional ByRef head_file As Collection) As Boolean
+              Optional ByRef head_value As Collection = Nothing, _
+              Optional ByRef head_section As Collection = Nothing, _
+              Optional ByRef head_file As Collection = Nothing, _
+              Optional ByRef foot_file As Collection = Nothing) As Boolean
 ' ----------------------------------------------------------------------------
 ' Returns TRUE when the provided value name, section name, file name exists.
 ' When the provided (section (name_section
@@ -1002,19 +1091,13 @@ Private Sub FileAsDict(ByVal f_file As String)
     On Error GoTo eh
     Dim arr         As Variant
     Dim cll         As New Collection
-    Dim cllFile     As New Collection
     Dim cllFlHeader As New Collection
     Dim cllFlFooter As New Collection
-    Dim cllHeader   As New Collection
     Dim cllHeadSect As Collection
-    Dim cllSect     As New Collection
-    Dim cllValue    As New Collection
     Dim dctFile     As New Dictionary
     Dim dctSect     As New Dictionary
-    Dim dctSects    As New Dictionary
     Dim i           As Long
     Dim s           As String
-    Dim sFileStrng  As String
     Dim sName       As String
     Dim sValue      As String
     
@@ -1022,7 +1105,7 @@ Private Sub FileAsDict(ByVal f_file As String)
     FileAsDictRem f_file
     arr = Split(FileAsString(f_file), vbCrLf)
     Set cllFlHeader = HeaderFile(f_file)
-    Set cllFlFooter = FileFooter(f_file)
+    Set cllFlFooter = Footer(f_file)
     
     For i = cllFlHeader.Count To UBound(arr) - cllFlFooter.Count
         sName = vbNullString
@@ -1095,7 +1178,6 @@ Private Sub FileAsDictAdd(ByVal f_file As String, _
 ' Add a new created file (f_file) as Dictionary to the Directory of files
 ' dctFiles.
 ' ----------------------------------------------------------------------------
-    Dim dct As New Dictionary
     Dim cll As New Collection
     
     cll.Add f_file_header
@@ -1186,7 +1268,6 @@ Private Sub FileAsDictVal(ByVal fname_value As String, _
 End Sub
 
 Private Function FileAsString(Optional ByVal f_file_full_name As String, _
-                              Optional ByVal f_append As Boolean = False, _
                               Optional ByRef f_split As String = vbCrLf, _
                               Optional ByVal f_exclude_empty As Boolean = False) As String
 ' ----------------------------------------------------------------------------
@@ -1254,7 +1335,6 @@ Private Sub FileFromDict(ByVal f_file As String)
     Dim dctFile     As Dictionary
     Dim cllFile     As Collection
     Dim dctSect     As Dictionary
-    Dim cllSect     As Collection
     
     FileAsDictMan f_file ' reloads when changed
     
@@ -1325,12 +1405,13 @@ Private Function FileHasChanged(ByVal f_file As String) As Boolean
 ' Returns TRUE when the file (f_file) differs from the file in dctFilesStrng
 ' or when the file in dctFilesStrng does not exist.
 ' ----------------------------------------------------------------------------
-    Dim a1  As Variant
-    Dim a2  As Variant
-    Dim i   As Long
     
     If dctFilesStrng.Exists(f_file) Then
         FileHasChanged = StrComp(dctFilesStrng(f_file), FileAsString(f_file), vbBinaryCompare) <> 0
+        
+'        Dim a1  As Variant
+'        Dim a2  As Variant
+'        Dim i   As Long
 '        Test/debug only
 '        If FileHasChanged Then
 '            Debug.Print "Differs"
@@ -1397,77 +1478,6 @@ Private Function FileStringTrimmed(ByVal s_s As String, _
     
 End Function
 
-Private Function HeaderItems(ByVal i_array As Variant, _
-                    Optional ByVal i_sect As String = vbNullString, _
-                    Optional ByVal i_value As String = vbNullString, _
-                    Optional ByRef i_frst As Long, _
-                    Optional ByRef i_last As Long) As Boolean
-' ------------------------------------------------------------------------------
-' Returns:
-' - the top (i_frst) and the bottom index (i_lasr) of a header
-'   when a section (i_sect) or value (i_value) is provided that items header,
-'   else the file's header
-' - TRUE: a header head been localized.
-' - FALSE: no header has been detected (-1 is returned for i_frst and i_last).
-' ------------------------------------------------------------------------------
-
-    Dim i       As Long
-    Dim sSect   As String
-    Dim sVal    As String
-    
-    i_frst = -1
-    i_last = -1
-    
-    If i_sect = vbNullString Then
-        If Left(i_array(0), 1) <> ";" Then GoTo xt
-        i_frst = 0
-        For i = 0 To UBound(i_array)
-            If IsDelimiterFileHeader(i_array(i)) Then
-                i_last = i
-                GoTo xt
-            ElseIf IsSection(i_array(i)) Then
-                GoTo xt
-            End If
-        Next i
-    End If
-    
-    If i_sect <> vbNullString Then
-        '~~ Get the bottom index of a requested section's header
-        '~~ Attention: When it is the very first section with neither a section nor a file header, -1 is returned as i_last.
-        For i = LBound(i_array) To UBound(i_array)
-            If IsSection(i_array(i), i_sect) Then
-                i_last = i - 1
-                Exit For
-            End If
-        Next i
-    End If
-    
-    If i_value <> vbNullString Then
-        '~~ Get bottm index of a regquested value's header
-        For i = i + 1 To UBound(i_array)
-            If IsSection(i_array(i)) Then Exit For ' end of section
-            If IsValue(i_array(i), i_value) Then
-                sVal = i_value
-                i_last = i - 1
-                Exit For
-            End If
-        Next i
-    End If
-        
-    If i_last = -1 Then GoTo xt ' it is the very first section and it has neuther a header nor ther is a file header
-    If Not IsComment(i_array(i_last)) Then GoTo xt ' the item (section or value) has no header or the header above is just the file header
-    
-    '~~ Get top index of the item's header
-    i = i_last
-    i_frst = i_last
-    Do While IsComment(i_array(i)) And i >= LBound(i_array)
-        i_frst = i
-        i = i - 1
-    Loop
-    
-xt:
-End Function
-
 Private Function HeaderOfItem(ByVal h_arr As Variant, _
                               ByRef h_idx As Long) As Collection
     Dim cll As New Collection
@@ -1485,47 +1495,12 @@ xt: Set HeaderOfItem = RevertOrder(cll)
     
 End Function
 
-Private Sub HeaderReplace(ByRef h_arr_in As Variant, _
-                          ByVal h_frst As Long, _
-                          ByVal h_last As Long, _
-                          ByVal h_header As Collection, _
-                          ByRef h_arr_out As Variant)
-' ----------------------------------------------------------------------------
-' Returns the input array (h_arr_in) as output (h_arr_out) with an  existing
-' header - index from top (h_frst) to bottom (h_last) - eliminated and
-' replaced by a provided header (h_header).
-' ----------------------------------------------------------------------------
-                   
-    Dim i As Long
-    Dim j As Long: j = -1
-    Dim v As Variant
-    
-    '~~ Transfer top lines if any.
-    '~~ In case the section has no header and it is the very first one, no lines will be transferred).
-    For i = LBound(h_arr_in) To h_frst - 1
-        j = j + 1
-        ReDim Preserve h_arr_out(j)
-        h_arr_out(j) = h_arr_in(i)
-    Next i
-        
-    '~~ Provide the new header if any
-    For Each v In h_header
-        j = j + 1
-        ReDim Preserve h_arr_out(j)
-        h_arr_out(j) = "; " & Trim(Replace(v, ";", vbNullString))
-    Next v
-        
-    '~~ Transfer all the remaining items from h_arr_in to h_arr_out
-    For i = h_last + 1 To UBound(h_arr_in)
-        j = j + 1
-        ReDim Preserve h_arr_out(j)
-        h_arr_out(j) = h_arr_in(i)
-    Next
-        
-End Sub
-
 Private Function IsComment(ByVal i_item As String) As Boolean
-    IsComment = i_item Like ";*" And Not IsDelimiterFileHeader(i_item)
+    IsComment = i_item Like ";*" And Not IsDelimiterFileHeader(i_item) And Not IsDelimiterFileFooter(i_item)
+End Function
+
+Private Function IsDelimiterFileFooter(ByVal i_item As String) As Boolean
+    IsDelimiterFileFooter = i_item Like DelimiterFileFooter & "*"
 End Function
 
 Private Function IsDelimiterFileHeader(ByVal i_item As String) As Boolean
@@ -1579,28 +1554,6 @@ Private Function IsSection(ByVal i_item As String, _
     
 End Function
 
-Private Function IsTextFile(ByVal i_file_full_name As String) As Boolean
-    
-    Dim iFileNumber As Integer
-    Dim sContent    As String
-    Dim sLine       As String
-    Dim i           As Long
-    
-    '~~ Read file into a string without vbCrLf (which is a non-printable character)
-    On Error Resume Next
-    sContent = Replace(FileAsString(i_file_full_name), vbCrLf, vbNullString)
-    If Err.Number <> 0 Then GoTo xt
-    ' Check if the file content contains non-printable characters
-    For i = 1 To Len(sContent)
-        If Asc(Mid(sContent, i, 1)) < 32 Or Asc(Mid(sContent, i, 1)) > 126 _
-        Then GoTo xt ' not an ASCII character
-    Next i
-    
-    IsTextFile = True
-xt:
-
-End Function
-
 Private Function IsValidFileActive(ByVal i_file_name As String, _
                           Optional ByRef i_file_arry As Variant) As Boolean
 ' ----------------------------------------------------------------------------
@@ -1614,22 +1567,23 @@ Private Function IsValidFileActive(ByVal i_file_name As String, _
     Dim i           As Long
     Dim bHasSect    As Boolean
     Dim bHasValu    As Boolean
+    Dim bHasComment As Boolean
     
     If Not Fso.FileExists(i_file_name) Then Exit Function
     If IsEmptyFile(i_file_name, arr) Then Exit Function
     
     For i = LBound(arr) To UBound(arr)
         Select Case True
-            Case IsSection(arr(i)): bHasSect = True
-            Case IsValue(arr(i)):   bHasValu = True
-            Case Left(arr(i), 1) = ";"
+            Case IsSection(arr(i)):     bHasSect = True
+            Case IsValue(arr(i)):       bHasValu = True
+            Case Left(arr(i), 1) = ";": bHasComment = True
             Case Else
                 '~~ The file has a line which nor conforms with Private Profile file rules
                 IsValidFileActive = False
                 GoTo xt
         End Select
     Next i
-    If bHasSect And bHasValu Then
+    If bHasSect And bHasValu Or bHasComment Then
         IsValidFileActive = True
         i_file_arry = arr
     End If
@@ -1657,10 +1611,6 @@ Private Function IsValidFileName(ByRef i_file_name As String, _
     Const PROC = "IsValidFileName"
     
     On Error GoTo eh
-    Dim arr As Variant
-    Dim cll As Collection
-    Dim cllHeader As New Collection
-    Dim cllFooter As New Collection
     
     If i_file_name = vbNullString And sFileName <> vbNullString Then
         '~~ The file has already been checkedd as valid
@@ -1698,7 +1648,7 @@ xt: If IsValidFileName Then
         i_arr = Split(FileAsString(i_file_name), vbCrLf)
         i_valid_active = True
         If Not i_file_header Is Nothing Then Set i_file_header = HeaderFile(i_file_name)
-        If Not i_file_footer Is Nothing Then Set i_file_footer = FileFooter(i_file_name)
+        If Not i_file_footer Is Nothing Then Set i_file_footer = Footer(i_file_name)
     End If
     Exit Function
 
@@ -1862,7 +1812,6 @@ Private Function ValueNameExists(ByVal p_file_name As String, _
 ' in a provided Private Profile file (p_file_name) the function returns TRUE and
 ' the value as Dictionary (p_value_dict).
 ' ----------------------------------------------------------------------------
-    Const PROC = "ValueNameExists"
             
     Dim dctFile As Dictionary
     Dim dctSect As Dictionary
@@ -1935,7 +1884,6 @@ Private Function SectionExists(ByVal s_arr As Variant, _
 ' ----------------------------------------------------------------------------
 '
 ' ----------------------------------------------------------------------------
-    Dim cll As New Collection
     Dim i   As Long
     
     If Not ArrayIsAllocated(s_arr) Then GoTo xt
@@ -2010,11 +1958,7 @@ Public Sub SectionRemove(ByVal name_section As String, _
     On Error GoTo eh
     Dim arr         As Variant
     Dim arrOut      As Variant
-    Dim cll         As New Collection
-    Dim cllFile     As Collection
-    Dim cllSect     As Collection
     Dim cllSectHead As Collection
-    Dim dct         As Dictionary
     Dim i           As Long
     Dim iSect       As Long
     
@@ -2032,7 +1976,7 @@ Public Sub SectionRemove(ByVal name_section As String, _
     Next i
     '~~ Skip down to next Section or the beginn of the file footer
     i = iSect + 1
-    Do While Not IsSection(arr(i)) And i <= UBound(arr) - FileFooter(name_file).Count
+    Do While Not IsSection(arr(i)) And i <= UBound(arr) - Footer(name_file).Count
         i = i + 1
     Loop
     '~~ Transfer all remaining lines
@@ -2072,7 +2016,7 @@ Public Sub SectionsCopy(ByVal name_file_source As String, _
     If Not IsValidFileName(name_file_source) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file_source)
     If Not IsValidFileName(name_file_target) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file_target)
 
-    For Each vSect In VarItemsAsCollection(name_sections)
+    For Each vSect In VarItems(name_sections, enAsCollection)
         sSect = vSect
         If Not IsValidSectName(sSect) Then Err.Raise AppErr(2), ErrSrc(PROC), ErrInvalidSectName(sSect)
 
@@ -2112,7 +2056,7 @@ Public Sub SectionsRemove(Optional ByVal name_sections As String = vbNullString,
     
     If Not IsValidFileName(name_file) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
      
-    For Each v In VarItemsAsCollection(name_sections)
+    For Each v In VarItems(name_sections, enAsCollection)
         SectionRemove name_file, v
     Next v
     
@@ -2222,13 +2166,12 @@ Public Function ValueNameRename(ByVal name_value_old As String, _
     Dim dctSections As New Dictionary
     Dim i           As Long
     Dim sValue      As String
-    Dim v           As Variant
     
     If name_value_old = vbNullString Or name_value_new = vbNullString Then GoTo xt
     If Not IsValidFileName(name_file, arr) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
         
     If name_sections <> vbNullString _
-    Then Set dctSections = VarItemsAsDictionary(name_sections) _
+    Then Set dctSections = VarItems(name_sections, enAsDictionary) _
     Else Set dctSections = SectionNames(name_file)
     
     For i = LBound(arr) To UBound(arr)
@@ -2301,7 +2244,7 @@ Public Function ValueNames(Optional ByVal name_file As String = vbNullString, _
             End If
         Next i
     Else
-        For Each v In VarItemsAsCollection(name_sections)
+        For Each v In VarItems(name_sections, enAsCollection)
             sSection = v
             For i = LBound(arr) To UBound(arr)
                 If IsSection(arr(i), sSection) Then
@@ -2367,15 +2310,17 @@ Public Sub ValueRemove(ByVal name_value As String, _
 xt:
 End Sub
 
-Private Sub VarItems(Optional ByVal v_var As Variant = Nothing, _
-                     Optional ByRef v_arr As Variant, _
-                     Optional ByRef v_cll As Collection = Nothing, _
-                     Optional ByRef v_dct As Dictionary = Nothing)
+Public Function VarItems(ByVal v_var As Variant, _
+                         ByVal v_as As enVarItems, _
+                Optional ByVal v_file_name As String = vbNullString) As Variant
 ' ----------------------------------------------------------------------------
-' Universal/common service providing variant items as Array (v_arr), as
-' Collection (v_cll), and as Dictionary with the item as the key. The variant
-' items (v_var) may be an array, a Collection of strings, a Dictionary of keys,
-' or a string delimited by: vbCrLf, vbLf, ||, |, or a , (comma).
+' Universal service providing variant items - which may be an Array of items,
+' a Collection of items, a Dictionary of keys, a TestStream, or a string with
+' items delimited by: vbCrLf, vbLf, ||, |, or a , (comma)as Array (v_arr) - as
+' Array, Collection, Dictionary (with the item as the key), TextStream, or as
+' String delimited by vbCrLf.
+' Note: When as Array is requested but one of the (v_var) items is an object,
+'       an error is raised and the function is terminated.
 ' ----------------------------------------------------------------------------
     Const PROC = "VarItems"
     
@@ -2385,118 +2330,152 @@ Private Sub VarItems(Optional ByVal v_var As Variant = Nothing, _
     Dim sSplit  As String
     Dim v       As Variant
     Dim arr     As Variant
+    Dim s       As String
+    Dim sDelim  As String
     
+    '~~
     Select Case TypeName(v_var)
-        Case "String":  If v_var = vbNullString Then GoTo xt
-                        Select Case True
-                            Case InStr(v_var, vbCrLf) <> 0: sSplit = vbCrLf
-                            Case InStr(v_var, vbLf) <> 0:   sSplit = vbLf
-                            Case InStr(v_var, "||") <> 0:   sSplit = "||"
-                            Case InStr(v_var, "|") <> 0:    sSplit = "|"
-                            Case InStr(v_var, ",") <> 0:    sSplit = ","
-                        End Select
-                        For Each v In Split(v_var, sSplit)
-                            ArrayAdd arr, VBA.Trim$(v)
-                        Next v
+        Case "String"
+            If v_var = vbNullString Then GoTo xt
+            Select Case True
+                Case InStr(v_var, vbCrLf) <> 0: sSplit = vbCrLf
+                Case InStr(v_var, vbLf) <> 0:   sSplit = vbLf
+                Case InStr(v_var, "||") <> 0:   sSplit = "||"
+                Case InStr(v_var, "|") <> 0:    sSplit = "|"
+                Case InStr(v_var, ",") <> 0:    sSplit = ","
+            End Select
+            For Each v In Split(v_var, sSplit)
+                cll.Add VBA.Trim$(v)
+            Next v
         Case "Collection", "Dictionary", "Array"
-                        For Each v In v_var
-                            ArrayAdd arr, VBA.Trim$(v)
-                        Next v
+            For Each v In v_var
+                cll.Add VBA.Trim$(v)
+            Next v
+        Case "File"
+            s = FileAsString(v_var)
+            For Each v In Split(s, vbCrLf)
+                cll.Add v
+            Next v
         Case Else:      Err.Raise AppErr(1), ErrSrc(PROC), "The argument is neither a String, an Array, a Collecton, nor a Dictionary!"
     End Select
-    For Each v In arr
-        dct.Add v, vbNullString
-        cll.Add v
-    Next v
+            
+    '~~ Prepare the input items as requested
+xt: Select Case v_as
+        Case enAsArray
+            If IsObject(v) Then Err.Raise AppErr(1), ErrSrc(PROC), "At least one of the variant items is an object which cannot be provided in an Array!"
+            For Each v In cll
+                ArrayAdd arr, v
+            Next v
+            VarItems = arr
+        Case enAsCollection
+            Set VarItems = cll
+        Case enAsDictionary
+            For Each v In cll
+                dct.Add v, vbNullString
+            Next v
+            Set VarItems = KeySort(dct)
+        Case enAsString
+            For Each v In cll
+                s = s & sDelim & v
+                sDelim = vbCrLf
+            Next v
+            VarItems = s
+        Case enAsTextFile
+            For Each v In cll
+                s = s & sDelim & v
+                sDelim = vbCrLf
+            Next v
+            FileFromString v_file_name, s
+        Case Else
+            Err.Raise AppErr(2), ErrSrc(PROC), _
+            "The variant items are not requested to be returned neither as String, Array, Collection, Directory, nor as TextStream file!"
+    End Select
     
-xt: v_arr = arr
-    Set v_cll = cll
-    Set v_dct = KeySort(dct)
     Set cll = Nothing
     Set dct = Nothing
-    Exit Sub
+    Exit Function
 
 eh: Select Case ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
-End Sub
-
-Private Function VarItemsAsArray(ByVal v_var As Variant, _
-                        Optional ByRef v_cll As Collection = Nothing, _
-                        Optional ByRef v_dct As Dictionary = Nothing) As Variant
-' ----------------------------------------------------------------------------
-' Provides variant items (v_var) as Array (v_arr) and additionally as
-' Collection (v_cll) and as Dictionary (v_dct) with the item as the key. The
-' variant items (v_var) may be an Array, a Collection of strings, a Dictionary
-' of keys, or a string delimited by: vbCrLf, vbLf, ||, |, or a , (comma).
-' ----------------------------------------------------------------------------
-    Dim arr As Variant
-    
-    VarItems v_var, arr, v_cll, v_dct
-    VarItemsAsArray = arr
-        
 End Function
 
-Private Function VarItemsAsCollection(ByVal v_var As Variant, _
-                             Optional ByRef v_arr As Variant = Nothing, _
-                             Optional ByRef v_dct As Dictionary = Nothing) As Collection
-' ----------------------------------------------------------------------------
-' Provides variant items (v_var) as Collection and additionally a Dictionary
-' (v_dct) and array (v_arr). The variant items (v_var) may be an array, a
-' Collection of strings, a Dictionary of keys, or a string delimited by:
-' vbCrLf, vbLf, ||, |, or a , (comma).
-' ----------------------------------------------------------------------------
-    Dim cll As New Collection
-    
-    VarItems v_var, v_arr, cll, v_dct
-    Set VarItemsAsCollection = cll
-    Set cll = Nothing
-    
-End Function
-
-Private Function VarItemsAsDictionary(ByVal v_var As Variant, _
-                             Optional ByRef v_arr As Variant, _
-                             Optional ByRef v_cll As Collection = Nothing) As Dictionary
-' ----------------------------------------------------------------------------
-' Provides variant items (v_var) as Dictionary with the items as key and
-' additionally as Array (v_arr) and Collection (v_cll). The variant items
-' (v_var) may be an Array, a Collection of strings, a Dictionary of keys, or a
-' string delimited by: vbCrLf, vbLf, ||, |, or a , (comma).
-' ----------------------------------------------------------------------------
-    Dim dct As New Dictionary
-    
-    VarItems v_var, v_arr, v_cll, dct
-    Set VarItemsAsDictionary = dct
-    Set dct = Nothing
-        
-End Function
-
-Private Function VarItemsAsString(ByVal v_var As Variant, _
-                         Optional ByVal v_delim As String) As String
-' ----------------------------------------------------------------------------
-' Provides variant items (v_var) as String delimited with (v_delim), whereby
-' the variant items (v_var) may be an Array, a Collection of strings.
-' ----------------------------------------------------------------------------
-    Dim cll     As Collection
-    Dim dct     As Dictionary
-    Dim s       As String
-    Dim sDelim  As String
-    Dim v       As Variant
-    
-    Select Case TypeName(v_var)
-        Case "Collection":  Set cll = v_var
-                            For Each v In cll
-                                s = s & sDelim & v
-                                sDelim = v_delim
-                            Next v
-        Case "Dictionary":  Set dct = v_var
-                            For Each v In dct
-                                s = s & sDelim & v
-                                sDelim = v_delim
-                            Next v
-    End Select
-    VarItemsAsString = s
-    
-End Function
+'Private Function VarItemsAsArray(ByVal v_var As Variant, _
+'                        Optional ByRef v_cll As Collection = Nothing, _
+'                        Optional ByRef v_dct As Dictionary = Nothing) As Variant
+'' ----------------------------------------------------------------------------
+'' Provides variant items (v_var) as Array (v_arr) and additionally as
+'' Collection (v_cll) and as Dictionary (v_dct) with the item as the key. The
+'' variant items (v_var) may be an Array, a Collection of strings, a Dictionary
+'' of keys, or a string delimited by: vbCrLf, vbLf, ||, |, or a , (comma).
+'' ----------------------------------------------------------------------------
+'    Dim arr As Variant
+'
+'    VarItems v_var, arr, v_cll, v_dct
+'    VarItemsAsArray = arr
+'
+'End Function
+'
+'Private Function VarItemsAsCollection(ByVal v_var As Variant, _
+'                             Optional ByRef v_arr As Variant = Nothing, _
+'                             Optional ByRef v_dct As Dictionary = Nothing) As Collection
+'' ----------------------------------------------------------------------------
+'' Provides variant items (v_var) as Collection and additionally a Dictionary
+'' (v_dct) and array (v_arr). The variant items (v_var) may be an array, a
+'' Collection of strings, a Dictionary of keys, or a string delimited by:
+'' vbCrLf, vbLf, ||, |, or a , (comma).
+'' ----------------------------------------------------------------------------
+'    Dim cll As New Collection
+'
+'    VarItems v_var, v_arr, cll, v_dct
+'    Set VarItemsAsCollection = cll
+'    Set cll = Nothing
+'
+'End Function
+'
+'Private Function VarItemsAsDictionary(ByVal v_var As Variant, _
+'                             Optional ByRef v_arr As Variant, _
+'                             Optional ByRef v_cll As Collection = Nothing) As Dictionary
+'' ----------------------------------------------------------------------------
+'' Provides variant items (v_var) as Dictionary with the items as key and
+'' additionally as Array (v_arr) and Collection (v_cll). The variant items
+'' (v_var) may be an Array, a Collection of strings, a Dictionary of keys, or a
+'' string delimited by: vbCrLf, vbLf, ||, |, or a , (comma).
+'' ----------------------------------------------------------------------------
+'    Dim dct As New Dictionary
+'
+'    VarItems v_var, v_arr, v_cll, dct
+'    Set VarItemsAsDictionary = dct
+'    Set dct = Nothing
+'
+'End Function
+'
+'Private Function VarItemsAsString(ByVal v_var As Variant, _
+'                         Optional ByVal v_delim As String) As String
+'' ----------------------------------------------------------------------------
+'' Provides variant items (v_var) as String delimited with (v_delim), whereby
+'' the variant items (v_var) may be an Array, a Collection of strings.
+'' ----------------------------------------------------------------------------
+'    Dim cll     As Collection
+'    Dim dct     As Dictionary
+'    Dim s       As String
+'    Dim sDelim  As String
+'    Dim v       As Variant
+'
+'    Select Case TypeName(v_var)
+'        Case "Collection":  Set cll = v_var
+'                            For Each v In cll
+'                                s = s & sDelim & v
+'                                sDelim = v_delim
+'                            Next v
+'        Case "Dictionary":  Set dct = v_var
+'                            For Each v In dct
+'                                s = s & sDelim & v
+'                                sDelim = v_delim
+'                            Next v
+'    End Select
+'    VarItemsAsString = s
+'
+'End Function
 

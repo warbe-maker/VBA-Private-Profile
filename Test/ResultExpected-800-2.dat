@@ -1,0 +1,8 @@
+; File Header Line 1 (the delimiter below is adjusted to the longest header)
+; File Header Line 2
+; ==========================================================================
+[Section_Name]
+Value_Name=Value
+; --------------------------------------------------------------------------
+; File Footer Line 1 (the delimiter below is adjusted to the longest header)
+; File Footer Line 2

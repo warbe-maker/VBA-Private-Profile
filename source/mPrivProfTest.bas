@@ -1,6 +1,7 @@
 Attribute VB_Name = "mPrivProfTest"
 ' ----------------------------------------------------------------
-' Standard Module mFsoTest: Test of all services of the module.
+' Standard Module mPrivProvTest: Test of all services provided by
+' ============================== the clsPrivProf class module.
 '
 ' Uses:
 ' -----
@@ -10,17 +11,9 @@ Attribute VB_Name = "mPrivProfTest"
 '                 properties of the class module clsPrivProf.
 ' mTrc            Execution trace of tests.
 ' ----------------------------------------------------------------
-Public PP           As clsPrivProf
-Public Test         As New clsTestPrivProf
-Public TestAid      As New clsTestAid
-
-Private Property Let Test_Status(ByVal s As String)
-    If s <> vbNullString Then
-        Application.StatusBar = "Regression test " & ThisWorkbook.Name & " module 'mFso': " & s
-    Else
-        Application.StatusBar = vbNullString
-    End If
-End Property
+Public PP       As clsPrivProf
+Public Test     As New clsTestPrivProf
+Public TestAid  As New clsTestAid
 
 Private Function AppErr(ByVal app_err_no As Long) As Long
 ' ------------------------------------------------------------------------------
@@ -55,8 +48,8 @@ Private Sub BoP(ByVal b_proc As String, _
 ' Obligatory copy Private for any VB-Component using the service but not having
 ' the mBasic common component installed.
 ' ------------------------------------------------------------------------------
-#If mErh Then          ' serves the mTrc/clsTrc when installed and active
-    mErh.BoP b_proc, b_args
+#If mErH Then          ' serves the mTrc/clsTrc when installed and active
+    mErH.BoP b_proc, b_args
 #ElseIf XcTrc_clsTrc Then ' when only clsTrc is installed and active
     If Trc Is Nothing Then Set Trc = New clsTrc
     Trc.BoP b_proc, b_args
@@ -87,8 +80,8 @@ Private Sub EoP(ByVal e_proc As String, _
 ' Obligatory copy Private for any VB-Component using the service but not having
 ' the mBasic common component installed.
 ' ------------------------------------------------------------------------------
-#If mErh = 1 Then          ' serves the mTrc/clsTrc when installed and active
-    mErh.EoP e_proc, e_args
+#If mErH = 1 Then          ' serves the mTrc/clsTrc when installed and active
+    mErH.EoP e_proc, e_args
 #ElseIf clsTrc = 1 Then ' when only clsTrc is installed and active
     Trc.EoP e_proc, e_args
 #ElseIf mTrc = 1 Then   ' when only mTrc is installed and activate
@@ -135,7 +128,7 @@ Public Sub Test_000_Regression()
     mTrc.FileFullName = TestAid.TestFolder & "\Regression.ExecTrace.log"
     mTrc.Title = "Regression Test class module clsPrivProf"
     mTrc.NewFile
-    mErh.Regression = True
+    mErH.Regression = True
     
     TestAid.ModeRegression = True
     
@@ -155,25 +148,23 @@ Public Sub Test_000_Regression()
     mPrivProfTest.Test_800_Lifecycle
     TestAid.DsplySummary
     
-xt: Test.RemoveTestFiles
-    mBasic.EoP ErrSrc(PROC)
-    mErh.Regression = False
+xt: mBasic.EoP ErrSrc(PROC)
+    mErH.Regression = False
     mTrc.Dsply
     Set Test = Nothing
     Set TestAid = Nothing
     Exit Sub
     
-eh: Select Case mErh.ErrMsg(ErrSrc(PROC))
+eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
 End Sub
 
-Private Sub Test_001_TestAid()
-    Const PROC = "Test_001_TestAid"
+Public Sub Test_001_TestAid()
     
-    Dim Fso                 As New FileSystemObject
-    Dim sFileResult         As String
+    Dim Fso         As New FileSystemObject
+    Dim sFileResult As String
         
     With New clsTestAid
         .TestNumber = "001-1"
@@ -185,6 +176,7 @@ Private Sub Test_001_TestAid()
         .Result = True
         Debug.Assert .ResultAsExpected
         ' ======================================================================
+        
         .TestNumber = "001-2"
         .TestedProc = "Result, .ResultExpected"
         .TestedType = "Property"
@@ -194,6 +186,7 @@ Private Sub Test_001_TestAid()
         Debug.Assert .ResultAsExpected
         .DsplySummary ' will be bypassed since ModeRegression = False
         ' ======================================================================
+        
         .TestNumber = "001-3"
         .TestedProc = "Result, .ResultExpected"
         .TestedType = "Property"
@@ -201,14 +194,15 @@ Private Sub Test_001_TestAid()
         
         '~~ Prepare test Result file
         sFileResult = ThisWorkbook.Path & "\Test\TestResult.txt"
-        TestAid.FileString(sFileResult) = "Result"
+        TestAid.FileFromString sFileResult, "Result"
         .Result = Fso.GetFile(sFileResult)
         '~~ Prepare test ResultExpected file
-        TestAid.FileString(Test.ExpectedTestResultFileName(.TestFolder, .TestNumber)) = "Result expected"
+        TestAid.FileFromString Test.ExpectedTestResultFileName(.TestFolder, .TestNumber), "Result expected"
         .ResultExpected = Test.ExpectedTestResultFile(.TestFolder, .TestNumber)
         Debug.Assert .ResultAsExpected ' This will trigger the display the difference if "False"
         .DsplySummary ' will be bypassed since ModeRegression = False
         ' ======================================================================
+        
         .ModeRegression = True
         .TestNumber = "001-4"
         .TestedProc = "Result, .ResultExpected"
@@ -242,7 +236,6 @@ Public Sub Test_100_Property_FileName()
     Const PROC = "Test_100_Property_FileName"
     
     On Error GoTo eh:
-    Dim s   As String
         
     mBasic.BoP ErrSrc(PROC)
     Prepare p_default:=True
@@ -287,7 +280,7 @@ xt: mBasic.EoP ErrSrc(PROC)
     Test.RemoveTestFiles
     Exit Sub
     
-eh: Select Case mErh.ErrMsg(ErrSrc(PROC))
+eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -297,7 +290,6 @@ Public Sub Test_110_Method_Exists()
     Const PROC = "Test_110_Methods_xExists"
 
     On Error GoTo eh
-    Dim sFileName   As String
     
     mBasic.BoP ErrSrc(PROC)
     '~~ Test preparation
@@ -350,7 +342,7 @@ xt: Test.RemoveTestFiles
     mBasic.EoP ErrSrc(PROC)
     Exit Sub
 
-eh: Select Case mErh.ErrMsg(ErrSrc(PROC))
+eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -364,7 +356,6 @@ Public Sub Test_120_Property_Value()
     
     On Error GoTo eh
     Dim cyValue     As Currency: cyValue = 12345.6789
-    Dim cyResult    As Currency
     
     mBasic.BoP ErrSrc(PROC)
     Prepare
@@ -441,7 +432,7 @@ xt: Test.RemoveTestFiles
     mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
-eh: Select Case mErh.ErrMsg(ErrSrc(PROC))
+eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -454,10 +445,9 @@ Public Sub Test_200_Property_Header()
     Const PROC = "Test_200_Property_Header"
 
     On Error GoTo eh
-    Dim sFileName   As String
-    Dim cll         As Collection
-    Dim sHeader     As String
-    Dim sResult     As String
+    Dim sHeader As String
+    Dim sResult As String
+    Dim sValue  As String
     
     mBasic.BoP ErrSrc(PROC)
     Prepare ' Test preparation
@@ -554,10 +544,10 @@ Public Sub Test_200_Property_Header()
         .TestedType = "Property"
         .TestDscrpt = "Read a value together with its header"
         .BoTP
-        sResult = PP.Value(Test.ValueName(12, 1), Test.SectionName(12), , sHeader)
+        sValue = PP.Value(Test.ValueName(12, 1), Test.SectionName(12), , sHeader)
         .EoTP
-        .Result = sHeader
-        .ResultExpected = "; The new value's header line 1||; The new value's header line 2!"
+        .Result = PP.VarItems(sHeader, enAsTextFile, TestAid.TempFile)
+        .ResultExpected = PP.VarItems("; The new value's header line 1||; The new value's header line 2!", enAsTextFile, TestAid.TempFile)
         Debug.Assert .ResultAsExpected
         ' ======================================================================
     End With
@@ -566,7 +556,7 @@ xt: Test.RemoveTestFiles
     mBasic.EoP ErrSrc(PROC)
     Exit Sub
 
-eh: Select Case mErh.ErrMsg(ErrSrc(PROC))
+eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -579,7 +569,6 @@ Public Sub Test_300_Method_SectionNames()
     Const PROC = "Test_300_Method_SectionNames"
     
     On Error GoTo eh
-    Dim sFileName   As String
     Dim dct         As Dictionary
     
     mBasic.BoP ErrSrc(PROC)
@@ -601,7 +590,7 @@ xt: mBasic.EoP ErrSrc(PROC)
     Set dct = Nothing
     Exit Sub
     
-eh: Select Case mErh.ErrMsg(ErrSrc(PROC))
+eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -614,7 +603,6 @@ Public Sub Test_400_Method_ValueNames()
     Const PROC = "Test_400_Method_ValueNames"
     
     On Error GoTo eh
-    Dim sFileName   As String
     Dim dct         As Dictionary
     
     mBasic.BoP ErrSrc(PROC)
@@ -644,7 +632,7 @@ Public Sub Test_400_Method_ValueNames()
 xt: mBasic.EoP ErrSrc(PROC)
     Exit Sub
 
-eh: Select Case mErh.ErrMsg(ErrSrc(PROC))
+eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -658,10 +646,6 @@ Public Sub Test_410_Method_ValueNameRename()
     
     On Error GoTo eh
     Dim dct         As Dictionary
-    Dim i           As Long
-    Dim sNameOld    As String
-    Dim sNameNew    As String
-    Dim sSection    As String
     
     mBasic.BoP ErrSrc(PROC)
     Prepare ' Test preparation
@@ -683,7 +667,7 @@ xt: Test.RemoveTestFiles
     mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
-eh: Select Case mErh.ErrMsg(ErrSrc(PROC))
+eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -696,8 +680,6 @@ Public Sub Test_500_Method_Reorg()
     Const PROC = "Test_500_Method_Reorg"
     
     On Error GoTo eh
-    Dim sFileName   As String
-    Dim vFile       As Variant
     
     mBasic.BoP ErrSrc(PROC)
     Prepare ' Test preparation
@@ -718,7 +700,7 @@ xt: Test.RemoveTestFiles
     mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
-eh: Select Case mErh.ErrMsg(ErrSrc(PROC))
+eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -763,7 +745,7 @@ xt: Test.RemoveTestFiles
     mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
-eh: Select Case mErh.ErrMsg(ErrSrc(PROC))
+eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -780,8 +762,6 @@ Public Sub Test_700_Method_SectionsCopy()
     On Error GoTo eh
     Dim sSourceFile     As String
     Dim sTargetFile     As String
-    Dim sSectionName    As String
-    Dim dct             As Dictionary
     
     mBasic.BoP ErrSrc(PROC)
     Prepare ' Test preparation
@@ -822,7 +802,7 @@ xt: Test.RemoveTestFiles
     mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
-eh: Select Case mErh.ErrMsg(ErrSrc(PROC))
+eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -838,8 +818,36 @@ Public Sub Test_800_Lifecycle()
     On Error GoTo eh
    
     mBasic.BoP ErrSrc(PROC)
-    Prepare ' Test preparation
+    
     With TestAid
+        Prepare ' Test preparation
+        .Fso.DeleteFile Test.PrivProfFileFullName
+        .TestNumber = "800-1"
+        .TestedProc = "Header, Footer"
+        .TestedType = "Method"
+        .TestDscrpt = "Writes a file header and footer into an empty file."
+        .BoTP
+        PP.Header() = "File Header Line 1 (the delimiter below is adjusted to the longest header)" & vbCrLf & _
+                      "File Header Line 2"
+        PP.Footer() = "File Footer Line 1 (the delimiter below is adjusted to the longest header)" & vbCrLf & _
+                      "File Footer Line 2"
+        .EoTP
+        .Result = Test.PrivProfFile
+        .ResultExpected = Test.ExpectedTestResultFile(.TestFolder, .TestNumber)
+        Debug.Assert .ResultAsExpected
+        ' ======================================================================
+    
+        .TestNumber = "800-2"
+        .TestedProc = "Value Let"
+        .TestedType = "Propety"
+        .TestDscrpt = "Writes a file header and footer into an empty file."
+        .BoTP
+        PP.Value("Value_Name", "Section_Name") = "Value"
+        .EoTP
+        .Result = Test.PrivProfFile
+        .ResultExpected = Test.ExpectedTestResultFile(.TestFolder, .TestNumber)
+        Debug.Assert .ResultAsExpected
+        ' ======================================================================
     
     End With
 
@@ -847,7 +855,7 @@ xt: Test.RemoveTestFiles
     mBasic.EoP ErrSrc(PROC)
     Exit Sub
 
-eh: Select Case mErh.ErrMsg(ErrSrc(PROC))
+eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select

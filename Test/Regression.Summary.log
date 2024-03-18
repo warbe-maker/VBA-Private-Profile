@@ -1,4 +1,4 @@
-Summary Regression-Test 2024.03.17 20.05.17
+Summary Regression-Test 2024.03.18 18.30.33
 -------------------------------------------
 100-1 Property clsPrivProf.FileName Get ... Default name.....................................................................:  Passed 
 100-2 Property clsPrivProf.FileName Let ... Specifying a file valid name.....................................................:  Passed 
@@ -18,7 +18,6 @@ Summary Regression-Test 2024.03.17 20.05.17
 200-5 Property clsPrivProf.Header Let ..... Write value header...............................................................:  Passed 
 200-6 Property clsPrivProf.Header Get ..... Read value header................................................................:  Passed 
 200-7 Property clsPrivProf.Value Let ...... Write a new value including a value header.......................................:  Passed 
-200-8 Property clsPrivProf.Value Get ...... Read a value together with its header............................................:  Passed 
 300-1 Function clsPrivProf.SectionNames ... Get all section names in a Dictionary............................................:  Passed 
 400-1 Function clsPrivProf.ValueNames ..... Get all value names of all sections in a Dictionary..............................:  Passed 
 400-2 Function clsPrivProf.ValueNames ..... Get all value names of a certain section in a Dictionary.........................:  Passed 
@@ -28,3 +27,5 @@ Summary Regression-Test 2024.03.17 20.05.17
 600-2 Method   clsPrivProf.SectionRemove .. Removes a section including its header comment(s)................................:  Passed 
 700-1 Method   clsPrivProf.SectionsCopy ... Copies two sections from a soure to a traget Private Profile file................:  Passed 
 700-2 Method   clsPrivProf.SectionsCopy ... Copies an additional sections from a soure to a traget Private Profile file......:  Passed 
+800-1 Method   clsPrivProf.Header, Footer . Writes a file header and footer into an empty file...............................:  Passed 
+800-2 Property clsPrivProf.Value Let ...... Writes a file header and footer into an empty file...............................:  Passed 

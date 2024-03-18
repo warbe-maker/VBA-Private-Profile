@@ -56,25 +56,9 @@ Private Sub Class_Initialize()
     
     If TestAid Is Nothing Then Set Test = New clsTestAid
     TestAid.TestedComp = "clsPrivProf"
-
-End Sub
-
-Private Property Let FileString(Optional ByVal f_file_full_name As String, _
-                                Optional ByVal f_append As Boolean = False, _
-                                Optional ByVal f_exclude_empty As Boolean = False, _
-                                         ByVal f_s As String)
-' ----------------------------------------------------------------------------
-' Writes a string (f_s) with multiple records/lines delimited by a vbCrLf to
-' a file (f_file_full_name).
-' ----------------------------------------------------------------------------
+    Set cllTestFiles = New Collection
     
-    If f_append _
-    Then Open f_file_full_name For Append As #1 _
-    Else Open f_file_full_name For Output As #1
-    Print #1, f_s
-    Close #1
-        
-End Property
+End Sub
 
 Private Property Get FileTemp(Optional ByVal f_path As String = vbNullString, _
                               Optional ByVal f_extension As String = ".tmp") As String
@@ -127,13 +111,7 @@ Public Function ExpectedTestResultFileName(ByVal e_test_folder As String, _
 
 End Function
 
-Private Function FileAsArray(ByVal f_file_full_name As String) As Variant
-    Dim sSplit As String
-    FileAsArray = Split(FileAsString(f_file_full_name, , sSplit), sSplit)
-End Function
-
 Private Function FileAsString(Optional ByVal f_file_full_name As String, _
-                              Optional ByVal f_append As Boolean = False, _
                               Optional ByRef f_split As String = vbCrLf, _
                               Optional ByVal f_exclude_empty As Boolean = False) As String
 ' ----------------------------------------------------------------------------
@@ -247,9 +225,9 @@ Public Function PrivateProfile_File(Optional ByVal t_sections As Long = 0, _
     Const PROC = "PrivateProfile_File"
 
     On Error GoTo eh
-    Dim i           As Long
-    Dim j           As Long
-    Dim arr()       As Variant
+    Dim i       As Long
+    Dim j       As Long
+    Dim arr()   As Variant
     
     If Not Fso.FolderExists(sFolder) Then Fso.CreateFolder sFolder
     If t_sections = 0 Then t_sections = lNoOfTestSections
@@ -333,3 +311,6 @@ Public Function ValueString(ByVal lS As Long, ByVal lV As Long) As String
     ValueString = SECTION_NAME & Format(lS, "00") & VALUE_STRING & Format(lV, "00")
 End Function
 
+Private Sub Class_Terminate()
+    RemoveTestFiles
+End Sub

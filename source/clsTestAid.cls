@@ -9,38 +9,38 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 ' ----------------------------------------------------------------------------
-' Class Module clsTestAid: Common test supporting Properties and Methods,
-' ======================== including Regression-Test support. The module
-' supports a "regression test mode" (Property "ModeRegression") which
-' suppresses a Debug.Assert interruption of a test sequence in case of a
-' "failed" test result, but just collects it and provide a DsplySummary
-' method for reporting all in a "Regression.Summary.log" file.
-' In non "regression test mode", when the result and the result expected
-' difffers WinMerge is used to display the difference (an error is
-' displayed when not installed).
+' Class Module clsTestAid: Common, tests supporting services, including
+' ======================== Regression-Testing. In regression test mode
+' application errors asserted beforehand do not interrupt the test stream.
+' Additionally test results are logged in a "Regression.Summary.log" file and
+' may be displayed finally. In "non-regression-test-mode", when the result
+' and a specified result expected differ, WinMerge is used to display the
+' difference (an error is displayed when not installed), provided both, the
+' Result and the ResultExpected are test files.
 '
-' Public properties:
-' ------------------
-' TestDscrpt           Let A string describing the purpose of a test.
-' TestNumber         Let A string identifying a specific test within the test
-'                    procedure
-' TestedProc         The name of the tested procedure (Sub, Function,
-'                    Property, Method).
-' Result         Let Variant expression a the result of a test, maybe a file
-'                    object, any other object or any other data type
-' ResultExpected Let The expected result of a test, a file object, any other
-'                    object or any other data type
-' Public methods:
-' ---------------
-' BoC/EoC           Effective only when the execution trace module (mTrc or
-'                   clsTrc) is installed, indicates the begin of a code
-'                   sequence.
-' BoP/EoP           Effective only when the execution trace module (mTrc or
-'                   clsTrc) is installed, indicates the begin/end of a
-'                   procedure.
-' DsplySummary      Displays a RegressionTest.log file provided ModeRegression = True.
-' ResultAsExpected  Returns True or False depending result provided once the Result
-'                   and the ResultExpected had been assigned.
+' Public services:
+' ----------------
+' ModeRegression P   w Boolean expression, indicates regression mode whem True
+' Result         P   w Variant expression a the result of a test, maybe a file
+'                      object, any other object or any other data type
+' ResultExpected P r/w The expected result of a test, a file object, any other
+'                      object or any other data type
+' TestDscrpt     P   w A string describing the purpose of a test.
+' TestFolder     P r/w String expression, specifies the test folder
+' TestNumber     P   w A string identifying a specific test within the test
+'                      procedure
+' TestedProc     P   w The name of the tested procedure (Sub, Function,
+'                      Property, Method).
+' TestResult     P r   Returns Passed or Failed
+' BoC/EoC            M Effective only when the execution trace module (mTrc or
+'                      clsTrc) is installed, indicates the begin of a code
+'                      sequence.
+' BoP/EoP            M Effective only when the execution trace module (mTrc or
+'                      clsTrc) is installed, indicates the begin/end of a
+'                      procedure.
+' DsplySummary       M Displays a RegressionTest.log file provided ModeRegression = True.
+' ResultAsExpected   M Returns True or False depending result provided once the Result
+'                      and the ResultExpected had been assigned.
 '
 ' Requires:
 ' - Refernce to "Microsoft Scripting Runtime"
@@ -48,10 +48,10 @@ Option Explicit
 '
 ' W. Rauschenberger, Berlin Feb 2024
 ' ----------------------------------------------------------------------------
-Public Fso                     As New FileSystemObject
+Public Fso                  As New FileSystemObject
 
-Private Const RESULT_PASSED = " Passed "
-Private Const RESULT_FAILED = " F a i l e d ! "
+Private Const RESULT_PASSED As String = " Passed "
+Private Const RESULT_FAILED As String = " F a i l e d ! "
 Private Declare PtrSafe Function apiShellExecute Lib "shell32.dll" _
     Alias "ShellExecuteA" _
     (ByVal hWnd As Long, _
@@ -73,51 +73,50 @@ Private Const ERROR_FILE_NOT_FOUND = 2&
 Private Const ERROR_PATH_NOT_FOUND = 3&
 Private Const ERROR_BAD_FORMAT = 11&
 
-
-Private bModeRegression         As Boolean
-Private dctResults              As New Dictionary
-Private sTestDscrpt             As String
-Private sTestNumber             As String
-Private sResult                 As String ' " P a s s e d !" or " F a i l e d !"
-Private sRegressionSummaryLog   As String
-Private sTestedComp             As String
-Private sTestedProc             As String
-Private sTestResult             As String
-Private vResult                 As Variant
-Private vResultExpected         As Variant
-Private sTestFolder             As String
-Private sTestedType             As String
-Private lMaxLenTestProc         As Long
+Private bModeRegression     As Boolean
+Private dctResults          As New Dictionary
+Private cllTestFiles                As Collection
+Private sTestDscrpt         As String
+Private sTestNumber         As String
+Private sRegrTestSummaryLog As String
+Private sTestedComp         As String
+Private sTestedProc         As String
+Private sTestResult         As String
+Private vResult             As Variant
+Private vResultExpected     As Variant
+Private sTestFolder         As String
+Private sTestedType         As String
+Private lMaxLenTestProc     As Long
 
 Private Sub Class_Initialize()
     
     sTestFolder = ThisWorkbook.Path & "\Test"
     If Not Fso.FolderExists(sTestFolder) _
     Then Fso.CreateFolder ThisWorkbook.Path & "\Test"
-    sRegressionSummaryLog = ThisWorkbook.Path & "\Test\Regression.Summary.log"
-    If Fso.FileExists(sRegressionSummaryLog) Then
-        Fso.DeleteFile sRegressionSummaryLog
+    sRegrTestSummaryLog = ThisWorkbook.Path & "\Test\Regression.Summary.log"
+    If Fso.FileExists(sRegrTestSummaryLog) Then
+        Fso.DeleteFile sRegrTestSummaryLog
     End If
+    Set cllTestFiles = New Collection
     
 End Sub
 
-Public Property Let FileString(Optional ByVal f_file_full_name As String, _
-                               Optional ByVal f_append As Boolean = False, _
-                               Optional ByVal f_exclude_empty As Boolean = False, _
-                                        ByVal f_s As String)
-' ----------------------------------------------------------------------------
-' Writes a string (f_s) with multiple records/lines delimited by a vbCrLf to
-' a file (f_file_full_name).
-' ----------------------------------------------------------------------------
-    
-    If f_append _
-    Then Open f_file_full_name For Append As #1 _
-    Else Open f_file_full_name For Output As #1
-    Print #1, f_s
-    Close #1
-        
-End Property
-
+'Public Property Let FileString(Optional ByVal f_file_full_name As String, _
+'                               Optional ByVal f_append As Boolean = False, _
+'                                        ByVal f_s As String)
+'' ----------------------------------------------------------------------------
+'' Writes a string (f_s) with multiple records/lines delimited by a vbCrLf to
+'' a file (f_file_full_name).
+'' ----------------------------------------------------------------------------
+'
+'    If f_append _
+'    Then Open f_file_full_name For Append As #1 _
+'    Else Open f_file_full_name For Output As #1
+'    Print #1, f_s
+'    Close #1
+'
+'End Property
+'
 Public Property Let ModeRegression(ByVal b As Boolean)
     
     bModeRegression = b
@@ -333,13 +332,6 @@ Public Sub BoTP()
 #End If
 End Sub
 
-Private Function CollAsString(ByVal c As Collection) As String
-    Dim v As Variant
-    For Each v In c
-        CollAsString = CollAsString & v
-    Next v
-End Function
-
 Public Sub DsplySummary()
     Const PROC = "DsplySummary"
     
@@ -355,12 +347,12 @@ Public Sub DsplySummary()
     If Not bModeRegression Then Exit Sub ' is bypassed except ModeRegression = True
     
     s = "Summary Regression-Test " & Format(Now(), "YYYY.MM.DD hh.mm.ss")
-    If Len(FileAsString(sRegressionSummaryLog)) > 1 Then
-        arr = Split(FileAsString(sRegressionSummaryLog), vbCrLf)
-        FileString(sRegressionSummaryLog, True) = String(Len(arr(UBound(arr) - 1)), "=")
+    If Len(FileAsString(sRegrTestSummaryLog)) > 1 Then
+        arr = Split(FileAsString(sRegrTestSummaryLog), vbCrLf)
+        FileFromString sRegrTestSummaryLog, String(Len(arr(UBound(arr) - 1)), "="), True
     End If
-    FileString(sRegressionSummaryLog, True) = s
-    FileString(sRegressionSummaryLog, True) = String(Len(s), "-")
+    FileFromString sRegrTestSummaryLog, s, True
+    FileFromString sRegrTestSummaryLog, String(Len(s), "-"), True
     For Each v In dctResults
         Set cll = dctResults(v)
 '       1 sTestNumber
@@ -386,16 +378,17 @@ Public Sub DsplySummary()
         
         s = cll(3) & "." & cll(4)
         
-        FileString(sRegressionSummaryLog, True) = cll(1) & " " & _
-                                        sType & " " & _
-                                        s & " " & _
-                                        String(lMax - Len(s), ".") & _
-                                        " " & _
-                                        cll(5) & _
-                                        String(lMaxDesc - Len(cll(5)) + 5, ".") & _
-                                        ": " & cll(6)
+        FileFromString sRegrTestSummaryLog, cll(1) & " " & _
+                                            sType & " " & _
+                                            s & " " & _
+                                            String(lMax - Len(s), ".") & _
+                                            " " & _
+                                            cll(5) & _
+                                            String(lMaxDesc - Len(cll(5)) + 5, ".") & _
+                                            ": " & cll(6) _
+                                         , True
     Next v
-    ShellRun sRegressionSummaryLog
+    ShellRun sRegrTestSummaryLog
     
 xt: Exit Sub
     
@@ -622,20 +615,6 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Function
 
-Private Function FileFromCollection(ByVal f_coll As Collection) As File
-    Dim arr As Variant
-    Dim v   As Variant
-    Dim s   As String
-    
-    For Each v In f_coll
-        ArrayAdd arr, v
-    Next v
-    s = Fso.GetTempName
-    FileFromString s, Join(arr, vbCrLf)
-    Set FileFromCollection = Fso.GetFile(s)
-    
-End Function
-
 Private Function Max(ParamArray va() As Variant) As Variant
 ' --------------------------------------------------------
 ' Returns the maximum value of all values provided (va).
@@ -835,29 +814,28 @@ Private Function ShellRun(ByVal sr_string As String, _
 
 End Function
 
-Private Function TempFile(Optional ByVal f_path As String = vbNullString, _
-                          Optional ByVal f_extension As String = ".tmp") As String
+Public Function TempFile(Optional ByVal f_path As String = vbNullString, _
+                         Optional ByVal f_extension As String = ".txt", _
+                         Optional ByVal f_create_as_textstream As Boolean = True) As String
 ' ------------------------------------------------------------------------------
 ' Returns the full file name of a temporary randomly named file. When a path
-' (f_path) is omitted the path is the CurDir path, else in at the provided one.
+' (f_path) is omitted in the CurDir path, else in at the provided folder.
 ' ------------------------------------------------------------------------------
     Dim sTemp As String
     
     If VBA.Left$(f_extension, 1) <> "." Then f_extension = "." & f_extension
     sTemp = Replace(Fso.GetTempName, ".tmp", f_extension)
-    If f_path = vbNullString Then f_path = Environ("TMP")
+    If f_path = vbNullString Then f_path = CurDir
     sTemp = VBA.Replace(f_path & "\" & sTemp, "\\", "\")
     TempFile = sTemp
-    
+    If f_create_as_textstream Then Fso.CreateTextFile sTemp
+    cllTestFiles.Add sTemp
+
 End Function
 
-Private Function WinMergeIsInstalled() As Boolean
-    WinMergeIsInstalled = AppIsInstalled("WinMerge")
-End Function
-
-Private Sub FileFromString(ByVal f_file_full_name As String, _
-                           ByVal f_s As String, _
-                  Optional ByVal f_appended As Boolean = False)
+Public Sub FileFromString(ByVal f_file_full_name As String, _
+                          ByVal f_s As String, _
+                 Optional ByVal f_appended As Boolean = False)
 ' ----------------------------------------------------------------------------
 ' Writes a string (f_s) with multiple records/lines delimited by a vbCrLf to
 ' a file (f_file_full_name).
@@ -873,4 +851,22 @@ End Sub
 
 Private Sub Class_Terminate()
     Set dctResults = Nothing
+    RemoveTestFiles
+    Set cllTestFiles = Nothing
 End Sub
+
+Private Sub RemoveTestFiles()
+
+    Dim v As Variant
+    
+    If cllTestFiles Is Nothing Then Set cllTestFiles = New Collection
+    For Each v In cllTestFiles
+        If Fso.FileExists(v) Then
+            Kill v
+        End If
+    Next v
+    Set cllTestFiles = Nothing
+    Set cllTestFiles = New Collection
+    
+End Sub
+

@@ -887,3 +887,338 @@
 24-03-17 19:25:08 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
 24-03-17 19:25:08 seconds seconds >> Begin execution trace 
 24-03-17 19:25:08 00,0000         |  >> mPrivProfTest.Test_200_Property_Header
+===========================================================================================================================================
+24-03-18 15:37:56 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 15:37:56 seconds seconds >> Begin execution trace 
+24-03-18 15:37:56 00,0000         |  >> mPrivProfTest.Test_200_Property_Header
+24-03-18 15:37:56 00,0157         |  |  >> 200-1 Property clsPrivProf.Header Let: File header write
+24-03-18 15:38:00 04,5177         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 15:38:00 04,5204 00,0027 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 15:38:00 04,5244 04,5086 |  |  << 200-1 Property clsPrivProf.Header Let: File header write
+24-03-18 15:38:00 04,5255         |  |  >> 200-2 Property clsPrivProf.Header Get: File header read
+24-03-18 15:38:00 04,5262 00,0008 |  |  << 200-2 Property clsPrivProf.Header Get: File header read ( Passed )
+24-03-18 15:38:00 04,5265         |  |  >> 200-3 Property clsPrivProf.Header Let: Write section header
+24-03-18 15:38:06 10,3508         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 15:38:06 10,3534 00,0027 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 15:38:06 10,3565 05,8300 |  |  << 200-3 Property clsPrivProf.Header Let: Write section header ( Passed )
+24-03-18 15:38:06 10,3576         |  |  >> 200-4 Property clsPrivProf.Header Get: Read section header
+24-03-18 15:38:06 10,3583 00,0008 |  |  << 200-4 Property clsPrivProf.Header Get: Read section header ( Passed )
+24-03-18 15:38:06 10,3586         |  |  >> 200-5 Property clsPrivProf.Header Let: Write value header
+24-03-18 15:38:09 13,5208         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 15:38:09 13,5236 00,0028 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 15:38:09 13,5271 03,1685 |  |  << 200-5 Property clsPrivProf.Header Let: Write value header ( Passed )
+24-03-18 15:38:09 13,5292         |  |  >> 200-6 Property clsPrivProf.Header Get: Read value header
+24-03-18 15:38:13 16,9541 03,4249 |  |  << 200-6 Property clsPrivProf.Header Get: Read value header ( Passed )
+24-03-18 15:38:13 16,9546         |  |  >> 200-7 Property clsPrivProf.Value Let: Write a new value including a value header
+24-03-18 15:38:13 16,9577         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 15:38:13 16,9617 00,0040 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 15:38:13 16,9662 00,0116 |  |  << 200-7 Property clsPrivProf.Value Let: Write a new value including a value header ( Passed )
+24-03-18 15:38:13 16,9679         |  |  >> 200-8 Property clsPrivProf.Value Get: Read a value together with its header
+===========================================================================================================================================
+24-03-18 15:44:34 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 15:44:34 seconds seconds >> Begin execution trace 
+24-03-18 15:44:34 00,0000         |  >> mPrivProfTest.Test_200_Property_Header
+24-03-18 15:44:34 00,0129         |  |  >> 200-1 Property clsPrivProf.Header Let: File header write
+24-03-18 15:44:34 00,0141         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 15:44:34 00,0167 00,0026 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 15:44:34 00,0206 00,0077 |  |  << 200-1 Property clsPrivProf.Header Let: File header write
+24-03-18 15:44:34 00,0219         |  |  >> 200-2 Property clsPrivProf.Header Get: File header read
+24-03-18 15:44:34 00,0230 00,0011 |  |  << 200-2 Property clsPrivProf.Header Get: File header read ( Passed )
+24-03-18 15:44:34 00,0234         |  |  >> 200-3 Property clsPrivProf.Header Let: Write section header
+24-03-18 15:44:34 00,0249         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 15:44:34 00,0275 00,0026 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 15:44:34 00,0306 00,0071 |  |  << 200-3 Property clsPrivProf.Header Let: Write section header ( Passed )
+24-03-18 15:44:34 00,0316         |  |  >> 200-4 Property clsPrivProf.Header Get: Read section header
+24-03-18 15:44:34 00,0324 00,0008 |  |  << 200-4 Property clsPrivProf.Header Get: Read section header ( Passed )
+24-03-18 15:44:34 00,0326         |  |  >> 200-5 Property clsPrivProf.Header Let: Write value header
+24-03-18 15:44:34 00,0338         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 15:44:34 00,0367 00,0029 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 15:44:34 00,0401 00,0074 |  |  << 200-5 Property clsPrivProf.Header Let: Write value header ( Passed )
+24-03-18 15:44:34 00,0412         |  |  >> 200-6 Property clsPrivProf.Header Get: Read value header
+24-03-18 15:44:34 00,0420 00,0009 |  |  << 200-6 Property clsPrivProf.Header Get: Read value header ( Passed )
+24-03-18 15:44:34 00,0422         |  |  >> 200-7 Property clsPrivProf.Value Let: Write a new value including a value header
+24-03-18 15:44:34 00,0453         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 15:44:34 00,0480 00,0027 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 15:44:34 00,0517 00,0095 |  |  << 200-7 Property clsPrivProf.Value Let: Write a new value including a value header ( Passed )
+24-03-18 15:44:34 00,0528         |  |  >> 200-8 Property clsPrivProf.Value Get: Read a value together with its header
+24-03-18 15:44:44 09,7882 09,7354 |  |  << 200-8 Property clsPrivProf.Value Get: Read a value together with its header ( Passed )
+24-03-18 15:45:41 67,0117 67,0117 |  << mPrivProfTest.Test_200_Property_Header
+24-03-18 15:45:41 67,0117 67,0117 << End execution trace 
+24-03-18 15:45:41                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 15:45:41                 Impact on the overall performance (caused by the trace itself): 0,5 milliseconds!
+===========================================================================================================================================
+24-03-18 16:44:53 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 16:44:53 seconds seconds >> Begin execution trace 
+24-03-18 16:44:53 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 16:44:53 00,0063         |  |  >> 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 16:44:54 01,5963         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 16:45:12 01,5976 00,0012 |  |  |  << clsPrivProf.FileAsDict (Application Error 1 )
+===========================================================================================================================================
+24-03-18 16:49:52 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 16:49:52 seconds seconds >> Begin execution trace 
+24-03-18 16:49:52 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 16:49:55 00,0123 00,0123 |  << mPrivProfTest.Test_800_Lifecycle (Application Error 1 )
+24-03-18 16:49:55 00,0123 00,0123 << End execution trace 
+24-03-18 16:49:55                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 16:49:55                 Impact on the overall performance (caused by the trace itself): 1,2 milliseconds!
+===========================================================================================================================================
+24-03-18 16:50:11 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 16:50:11 seconds seconds >> Begin execution trace 
+24-03-18 16:50:11 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 16:50:13 00,0113 00,0113 |  << mPrivProfTest.Test_800_Lifecycle (Application Error 1 )
+24-03-18 16:50:13 00,0113 00,0113 << End execution trace 
+24-03-18 16:50:13                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 16:50:13                 Impact on the overall performance (caused by the trace itself): 1,4 milliseconds!
+===========================================================================================================================================
+24-03-18 16:51:10 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 16:51:10 seconds seconds >> Begin execution trace 
+24-03-18 16:51:10 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 16:51:17 00,6113 00,6113 |  << mPrivProfTest.Test_800_Lifecycle (Application Error 1 )
+24-03-18 16:51:17 00,6113 00,6113 << End execution trace 
+24-03-18 16:51:17                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 16:51:17                 Impact on the overall performance (caused by the trace itself): 1,4 milliseconds!
+===========================================================================================================================================
+24-03-18 16:55:36 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 16:55:36 seconds seconds >> Begin execution trace 
+24-03-18 16:55:36 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 16:55:36 00,0070         |  |  >> 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 16:55:37 01,9379         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 16:55:37 01,9390 00,0011 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 16:55:45 07,6625 07,6625 << mPrivProfTest.Test_800_Lifecycle (VB-Runtime Error 13 )
+24-03-18 16:55:45 07,6625 07,6625 << End execution trace 
+24-03-18 16:55:45                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 16:55:45                 Impact on the overall performance (caused by the trace itself): 0,3 milliseconds!
+===========================================================================================================================================
+24-03-18 17:06:03 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 17:06:03 seconds seconds >> Begin execution trace 
+24-03-18 17:06:03 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 17:06:03 00,0158         |  |  >> 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:06:04 00,6311         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:07:01 57,6003 56,9692 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:08:46 161,1503 161,1503 << mPrivProfTest.Test_800_Lifecycle (VB-Runtime Error 13 )
+24-03-18 17:08:46 161,1503 161,1503 << End execution trace 
+24-03-18 17:08:46                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 17:08:46                 Impact on the overall performance (caused by the trace itself): 0,5 milliseconds!
+===========================================================================================================================================
+24-03-18 17:08:55 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 17:08:55 seconds seconds >> Begin execution trace 
+24-03-18 17:08:55 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 17:08:55 00,0146         |  |  >> 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:08:55 00,0158         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:08:57 02,0939 02,0781 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+===========================================================================================================================================
+24-03-18 17:10:44 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 17:10:44 seconds seconds >> Begin execution trace 
+24-03-18 17:10:44 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 17:10:44 00,0127         |  |  >> 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:10:44 00,0198         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:10:49 05,4465 05,4268 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+===========================================================================================================================================
+24-03-18 17:14:50 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 17:14:50 seconds seconds >> Begin execution trace 
+24-03-18 17:14:50 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 17:14:50 00,0071         |  |  >> 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:14:56 06,2320         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:14:56 06,2330 00,0010 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:14:58 07,8652 07,8580 |  |  << 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:16:04 71,6935 71,6935 |  << mPrivProfTest.Test_800_Lifecycle (VB-Runtime Error 5 )
+24-03-18 17:16:04 71,6935 71,6935 << End execution trace 
+24-03-18 17:16:04                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 17:16:04                 Impact on the overall performance (caused by the trace itself): 0,5 milliseconds!
+===========================================================================================================================================
+24-03-18 17:16:31 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 17:16:31 seconds seconds >> Begin execution trace 
+24-03-18 17:16:31 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 17:16:31 00,0130         |  |  >> 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:16:31 00,0141         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:16:31 00,0153 00,0012 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:16:31 00,0172 00,0042 |  |  << 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:17:11 40,2643 40,2643 |  << mPrivProfTest.Test_800_Lifecycle
+24-03-18 17:17:11 40,2643 40,2643 << End execution trace 
+24-03-18 17:17:11                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 17:17:11                 Impact on the overall performance (caused by the trace itself): 0,3 milliseconds!
+===========================================================================================================================================
+24-03-18 17:19:57 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 17:19:57 seconds seconds >> Begin execution trace 
+24-03-18 17:19:57 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 17:20:00 00,0020 00,0020 |  << mPrivProfTest.Test_800_Lifecycle (VB-Runtime Error 53 )
+24-03-18 17:20:00 00,0020 00,0020 << End execution trace 
+24-03-18 17:20:00                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 17:20:00                 Impact on the overall performance (caused by the trace itself): 1,2 milliseconds!
+===========================================================================================================================================
+24-03-18 17:20:20 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 17:20:20 seconds seconds >> Begin execution trace 
+24-03-18 17:20:20 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 17:20:20 00,0131         |  |  >> 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:20:20 00,0142         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:20:21 00,0154 00,0012 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:20:21 00,0178 00,0047 |  |  << 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:20:21 00,0192         |  |  >> 800-2 Property clsPrivProf.Value Let: Writes a file header and footer into an empty file.
+24-03-18 17:20:33 00,0203 00,0203 << mPrivProfTest.Test_800_Lifecycle (Application Error 2 )
+24-03-18 17:20:33 00,0203 00,0203 << End execution trace 
+24-03-18 17:20:33                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 17:20:33                 Impact on the overall performance (caused by the trace itself): 0,3 milliseconds!
+===========================================================================================================================================
+24-03-18 17:20:50 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 17:20:50 seconds seconds >> Begin execution trace 
+24-03-18 17:20:50 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 17:20:50 00,0126         |  >> 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:20:50 00,0137         |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:20:50 00,0155 00,0018 |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:20:50 00,0193 00,0066 |  << 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file. ( Passed )
+24-03-18 17:20:50 00,0208         |  >> 800-2 Property clsPrivProf.Value Let: Writes a file header and footer into an empty file.
+24-03-18 17:20:50 00,0234         |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:20:50 00,0246 00,0013 |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:20:50 00,0268 00,0059 |  << 800-2 Property clsPrivProf.Value Let: Writes a file header and footer into an empty file. ( Passed )
+===========================================================================================================================================
+24-03-18 17:21:54 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 17:21:54 seconds seconds >> Begin execution trace 
+24-03-18 17:21:54 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 17:21:54 00,0044         |  |  >> 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:21:54 00,0053         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:21:54 00,0061 00,0009 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:21:54 00,0080 00,0035 |  |  << 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:21:54 00,0091         |  |  >> 800-2 Property clsPrivProf.Value Let: Writes a file header and footer into an empty file.
+===========================================================================================================================================
+24-03-18 17:33:40 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 17:33:40 seconds seconds >> Begin execution trace 
+24-03-18 17:33:40 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 17:33:40 00,0051         |  |  >> 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:33:40 00,0059         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:33:40 00,0068 00,0009 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:33:40 00,0088 00,0037 |  |  << 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:33:40 00,0106         |  |  >> 800-2 Property clsPrivProf.Value Let: Writes a file header and footer into an empty file.
+===========================================================================================================================================
+24-03-18 17:36:42 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 17:36:42 seconds seconds >> Begin execution trace 
+24-03-18 17:36:42 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 17:36:42 00,0124         |  |  >> 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:36:42 00,0135         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:36:42 00,0146 00,0011 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:36:42 00,0165 00,0041 |  |  << 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:36:42 00,0176         |  |  >> 800-2 Property clsPrivProf.Value Let: Writes a file header and footer into an empty file.
+24-03-18 17:36:55 13,0827         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:36:55 13,0837 00,0010 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:36:55 13,0850 13,0674 |  |  << 800-2 Property clsPrivProf.Value Let: Writes a file header and footer into an empty file. ( Passed )
+===========================================================================================================================================
+24-03-18 17:38:03 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 17:38:03 seconds seconds >> Begin execution trace 
+24-03-18 17:38:03 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 17:38:03 00,0118         |  |  >> 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:38:03 00,0126         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:38:03 00,0141 00,0015 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:38:03 00,0165 00,0046 |  |  << 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:38:03 00,0175         |  |  >> 800-2 Property clsPrivProf.Value Let: Writes a file header and footer into an empty file.
+===========================================================================================================================================
+24-03-18 17:46:17 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 17:46:17 seconds seconds >> Begin execution trace 
+24-03-18 17:46:17 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 17:46:17 00,0056         |  |  >> 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:46:17 00,0064         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:46:17 00,0073 00,0009 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:46:17 00,0092 00,0036 |  |  << 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:46:17 00,0103         |  |  >> 800-2 Property clsPrivProf.Value Let: Writes a file header and footer into an empty file.
+24-03-18 17:46:28 09,2195 09,2195 << mPrivProfTest.Test_800_Lifecycle (VB-Runtime Error 13 )
+24-03-18 17:46:28 09,2195 09,2195 << End execution trace 
+24-03-18 17:46:28                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 17:46:28                 Impact on the overall performance (caused by the trace itself): 0,2 milliseconds!
+===========================================================================================================================================
+24-03-18 17:47:01 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 17:47:01 seconds seconds >> Begin execution trace 
+24-03-18 17:47:01 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 17:47:01 00,0136         |  |  >> 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:47:01 00,0144         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:47:01 00,0153 00,0009 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:47:01 00,0172 00,0037 |  |  << 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:47:01 00,0189         |  |  >> 800-2 Property clsPrivProf.Value Let: Writes a file header and footer into an empty file.
+===========================================================================================================================================
+24-03-18 17:52:41 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 17:52:41 seconds seconds >> Begin execution trace 
+24-03-18 17:52:41 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 17:52:41 00,0128         |  |  >> 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:52:41 00,0139         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:52:41 00,0148 00,0009 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:52:41 00,0174 00,0046 |  |  << 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:52:41 00,0187         |  |  >> 800-2 Property clsPrivProf.Value Let: Writes a file header and footer into an empty file.
+===========================================================================================================================================
+24-03-18 17:58:58 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 17:58:58 seconds seconds >> Begin execution trace 
+24-03-18 17:58:58 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 17:58:58 00,0132         |  |  >> 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:58:58 00,0143         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:58:58 00,0162 00,0019 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 17:58:58 00,0197 00,0065 |  |  << 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 17:58:58 00,0211         |  |  >> 800-2 Property clsPrivProf.Value Let: Writes a file header and footer into an empty file.
+===========================================================================================================================================
+24-03-18 18:01:39 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 18:01:39 seconds seconds >> Begin execution trace 
+24-03-18 18:01:39 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 18:01:39 00,0090         |  |  >> 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 18:01:39 00,0102         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 18:01:39 00,0115 00,0013 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 18:01:39 00,0141 00,0051 |  |  << 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 18:01:39 00,0156         |  |  >> 800-2 Property clsPrivProf.Value Let: Writes a file header and footer into an empty file.
+24-03-18 18:02:34 55,2105         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 18:02:34 55,2115 00,0010 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 18:02:34 55,2128 55,1972 |  |  << 800-2 Property clsPrivProf.Value Let: Writes a file header and footer into an empty file. ( Passed )
+===========================================================================================================================================
+24-03-18 18:03:21 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 18:03:21 seconds seconds >> Begin execution trace 
+24-03-18 18:03:21 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 18:03:21 00,0126         |  |  >> 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 18:03:21 00,0138         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 18:03:21 00,0149 00,0011 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 18:03:21 00,0168 00,0042 |  |  << 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 18:03:21 00,0179         |  |  >> 800-2 Property clsPrivProf.Value Let: Writes a file header and footer into an empty file.
+===========================================================================================================================================
+24-03-18 18:07:13 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 18:07:13 seconds seconds >> Begin execution trace 
+24-03-18 18:07:13 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 18:07:13 00,0124         |  |  >> 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 18:07:13 00,0132         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 18:07:17 04,0802 04,0670 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 18:07:17 04,0822 04,0698 |  |  << 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 18:07:33 20,4969         |  |  >> 800-2 Property clsPrivProf.Value Let: Writes a file header and footer into an empty file.
+===========================================================================================================================================
+24-03-18 18:07:43 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 18:07:43 seconds seconds >> Begin execution trace 
+24-03-18 18:07:43 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 18:07:43 00,0124         |  |  >> 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 18:07:43 00,0132         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 18:07:43 00,0141 00,0009 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 18:07:43 00,0168 00,0044 |  |  << 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 18:08:33 49,7988         |  |  >> 800-2 Property clsPrivProf.Value Let: Writes a file header and footer into an empty file.
+===========================================================================================================================================
+24-03-18 18:09:32 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 18:09:32 seconds seconds >> Begin execution trace 
+24-03-18 18:09:32 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 18:09:32 00,0156         |  |  >> 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 18:09:32 00,0170         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 18:09:32 00,0183 00,0014 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 18:09:32 00,0208 00,0052 |  |  << 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 18:09:32 00,0222         |  |  >> 800-2 Property clsPrivProf.Value Let: Writes a file header and footer into an empty file.
+===========================================================================================================================================
+24-03-18 18:11:37 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 18:11:37 seconds seconds >> Begin execution trace 
+24-03-18 18:11:37 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 18:11:37 00,0131         |  |  >> 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 18:11:37 00,0139         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 18:11:37 00,0148 00,0009 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 18:11:37 00,0167 00,0036 |  |  << 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 18:11:37 00,0177         |  |  >> 800-2 Property clsPrivProf.Value Let: Writes a file header and footer into an empty file.
+===========================================================================================================================================
+24-03-18 18:18:23 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 18:18:23 seconds seconds >> Begin execution trace 
+24-03-18 18:18:23 00,0000         |  >> mPrivProfTest.Test_800_Lifecycle
+24-03-18 18:18:23 00,0134         |  |  >> 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 18:18:23 00,0142         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 18:18:23 00,0151 00,0009 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 18:18:23 00,0177 00,0043 |  |  << 800-1 Method   clsPrivProf.Header, Footer: Writes a file header and footer into an empty file.
+24-03-18 18:18:23 00,0196         |  |  >> 800-2 Property clsPrivProf.Value Let: Writes a file header and footer into an empty file.
+24-03-18 18:20:22 119,2139         |  |  |  >> clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 18:20:28 124,6634 05,4495 |  |  |  << clsPrivProf.FileAsDict (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
+24-03-18 18:20:28 124,6661 124,6465 |  |  << 800-2 Property clsPrivProf.Value Let: Writes a file header and footer into an empty file. ( Passed )
+24-03-18 18:21:15 172,1103 172,1103 |  << mPrivProfTest.Test_800_Lifecycle
+24-03-18 18:21:15 172,1103 172,1103 << End execution trace 
+24-03-18 18:21:15                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-03-18 18:21:15                 Impact on the overall performance (caused by the trace itself): 0,5 milliseconds!
