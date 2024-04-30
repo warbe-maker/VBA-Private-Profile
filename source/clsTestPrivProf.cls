@@ -34,7 +34,7 @@ Option Explicit
 ' ----------------------------------------------------------------------------
 Public PP                           As clsPrivProf
 Public Test                         As clsTestAid
-Public Fso                          As New FileSystemObject
+Public FSo                          As New FileSystemObject
 
 Private Const SECTION_NAME          As String = "Section_"      ' for PrivateProfile services test
 Private Const VALUE_NAME_INDIVIDUAL As String = "_Name_"        ' for PrivateProfile services test
@@ -52,7 +52,7 @@ Private Sub Class_Initialize()
     lNoOfTestSections = 10
     lNoOfTestValues = 16
     sFolder = ThisWorkbook.Path & "\Test"
-    sPrivProfFileFullName = sFolder & "\" & Fso.GetBaseName(ThisWorkbook.Name) & ".dat"
+    sPrivProfFileFullName = sFolder & "\" & FSo.GetBaseName(ThisWorkbook.Name) & ".dat"
     
     If TestAid Is Nothing Then Set Test = New clsTestAid
     TestAid.TestedComp = "clsPrivProf"
@@ -69,7 +69,7 @@ Private Property Get FileTemp(Optional ByVal f_path As String = vbNullString, _
     Dim sTemp As String
     
     If VBA.Left$(f_extension, 1) <> "." Then f_extension = "." & f_extension
-    sTemp = Replace(PP.Fso.GetTempName, ".tmp", f_extension)
+    sTemp = Replace(PP.FSo.GetTempName, ".tmp", f_extension)
     If f_path = vbNullString Then f_path = CurDir
     sTemp = VBA.Replace(f_path & "\" & sTemp, "\\", "\")
     FileTemp = sTemp
@@ -81,7 +81,7 @@ Public Property Get NoOfTestSections() As Long:         NoOfTestSections = lNoOf
 Public Property Get NoOfTestValues() As Long:           NoOfTestValues = lNoOfTestValues:               End Property
 
 Public Property Get PrivProfFile() As File
-    Set PrivProfFile = Fso.GetFile(sPrivProfFileFullName)
+    Set PrivProfFile = FSo.GetFile(sPrivProfFileFullName)
 End Property
 
 Public Property Get PrivProfFileFullName() As String:   PrivProfFileFullName = sPrivProfFileFullName:   End Property
@@ -101,7 +101,7 @@ End Function
 
 Public Function ExpectedTestResultFile(ByVal e_test_folder As String, _
                                        ByVal e_test_no As String) As File
-     Set ExpectedTestResultFile = Fso.GetFile(ExpectedTestResultFileName(e_test_folder, e_test_no))
+     Set ExpectedTestResultFile = FSo.GetFile(ExpectedTestResultFileName(e_test_folder, e_test_no))
      
 End Function
 
@@ -229,11 +229,11 @@ Public Function PrivateProfile_File(Optional ByVal t_sections As Long = 0, _
     Dim j       As Long
     Dim arr()   As Variant
     
-    If Not Fso.FolderExists(sFolder) Then Fso.CreateFolder sFolder
+    If Not FSo.FolderExists(sFolder) Then FSo.CreateFolder sFolder
     If t_sections = 0 Then t_sections = lNoOfTestSections
     If t_values = 0 Then t_values = lNoOfTestValues
     
-    If Fso.FileExists(sPrivProfFileFullName) Then Fso.DeleteFile sPrivProfFileFullName
+    If FSo.FileExists(sPrivProfFileFullName) Then FSo.DeleteFile sPrivProfFileFullName
     
     For i = t_sections To 1 Step -2
         ArrayAdd arr, "[" & SectionName(i) & "]"
@@ -250,7 +250,7 @@ Public Function PrivateProfile_File(Optional ByVal t_sections As Long = 0, _
     
 xt: Exit Function
 
-eh: Select Case mErh.ErrMsg(ErrSrc(PROC))
+eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -261,7 +261,7 @@ Public Sub RemoveTestFiles()
     Dim v As Variant
     If cllTestFiles Is Nothing Then Set cllTestFiles = New Collection
     For Each v In cllTestFiles
-        If Fso.FileExists(v) Then
+        If FSo.FileExists(v) Then
             Kill v
         End If
     Next v
@@ -274,6 +274,24 @@ Public Function SectionName(ByVal l As Long) As String
     SectionName = SECTION_NAME & Format(l, "00")
 End Function
 
+Private Sub BoP(ByVal b_proc As String, _
+       Optional ByVal b_args As String = vbNullString)
+' ------------------------------------------------------------------------------
+' Common 'Begin of Procedure' interface serving the 'Common VBA Error Services'
+' and - if not installed/activated the 'Common VBA Execution Trace Service'.
+' Obligatory copy Private for any VB-Component using the service but not having
+' the mBasic common component installed.
+' ------------------------------------------------------------------------------
+#If mErH Then          ' serves the mTrc/clsTrc when installed and active
+    mErH.BoP b_proc, b_args
+#ElseIf clsTrc = 1 Then ' when only clsTrc is installed and active
+    If Trc Is Nothing Then Set Trc = New clsTrc
+    Trc.BoP b_proc, b_args
+#ElseIf mTrc = 1 Then   ' when only mTrc is installed and activate
+    mTrc.BoP b_proc, b_args
+#End If
+End Sub
+
 Private Function TempFile() As String
 ' ----------------------------------------------------------------------------
 '
@@ -283,21 +301,38 @@ Private Function TempFile() As String
     On Error GoTo eh
     Dim sFileName   As String
 
-    mBasic.BoP ErrSrc(PROC)
+    BoP ErrSrc(PROC)
     sFileName = FileTemp(f_extension:=".dat")
     TempFile = sFileName
 
     If cllTestFiles Is Nothing Then Set cllTestFiles = New Collection
     cllTestFiles.Add sPrivProfFileFullName
 
-xt: mBasic.EoP ErrSrc(PROC)
+xt: EoP ErrSrc(PROC)
     Exit Function
 
-eh: Select Case mErh.ErrMsg(ErrSrc(PROC))
+eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
 End Function
+
+Private Sub EoP(ByVal e_proc As String, _
+      Optional ByVal e_args As String = vbNullString)
+' ------------------------------------------------------------------------------
+' Common 'Begin of Procedure' interface serving the 'Common VBA Error Services'
+' and - if not installed/activated the 'Common VBA Execution Trace Service'.
+' Obligatory copy Private for any VB-Component using the service but not having
+' the mBasic common component installed.
+' ------------------------------------------------------------------------------
+#If mErH = 1 Then          ' serves the mTrc/clsTrc when installed and active
+    mErH.EoP e_proc, e_args
+#ElseIf clsTrc = 1 Then ' when only clsTrc is installed and active
+    Trc.EoP e_proc, e_args
+#ElseIf mTrc = 1 Then   ' when only mTrc is installed and activate
+    mTrc.EoP e_proc, e_args
+#End If
+End Sub
 
 Public Function ValueName(Optional ByVal t_section_name As Long = 0, _
                           Optional ByVal t_value_name As Long = 0) As String

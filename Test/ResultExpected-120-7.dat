@@ -1,6 +1,3 @@
-; File Comment Line 1 (the comments delimiter below is adjusted to the longest comment)
-; File Comment Line 2
-; =====================================================================================
 [Section_02]
 Section_02_Name_02=Section_02-Value-02
 Section_02_Name_04=Section_02-Value-04
@@ -10,9 +7,10 @@ Section_02_Name_10=Section_02-Value-10
 Section_02_Name_12=Section_02-Value-12
 Section_02_Name_14=Section_02-Value-14
 Section_02_Name_16=Section_02-Value-16
+Section_02_Name_17=New value, existing section
 
 [Section_04]
-Section_04_Name_02=Section_04-Value-02
+Section_04_Name_02=Changed value
 Section_04_Name_04=Section_04-Value-04
 Section_04_Name_06=Section_04-Value-06
 Section_04_Name_08=Section_04-Value-08
@@ -50,3 +48,8 @@ Section_10_Name_10=Section_10-Value-10
 Section_10_Name_12=Section_10-Value-12
 Section_10_Name_14=Section_10-Value-14
 Section_10_Name_16=Section_10-Value-16
+
+; Section comment (by the way)
+[Section_11]
+; Value comment changed
+Section_11_Name_01=Changed again new value, new section
