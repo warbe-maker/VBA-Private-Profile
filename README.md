@@ -1,5 +1,5 @@
 ## VBA _Private Profile_ file services
-Simplify and unify _Private Profile_ file services by supporting, thereby supporting:
+Simplify and unify _Private Profile_ file services by supporting:
 - section separation (default)
 - file header and footer
 - section and value comments
@@ -35,6 +35,7 @@ The service has the following named arguments:
 |_ValueNameExists_   | Method   | Returns TRUE when a given value-name exists in a provided _Private Profile_ file's section.|
 |_ValueNameRename_   | Method   | Replaces an old value name with a new one either in sections provided as a comma delimited string or in all sections when none are provided.|
 |_ValueNames_        | Method   | Returns a Dictionary with all value names a _Private Profile_ file with the value name as the key and the value as the item, of all sections if none is provided or those of a provided section's name. When the file name is omitted it defaults to the name specified by the _FileName_ property.<br>***Note:*** The returned value-names are distinct names! I.e. when a value exists in more than one section it is still one distinct value-name.|
+| _SectionSeparation_ | Property | Boolean expression, default to True, separates sections by an empty line to improve readability.|
 
 ## Installation
 1. Download and import [clsPrivProf.cls][1] to your VB project.
