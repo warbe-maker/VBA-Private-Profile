@@ -563,16 +563,17 @@ Public Function CollectionAsDictionary(ByVal v_items As Collection) As Dictionar
 
 End Function
 
-Public Function CollectionAsFile(ByVal v_items As Collection, _
-                        Optional ByRef v_file_name As String = vbNullString, _
-                        Optional ByVal v_file_append As Boolean = False) As File
+Public Function CollectionAsFile(ByVal c_items As Collection, _
+                        Optional ByRef c_file As String = vbNullString, _
+                        Optional ByVal c_file_append As Boolean = False) As File
 ' ----------------------------------------------------------------------------
-'
+' Transfers the items of a Collection (c_coll) as records/lines to a
+' file (c_file_name), optionally appended (c_file_append).
 ' ----------------------------------------------------------------------------
 
-    If v_file_name = vbNullString Then v_file_name = TempFile
-    StringAsFile CollectionAsString(v_items), v_file_name, v_file_append
-    Set CollectionAsFile = FSo.GetFile(v_file_name)
+    If c_file = vbNullString Then c_file = TempFile
+    StringAsFile CollectionAsString(c_items), c_file, c_file_append
+    Set CollectionAsFile = FSo.GetFile(c_file)
 
 End Function
 
@@ -1049,22 +1050,6 @@ Private Function FileAsStringEmptyExcluded(ByVal s_s As String) As String
     FileAsStringEmptyExcluded = s_s
     
 End Function
-
-'Public Sub FileFromString(ByVal f_file_full_name As String, _
-'                          ByVal f_s As String, _
-'                 Optional ByVal f_appended As Boolean = False)
-'' ----------------------------------------------------------------------------
-'' Writes a string (f_s) with multiple records/lines delimited by a vbCrLf to
-'' a file (f_file_full_name).
-'' ----------------------------------------------------------------------------
-'
-'    If f_appended _
-'    Then Open f_file_full_name For Append As #1 _
-'    Else Open f_file_full_name For Output As #1
-'    Print #1, f_s
-'    Close #1
-'
-'End Sub
 
 Private Function FileAsStringTrimmed(ByVal s_s As String, _
                             Optional ByRef s_as_dict As Dictionary = Nothing) As String

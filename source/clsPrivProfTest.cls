@@ -162,22 +162,6 @@ Private Function FileAsStringEmptyExcluded(ByVal s_s As String) As String
     
 End Function
 
-Private Sub FileFromString(ByVal f_file_full_name As String, _
-                           ByVal f_s As String, _
-                  Optional ByVal f_appended As Boolean = False)
-' ----------------------------------------------------------------------------
-' Writes a string (f_s) with multiple records/lines delimited by a vbCrLf to
-' a file (f_file_full_name).
-' ----------------------------------------------------------------------------
-    
-    If f_appended _
-    Then Open f_file_full_name For Append As #1 _
-    Else Open f_file_full_name For Output As #1
-    Print #1, f_s
-    Close #1
-    
-End Sub
-
 Private Function FileStringTrimmed(ByVal s_s As String, _
                           Optional ByRef s_as_dict As Dictionary = Nothing) As String
 ' ----------------------------------------------------------------------------
@@ -247,7 +231,7 @@ Public Function PrivateProfile_File(Optional ByVal t_sections As Long = 0, _
             Else ArrayAdd arr, ValueName(, j) & "=" & ValueString(i, j)
         Next j
     Next i
-    FileFromString sPrivProfFileFullName, Join(arr, vbCrLf)
+    StringAsFile Join(arr, vbCrLf), sPrivProfFileFullName
     If cllTestFiles Is Nothing Then Set cllTestFiles = New Collection
     cllTestFiles.Add sPrivProfFileFullName
     PrivateProfile_File = sPrivProfFileFullName
@@ -258,6 +242,35 @@ eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
+End Function
+
+Private Function StringAsFile(ByVal s_strng As String, _
+                     Optional ByRef s_file As Variant = vbNullString, _
+                     Optional ByVal s_file_append As Boolean = False) As File
+' ----------------------------------------------------------------------------
+' Writes a string (s_strng) to a file (s_file) which might be a file object or
+' a file's full name. When no file (s_file) is provided, a temporary file is
+' returned.
+' Note 1: Only when the string has sub-strings delimited by vbCrLf the string
+'         is written a records/lines.
+' Note 2: When the string has the alternate split indicator "|&|" this one is
+'         replaced by vbCrLf.
+' Note when copied: Originates in mVarTrans
+'                   See https://github.com/warbe-maker/Excel_VBA_VarTrans
+' ----------------------------------------------------------------------------
+    
+    Select Case True
+        Case s_file = vbNullString: s_file = TempFile
+        Case TypeName(s_file) = "File": s_file = s_file.Path
+    End Select
+    
+    If s_file_append _
+    Then Open s_file For Append As #1 _
+    Else Open s_file For Output As #1
+    Print #1, s_strng
+    Close #1
+    Set StringAsFile = FSo.GetFile(s_file)
+    
 End Function
 
 Public Sub RemoveTestFiles()

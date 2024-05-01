@@ -12,7 +12,9 @@ Option Compare Text
 ' ----------------------------------------------------------------------------
 ' Class Module clsPrivProf: Private Profile Files services. The componet works
 ' ========================= autonomous and does not require any other
-' components.
+' components. Naming comvention: PPfile.... operates on the Provate Profile
+' file directly, PPtwin... operates on/with a Provate Profile file's twin
+' maintained in the form of a Directories/Collections structure.
 '
 ' Public properties:
 ' ------------------
@@ -78,7 +80,7 @@ Option Compare Text
 ' Uses no other components. Will use optionally mErH, fMsg/mMsg when installed
 ' and activated (Cond. Comp. Args. `mErH = 1 : mMsg = 1`).
 '
-' W. Rauschenberger, Berlin Apr 2024
+' W. Rauschenberger, Berlin May 2024
 ' See also https://github.com/warbe-maker/VBA-Private-Profile.
 ' ----------------------------------------------------------------------------
 Public FSo                      As FileSystemObject
@@ -123,12 +125,12 @@ Private Declare PtrSafe Function GetPrivateProfileString _
                 ByVal nSize As Long, _
                 ByVal lpg_FileName As String) As Long
 
-Private Declare PtrSafe Function DeletePrivateProfileKey _
-                Lib "kernel32" Alias "WritePrivateProfileStringA" _
-               (ByVal Section As String, _
-                ByVal Key As String, _
-                ByVal Setting As Long, _
-                ByVal Name As String) As Long
+'Private Declare PtrSafe Function DeletePrivateProfileKey _
+'                Lib "kernel32" Alias "WritePrivateProfileStringA" _
+'               (ByVal Section As String, _
+'                ByVal Key As String, _
+'                ByVal Setting As Long, _
+'                ByVal Name As String) As Long
                  
 Private Declare PtrSafe Function apiShellExecute _
                 Lib "shell32.dll" Alias "ShellExecuteA" _
@@ -330,7 +332,7 @@ Private Property Let CommentsFile(Optional ByVal h_file_name As String = vbNullS
         Next i
     End If
     
-    FileFromString h_file_name, Join(arrOut, vbCrLf)
+    StringAsFile Join(arrOut, vbCrLf), h_file_name
 
 End Property
 
@@ -505,7 +507,7 @@ Private Property Let CommentsValue(Optional ByVal h_valu_name As String, _
         ArrayAdd arrOut, arr(i)
     Next i
     
-    FileFromString h_file_name, Join(arrOut, vbCrLf)
+    StringAsFile Join(arrOut, vbCrLf), h_file_name
 
 xt: Exit Property
 
@@ -555,7 +557,7 @@ Public Property Get Footer(Optional ByVal name_file As String = vbNullString) As
     
     Set Footer = cll
     If Not IsValidFile(name_file, arr, bActive) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
-    Set Footer = PPfooterGet(arr)
+    Set Footer = PPfileFooterGet(arr)
     
 End Property
 
@@ -579,7 +581,7 @@ Public Property Let Footer(Optional ByVal name_file As String = vbNullString, _
     
     If Not IsValidFile(name_file, arr, bActive) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
     If ArrayIsAllocated(arr) Then
-        Set cllFooterOld = PPfooterGet(name_file)
+        Set cllFooterOld = PPfileFooterGet(name_file)
         '~~ Transfer all except the old footer (if any)
         For i = LBound(arr) To UBound(arr) - cllFooterOld.Count
             ArrayAdd arrOut, arr(i)
@@ -599,7 +601,7 @@ Public Property Let Footer(Optional ByVal name_file As String = vbNullString, _
     Next v
     
     '~~ Re-write Private Profile File with new/replaced file comment if any
-    FileFromString name_file, Join(arrOut, vbCrLf)
+    StringAsFile Join(arrOut, vbCrLf), name_file
 
 End Property
 
@@ -971,19 +973,16 @@ Private Function CollectionAsDictionary(ByVal c_coll As Collection) As Dictionar
 End Function
 
 Private Function CollectionAsFile(ByVal c_coll As Collection, _
-                        Optional ByRef c_file_name As String = vbNullString, _
-                        Optional ByVal c_file_append As Boolean = False) As File
+                         Optional ByRef c_file As String = vbNullString, _
+                         Optional ByVal c_append As Boolean = False) As File
 ' ----------------------------------------------------------------------------
-' Returns the items of a Collection (c_coll) as records/lines in a file
-' (c_file_name), optionally appended (c_file_append).
-' Uses: StringAsFile, CollectionAsString.
-' Note when copied: Originates in mVarTrans
-'                   See https://github.com/warbe-maker/Excel_VBA_VarTrans
+' Transfers the items of a Collection (c_coll) as records/lines to a
+' file (c_file), optionally appended (c_append).
 ' ----------------------------------------------------------------------------
 
-    If c_file_name = vbNullString Then c_file_name = TempFile
-    StringAsFile CollectionAsString(c_coll), c_file_name, c_file_append
-    Set CollectionAsFile = FSo.GetFile(c_file_name)
+    If c_file = vbNullString Then c_file = TempFile
+    StringAsFile CollectionAsString(c_coll), c_file, c_append
+    Set CollectionAsFile = FSo.GetFile(c_file)
 
 End Function
 
@@ -1072,7 +1071,7 @@ Private Function CommentsFileSave(ByVal f_file_name As String) As Collection
         FSo.DeleteFile f_file_name
         FSo.CreateTextFile f_file_name
     Else
-        FileFromString f_file_name, Join(arrOut, vbCrLf)
+        StringAsFile Join(arrOut, vbCrLf), f_file_name
     End If
 
 xt: Set CommentsFileSave = cll
@@ -1768,7 +1767,7 @@ Private Function IsValidFile(ByRef i_file_name As String, _
                 IsValidFile = True
                 If Not IsEmptyFile(i_file_name) Then
                     Set i_file_comment = CommentsFile(i_file_name)
-                    Set i_file_footer = PPfooterGet(i_arr)
+                    Set i_file_footer = PPfileFooterGet(i_arr)
                     '~~ An explicitely specified valid non empty file is immediately
                     '~~ provided as twin when yet unknown or when known but the
                     '~~ specifiec Private Profile file has changed meanwhile.
@@ -1972,46 +1971,6 @@ Private Function Max(ParamArray va() As Variant) As Variant
     
 End Function
 
-Public Sub NamesRemove(ByVal names_value As Variant, _
-              Optional ByVal name_section As String = vbNullString, _
-              Optional ByVal name_file As String = vbNullString, _
-              Optional ByRef names_removed As Long)
-' -----------------------------------------------------------------------------
-' Removes from a PrivateProfile file (name_file) - which defaults to the
-' FileName property provided - in a section (name_section) names provided
-' either as a comma delimited string, or as one string only.
-' When no file (name_file) is provided - either as full name or as file object
-' a file selection dialog is displayed. When finally there's still no file
-' provided the service ends without notice.
-' When the name existed and has been removed, the function returns TRUE.
-' -----------------------------------------------------------------------------
-    Const PROC = "NamesRemove"
-    
-    On Error GoTo eh
-    Dim v   As Variant
-    
-    If Not IsValidFile(name_file) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
-    If Not IsValidSectName(name_section) Then Err.Raise AppErr(2), ErrSrc(PROC), ErrInvalidSectName(name_section)
-    
-    For Each v In VarAsArray(names_value)
-        If ValueNameExists(name_file, name_section, v) Then
-            DeletePrivateProfileKey Section:=name_section _
-                                  , Key:=v _
-                                  , Setting:=0 _
-                                  , Name:=name_file
-            names_removed = names_removed + 1
-        End If
-    Next v
-    If names_removed > 0 Then Set dctSections = Null
-    
-xt: Exit Sub
-    
-eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbResume:  Stop: Resume
-        Case Else:      GoTo xt
-    End Select
-End Sub
-
 Private Sub PPfileAsPPtwin(ByVal p_file As String)
 ' ----------------------------------------------------------------------------
 ' Sets up a Private Profile twin as a structure of Dictionaries and
@@ -2033,7 +1992,7 @@ Private Sub PPfileAsPPtwin(ByVal p_file As String)
     PPtwinRemove p_file
     arr = FileAsArray(p_file)
     Set cllPPtwinHeader = CommentsFile(p_file)
-    Set cllPPtwinFooter = PPfooterGet(p_file)
+    Set cllPPtwinFooter = PPfileFooterGet(p_file)
     Set dctPPtwinSections = Nothing
     Set dctPPtwinSection = Nothing
     
@@ -2252,7 +2211,7 @@ Private Function PPfileHasChanged(ByVal p_file As String) As Boolean
     
 End Function
 
-Private Function PPfooterGet(ByVal p_arr As Variant) As Collection
+Private Function PPfileFooterGet(ByVal p_arr As Variant) As Collection
 ' ----------------------------------------------------------------------------
 ' Returns a Private Profile file's footer comments as Collection which may be
 ' empty.
@@ -2260,7 +2219,7 @@ Private Function PPfooterGet(ByVal p_arr As Variant) As Collection
     Dim cll As New Collection
     Dim i   As Long
     
-    Set PPfooterGet = cll
+    Set PPfileFooterGet = cll
     If Not IsArray(p_arr) Then p_arr = FileAsArray(p_arr)
     i = UBound(p_arr)
     Do While IsComment(p_arr(i)) And i >= LBound(p_arr)
@@ -2272,39 +2231,45 @@ Private Function PPfooterGet(ByVal p_arr As Variant) As Collection
     If IsDelimiterFileFooter(p_arr(i)) Then cll.Add p_arr(i)
     
     If cll.Count > 0 _
-    Then Set PPfooterGet = RevertOrder(cll)
+    Then Set PPfileFooterGet = RevertOrder(cll)
 
 xt: Set cll = Nothing
     
 End Function
 
-Private Sub PPfooterRestore(ByVal p_file_name As String, _
-                            ByVal p_file_footer As Collection)
-    CollectionAsFile p_file_footer, p_file_name, True
+Private Sub PPfileFooterRestore(ByVal p_file As String, _
+                                ByVal p_footer As Collection)
+' ----------------------------------------------------------------------------
+' Re-appends a saved - and removed - file footer (p_footer) to the Private
+' Profile file (p_file).
+' ----------------------------------------------------------------------------
+    CollectionAsFile c_coll:=p_footer _
+                   , c_file:=p_file _
+                   , c_append:=True
     
 End Sub
 
-Private Function PPfooterSave(ByVal p_file_name As String) As Collection
+Private Function PPfileFooterSave(ByVal p_file As String) As Collection
 ' ----------------------------------------------------------------------------
-'
+' Returns and removes a footer from a Private Profile file (p_file).
 ' ----------------------------------------------------------------------------
     Dim arrIn   As Variant
     Dim arrOut  As Variant
     Dim cll     As Collection
     Dim i       As Long
     
-    Set cll = PPfooterGet(FileAsArray(p_file_name))
-    arrIn = FileAsArray(p_file_name)
+    Set cll = PPfileFooterGet(FileAsArray(p_file))
+    arrIn = FileAsArray(p_file)
     For i = LBound(arrIn) To UBound(arrIn) - cll.Count
         ArrayAdd arrOut, arrIn(i)
     Next i
     If Not ArrayIsAllocated(arrOut) Then
-        FSo.DeleteFile p_file_name
-        FSo.CreateTextFile p_file_name
+        FSo.DeleteFile p_file
+        FSo.CreateTextFile p_file
     Else
-        FileFromString p_file_name, Join(arrOut, vbCrLf)
+        StringAsFile Join(arrOut, vbCrLf), p_file
     End If
-    Set PPfooterSave = cll
+    Set PPfileFooterSave = cll
     Set cll = Nothing
     
 End Function
@@ -3025,7 +2990,7 @@ Private Sub ValueLet(ByVal name_file As String, _
     If VarType(v_value) = vbBoolean Then v_value = VBA.CStr(VBA.CLng(v_value))
     
     Set cllComments = CommentsFileSave(name_file)
-    Set cllFooter = PPfooterSave(name_file)
+    Set cllFooter = PPfileFooterSave(name_file)
         
     lChars = WritePrivateProfileString(lpw_ApplicationName:=name_section _
                                      , lpw_KeyName:=name_value _
@@ -3039,11 +3004,11 @@ Private Sub ValueLet(ByVal name_file As String, _
                "Value file = '" & name_file & "'"
     End If
     If cllComments.Count > 0 Then CommentsFileRestore name_file, cllComments
-    If cllFooter.Count > 0 Then PPfooterRestore name_file, cllFooter
+    If cllFooter.Count > 0 Then PPfileFooterRestore name_file, cllFooter
 
 End Sub
 
-Private Function ValueNameExists(ByVal p_file_name As String, _
+Private Function ValueNameExists(ByVal p_file As String, _
                                  ByVal p_sect_name As String, _
                                  ByVal p_valu_name As String, _
                         Optional ByVal p_valu_comments As Collection, _
@@ -3052,17 +3017,17 @@ Private Function ValueNameExists(ByVal p_file_name As String, _
                         Optional ByRef p_file_coll As Collection) As Boolean
 ' ----------------------------------------------------------------------------
 ' When a named value (p_value_name) exists in a provided section (p_sect_name)
-' in a provided Private Profile file (p_file_name) the function returns TRUE and
+' in a provided Private Profile file (p_file) the function returns TRUE and
 ' the value as Dictionary (p_value_dict).
 ' ----------------------------------------------------------------------------
             
     Dim dctFile As Dictionary
     Dim dctSect As Dictionary
     
-    PPmanage p_file_name ' in case the file has changed or the file does not exist as Directory structure
+    PPmanage p_file ' in case the file has changed or the file does not exist as Directory structure
     
-    If dctPPtwins.Exists(p_file_name) Then
-        Set p_file_coll = dctPPtwins(p_file_name)
+    If dctPPtwins.Exists(p_file) Then
+        Set p_file_coll = dctPPtwins(p_file)
         Set dctFile = p_file_coll(2)
         If dctFile.Exists(p_sect_name) Then
             Set p_sect_coll = dctFile(p_sect_name)
@@ -3136,7 +3101,7 @@ Public Function ValueNameRename(ByVal name_value_old As String, _
         
 xt: If ValueNameRename Then
         '~~ Write the Private Profile file with the renamed value-name(s)
-        FileFromString name_file, Join(arrOut, vbCrLf)
+        StringAsFile Join(arrOut, vbCrLf), name_file
         '~~ Re-write the Private Profile file reorganized to ensure value-names in ascending order
         PPmanage name_file
     End If
@@ -3219,31 +3184,58 @@ Public Sub ValueRemove(ByVal name_value As String, _
               Optional ByVal name_section As String = vbNullString, _
               Optional ByVal name_file As String = vbNullString)
 ' ----------------------------------------------------------------------------
-' Removes one or more value-names (name_value) from a section (name_section)
-' in a Private Profile file (name_file), whereby more names may be provided as
-' a comma separated string.
+' Removes one or more values including a possible value comment by value-names
+' (name_value) from a section (name_section) in a Private Profile file
+' (name_file), whereby value-names may be provided as a comma separated string
+' and section-names (name_section) may be provided as a comma separated string.
+' Attention! When no section is provided, the value/value-name is removed in
+' all sections it is used.
 ' When no file (name_file) is provided it defaults to the file name specified
 ' by the property FileName, when no section (name_section) is provided, the
-' section defaults to the section name provided by the property Section.
-' Note: The value is removed from the twin and the twin is re-written as
-'       Private Profile file.
+' section defaults to the section name provided by the Section property.
 ' ----------------------------------------------------------------------------
     Const PROC = "ValueRemove"
     
-    Dim v As Variant
-      
+    Dim vNameValue      As Variant
+    Dim vNameSection    As Variant
+    Dim sNameSection    As String
+    Dim aNameSections() As String
+    Dim cll             As Collection
+    
     If Not IsValidFile(name_file) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
-    If Not IsValidSectName(name_section) Then Err.Raise AppErr(2), ErrSrc(PROC), ErrInvalidSectName(name_section)
-    If Not IsValidValuName(name_value) Then Err.Raise AppErr(3), ErrSrc(PROC), ErrInvalidValuName(name_value)
-                       
+    If name_section = vbNullString _
+    Then aNameSections = SectionNames(name_file).Keys _
+    Else aNameSections = StringAsArray(name_section)
     PPmanage name_file ' ensure an up-to-date twin
-    For Each v In StringAsArray(name_value)
-        PPtwinValueRemove name_file, name_section, v
-    Next v
+    
+    For Each vNameValue In StringAsArray(name_value)
+        If Not IsValidValuName(vNameValue) Then Err.Raise AppErr(3), ErrSrc(PROC), ErrInvalidValuName(vNameValue)
+        For Each vNameSection In aNameSections
+            sNameSection = vNameSection
+            If Not IsValidSectName(sNameSection) Then Err.Raise AppErr(2), ErrSrc(PROC), ErrInvalidSectName(sNameSection)
+            PPtwinValueRemove name_file, name_section, vNameValue
+        Next vNameSection
+    Next vNameValue
     PPmanage name_file
 
 xt:
 End Sub
+
+Private Function DictionaryAsString(ByVal v_items As Dictionary) As String
+' ----------------------------------------------------------------------------
+' Returns a Dictionary's keys as vbCrLf separated string.
+' ----------------------------------------------------------------------------
+    Dim s       As String
+    Dim sDelim  As String
+    Dim v       As Variant
+    
+    For Each v In v_items
+        s = s & sDelim & CStr(v)
+        sDelim = vbCrLf
+    Next v
+    DictionaryAsString = s
+
+End Function
 
 Private Function VarAsArray(ByVal v_items As Variant) As Variant
 ' ----------------------------------------------------------------------------

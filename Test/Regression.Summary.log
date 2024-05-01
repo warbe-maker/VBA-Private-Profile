@@ -1,35 +1,35 @@
-Summary Regression-Test for component "clsPrivProf" on 2024.04.30 at 15.59.11
+Summary Regression-Test for component "clsPrivProf" on 2024.05.01 at 10.13.19
 -----------------------------------------------------------------------------
-001-2.1 Property clsTestAid.Result and .ResultExpected .. Result is the result expected......................................:  Passed 
-001-3.1 Property clsTestAid.Result and .ResultExpected .. Result is not the result expected..................................:  F a i l e d ! 
-001-4.1 Property clsTestAid.Result and .ResultExpected .. Result is not the result expected (files differ)...................:  F a i l e d ! 
-001-5.1 Property clsTestAid.Result and .ResultExpected .. Test result is Failed but passed on and displayed as summary.......:  F a i l e d ! 
-100-1.1 Property clsPrivProf.FileName_Let ............... Initialize PP-file.................................................:  F a i l e d ! 
-100-2.1 Property clsPrivProf.Let FileName ............... Specifying a file valid name.......................................:  Passed 
-110-1.1 Method   clsPrivProf.Exists ..................... Section not exists.................................................:  Passed 
-110-3.1 Method   clsPrivProf.Exists ..................... Section exists.....................................................:  Passed 
-110-3.2 Method   clsPrivProf.Exists ..................... Value-Name exists..................................................:  Passed 
-110-4.1 Method   clsPrivProf.Exists ..................... Value-Name not exists..............................................:  Passed 
-120-1.1 Property clsPrivProf.Get Value .................. Read non-existing value from a non-existing file...................:  Passed 
-120-2.1 Property clsPrivProf.Get Value .................. Read existing value................................................:  Passed 
-120-3.1 Property clsPrivProf.Let Value .................. Write changed value................................................:  Passed 
-120-4.1 Property clsPrivProf.Let Value .................. Write new value in existing section................................:  Passed 
-120-5.1 Property clsPrivProf.Let Value .................. Write new value in new section.....................................:  Passed 
-120-6.1 Property clsPrivProf.Let Value .................. Change value and value plus section comments.......................:  Passed 
-120-7.1 Property clsPrivProf.Let Value .................. Changes value but not the section comments.........................:  Passed 
-200-1.1 Property clsPrivProf.Let Comment ................ Write file comment.................................................:  Passed 
-200-3.1 Property clsPrivProf.Get Comment ................ File comment read..................................................:  Passed 
-200-4.1 Property clsPrivProf.Let Comment ................ Write section comment..............................................:  Passed 
-200-5.1 Property clsPrivProf.Get Comment ................ Read section comment...............................................:  Passed 
-200-6.1 Property clsPrivProf.Let Comment ................ Write value comment................................................:  Passed 
-200-7.1 Property clsPrivProf.Get Comment ................ Read value comment.................................................:  Passed 
-200-8.1 Property clsPrivProf.Let Value .................. Write a new value including a value comment........................:  Passed 
-200-9.1 Property clsPrivProf.Get Value .................. Read a value-comment along with a value............................:  Passed 
-300-1.1 Function clsPrivProf.SectionNames ............... Get all section names in a Dictionary..............................:  Passed 
-400-1.1 Function clsPrivProf.ValueNames ................. Get all value names of all sections in a Dictionary................:  Passed 
-400-2.1 Function clsPrivProf.ValueNames ................. Get all value names of a certain section in a Dictionary...........:  Passed 
-410-1.1 Method   clsPrivProf.ValueNameRename ............ Rename a value name in each section................................:  Passed 
-600-1.1 Method   clsPrivProf.ValueRemove ................ Remove a value from a section including its comments...............:  Passed 
-600-2.1 Method   clsPrivProf.SectionRemove .............. Removes a section including its comments...........................:  Passed 
-800-1.1 Method   clsPrivProf.Let Comment/Footer ......... Writes a file comment and footer into an empty file................:  Passed 
-800-2.1 Method   clsPrivProf.Let Comment/Footer ......... Writes a file comment and footer into an empty file................:  Passed 
+001-2.1 Property clsTestAid.Result and .ResultExpected .. Result is the result expected.............................................:  Passed 
+001-3.1 Property clsTestAid.Result and .ResultExpected .. Result is  F a i l e d  because the result/expected boolean differs.......:  F a i l e d ! 
+001-4.1 Property clsTestAid.Result and .ResultExpected .. Result is  F a i l e d  because the result/expected files differ..........:  F a i l e d ! 
+001-5.1 Property clsTestAid.Result and .ResultExpected .. Result is  F a i l e d  because result/expected files differ..............:  F a i l e d ! 
+100-1.1 Property clsPrivProf.FileName_Let ............... Initialize PP-file........................................................:  Passed 
+100-2.1 Property clsPrivProf.Let FileName ............... Specifying a file valid name..............................................:  Passed 
+110-1.1 Method   clsPrivProf.Exists ..................... Section not exists........................................................:  Passed 
+110-3.1 Method   clsPrivProf.Exists ..................... Section exists............................................................:  Passed 
+110-3.2 Method   clsPrivProf.Exists ..................... Value-Name exists.........................................................:  Passed 
+110-4.1 Method   clsPrivProf.Exists ..................... Value-Name not exists.....................................................:  Passed 
+120-1.1 Property clsPrivProf.Get Value .................. Read non-existing value from a non-existing file..........................:  Passed 
+120-2.1 Property clsPrivProf.Get Value .................. Read existing value.......................................................:  Passed 
+120-3.1 Property clsPrivProf.Let Value .................. Write changed value.......................................................:  Passed 
+120-4.1 Property clsPrivProf.Let Value .................. Write new value in existing section.......................................:  Passed 
+120-5.1 Property clsPrivProf.Let Value .................. Write new value in new section............................................:  Passed 
+120-6.1 Property clsPrivProf.Let Value .................. Change value and value plus section comments..............................:  Passed 
+120-7.1 Property clsPrivProf.Let Value .................. Changes value and value comments but not the section comments.............:  Passed 
+200-1.1 Property clsPrivProf.Let Comment ................ Write file comment........................................................:  Passed 
+200-3.1 Property clsPrivProf.Get Comment ................ File comment read.........................................................:  Passed 
+200-4.1 Property clsPrivProf.Let Comment ................ Write section comment.....................................................:  Passed 
+200-5.1 Property clsPrivProf.Get Comment ................ Read section comment......................................................:  Passed 
+200-6.1 Property clsPrivProf.Let Comment ................ Write value comment.......................................................:  Passed 
+200-7.1 Property clsPrivProf.Get Comment ................ Read value comment........................................................:  Passed 
+200-8.1 Property clsPrivProf.Let Value .................. Write a new value including a value comment...............................:  Passed 
+200-9.1 Property clsPrivProf.Get Value .................. Read a value-comment along with a value...................................:  Passed 
+300-1.1 Function clsPrivProf.SectionNames ............... Get all section names in a Dictionary.....................................:  Passed 
+400-1.1 Function clsPrivProf.ValueNames ................. Get all value names of all sections in a Dictionary.......................:  Passed 
+400-2.1 Function clsPrivProf.ValueNames ................. Get all value names of a certain section in a Dictionary..................:  Passed 
+410-1.1 Method   clsPrivProf.ValueNameRename ............ Rename a value name in each section.......................................:  Passed 
+600-1.1 Method   clsPrivProf.ValueRemove ................ Remove a value from a section including its comments......................:  Passed 
+600-2.1 Method   clsPrivProf.SectionRemove .............. Removes a section including its comments..................................:  Passed 
+800-1.1 Method   clsPrivProf.Let Comment/Footer ......... Writes a file comment and footer into an empty file.......................:  Passed 
+800-2.1 Method   clsPrivProf.Let Comment/Footer ......... Writes a file comment and footer into an empty file.......................:  Passed 

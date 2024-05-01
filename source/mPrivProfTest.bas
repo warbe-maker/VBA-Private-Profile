@@ -206,7 +206,7 @@ Public Sub Test_001_Tests()
         .TestNumber = "001-3"
         .TestedProc = "Result and .ResultExpected"
         .TestedType = "Property"
-        .TestDscrpt = "Result is not the result expected"
+        .TestDscrpt = "Result is  F a i l e d  because the result/expected boolean differs"
         .ResultExpected = True
         .BoTP
         .Result = False
@@ -216,7 +216,7 @@ Public Sub Test_001_Tests()
         .TestNumber = "001-4"
         .TestedProc = "Result and .ResultExpected"
         .TestedType = "Property"
-        .TestDscrpt = "Result is not the result expected (files differ)"
+        .TestDscrpt = "Result is  F a i l e d  because the result/expected files differ"
         
         '~~ Prepare test Result file
         sFileResult = ThisWorkbook.Path & "\Test\TestResult.txt"
@@ -233,7 +233,7 @@ Public Sub Test_001_Tests()
         .TestNumber = "001-5"
         .TestedProc = "Result and .ResultExpected"
         .TestedType = "Property"
-        .TestDscrpt = "Test result is Failed but passed on and displayed as summary"
+        .TestDscrpt = "Result is  F a i l e d  because result/expected files differ"
         .ResultExpected = .StringAsFile("ResultExpected", sFileExpected)
         .TestFile = sFileExpected
         .BoTP
@@ -283,17 +283,6 @@ Public Sub Test_100_Property_FileName()
         .BoTP
         .Result = PrivProf.FileName
         .EoTP
-        ' ======================================================================
-        
-'        .TestNumber = "100-3"
-'        .TestedProc = "Let FileName"
-'        .TestedType = "Property"
-'        .TestDscrpt = "Specifying an invalid file valid name ""dat"""
-'        .AssertedErrors AppErr(1)
-'        .ResultExpected = AppErr(1)
-'        .BoTP
-'        PrivProf.FileName = "dat"
-'        .EoTP
         ' ======================================================================
     End With
     
