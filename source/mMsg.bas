@@ -175,6 +175,8 @@ Private Const WIN_NORMAL = 1         'Open Normal
 '***Error Codes***
 Private bModeLess           As Boolean
 Private fMonitor            As fMsg
+Private FSo                 As New FileSystemObject
+
 Public MsgInstances         As Dictionary    ' Collection of (possibly still)  active form instances
 
 Public Property Get DsplyWidthDPI() As Variant:         DsplyWidthDPI = Screen(enWidthDPI):                                 End Property
@@ -1338,14 +1340,14 @@ Private Function TempFile(Optional ByVal f_path As String = vbNullString, _
 ' Returns the full file name of a temporary randomly named file. When a path
 ' (f_path) is omitted in the CurDir path, else in at the provided folder.
 ' ------------------------------------------------------------------------------
-    Dim sTemp As String
+    Dim sTemp   As String
     
     If VBA.Left$(f_extension, 1) <> "." Then f_extension = "." & f_extension
     sTemp = Replace(FSo.GetTempName, ".tmp", f_extension)
     If f_path = vbNullString Then f_path = CurDir
     sTemp = VBA.Replace(f_path & "\" & sTemp, "\\", "\")
     TempFile = sTemp
-
+    
 End Function
 
 Private Function CollectionAsFile(ByVal v_items As Collection, _

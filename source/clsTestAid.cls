@@ -80,8 +80,6 @@ Option Explicit
 '
 ' W. Rauschenberger, Berlin Apr 2024
 ' ----------------------------------------------------------------------------
-Private Const DQUOTE     As String = """"    ' one " character
-
 Public FSo               As New FileSystemObject
 
 Private Const RESULT_PASSED As String = " Passed "
@@ -348,14 +346,6 @@ Private Function AppErr(ByVal app_err_no As Long) As Long
     If app_err_no >= 0 Then AppErr = app_err_no + vbObjectError Else AppErr = Abs(app_err_no - vbObjectError)
 End Function
 
-Private Function AppIsInstalled(ByVal sApp As String) As Boolean
-    
-    Dim i As Long: i = 1
-    Do Until VBA.Left$(Environ$(i), 5) = "Path=":   i = i + 1:  Loop
-    AppIsInstalled = InStr(Environ$(i), sApp) <> 0
-
-End Function
-
 Private Sub ArrayAdd(ByRef a_arr As Variant, _
                      ByVal a_str As String)
 ' ----------------------------------------------------------------------------
@@ -493,38 +483,11 @@ Public Sub BoTP()
 #End If
 End Sub
 
-Private Function CollComp(ByVal c_1 As Collection, _
-                          ByVal c_2 As Collection) As Long
-    Dim i
-    CollComp = 0
-    If c_1.Count <> c_2.Count Then
-        CollComp = -1
-        Exit Function
-    End If
-        
-    For i = 1 To c_1.Count
-        Select Case True
-            Case VBA.IsObject(c_1(i)) And VBA.IsObject(c_2(i))
-                If Not c_1(i) Is c_2(i) Then
-                    CollComp = -0
-                    Exit Function
-                End If
-            Case Else
-                If c_1(i) <> c_2(i) Then
-                    CollComp = -1
-                    Exit Function
-                End If
-        End Select
-    Next i
-    
-End Function
-
 Public Function CollectionAsArray(ByVal v_items As Collection) As Variant
 ' ----------------------------------------------------------------------------
 '
 ' ----------------------------------------------------------------------------
     Dim arr As Variant
-    Dim sName   As String
     
     For Each v In v_items
         If IsObject(v) _
@@ -581,11 +544,8 @@ Public Function CollectionAsString(ByVal v_items As Collection) As String
 ' ----------------------------------------------------------------------------
 '
 ' ----------------------------------------------------------------------------
-    Const PROC = "CollectionAsString"
-    
     Dim s       As String
     Dim sDelim  As String
-    Dim sName   As String
     
     For Each v In v_items
         Select Case True
@@ -675,7 +635,6 @@ Public Function DictionaryAsString(ByVal v_items As Dictionary) As String
 ' ----------------------------------------------------------------------------
     Dim s       As String
     Dim sDelim  As String
-    Dim sName   As String
     
     For Each v In v_items
         Select Case True
@@ -1392,8 +1351,6 @@ Private Function SplitIndctr(ByVal s As String) As String
 ' Returns the split indicator in a string (s), which is either vbCrLf or the
 ' alternate "|&|". When none is found the split indicator defaults to vbCrLf.
 ' ----------------------------------------------------------------------------
-    Const PROC = "SplitIndctr"
-    
     SplitIndctr = vbCrLf ' The dafault
     
     Select Case True
@@ -1597,13 +1554,7 @@ Private Sub TestReset()
 
 End Sub
 
-Private Function TestResultId(ByVal t_id As Variant) As String
-    TestResultId = TestNumber & "." & CStr(t_id)
-    sSubTestId = CStr(t_id)
-End Function
-
-Public Function VarAsArray(ByVal v_items As Variant, _
-                  Optional ByVal v_items_split As String = vbCrLf) As Variant
+Public Function VarAsArray(ByVal v_items As Variant) As Variant
 ' ----------------------------------------------------------------------------
 '
 ' ----------------------------------------------------------------------------
@@ -1622,13 +1573,10 @@ Public Function VarAsArray(ByVal v_items As Variant, _
     
 End Function
 
-Public Function VarAsCollection(ByVal v_items As Variant, _
-                       Optional ByVal v_items_split As String = vbCrLf) As Collection
+Public Function VarAsCollection(ByVal v_items As Variant) As Collection
 ' ----------------------------------------------------------------------------
 '
 ' ----------------------------------------------------------------------------
-    Const PROC = "VarAsCollection"
-    
     Dim cll As New Collection
     
     Select Case True
@@ -1681,19 +1629,18 @@ End Function
 
 Public Function VarAsFile(ByVal v_items As Variant, _
                   Optional ByVal v_file As String, _
-                  Optional ByVal v_append As Boolean = False, _
-                  Optional ByVal v_items_split As String = vbCrLf) As File
+                  Optional ByVal v_append As Boolean = False) As File
 ' ----------------------------------------------------------------------------
 '
 ' ----------------------------------------------------------------------------
     Const PROC = "VarAsFile"
     
     Select Case True
-        Case TypeName(v_items) = "Collection":  Set VarAsFile = CollectionAsFile(v_items)
+        Case TypeName(v_items) = "Collection":  Set VarAsFile = CollectionAsFile(v_items, v_file, v_append)
         Case TypeName(v_items) = "File"
-        Case TypeName(v_items) = "Dictionary":  Set VarAsFile = DictionaryAsFile(v_items)
-        Case VarType(v_items) = vbArray:        Set VarAsFile = ArrayAsFile(v_items)
-        Case VarType(v_items) = vbString:       Set VarAsFile = StringAsFile(v_items)
+        Case TypeName(v_items) = "Dictionary":  Set VarAsFile = DictionaryAsFile(v_items, v_file, v_append)
+        Case VarType(v_items) = vbArray:        Set VarAsFile = ArrayAsFile(v_items, v_file, v_append)
+        Case VarType(v_items) = vbString:       Set VarAsFile = StringAsFile(v_items, v_file, v_append)
         Case Else:                              Err.Raise AppErr(1), ErrSrc(PROC), _
                                                 "The provided v_items argument is of a TypeName """ & TypeName(v_items) & _
                                                 """ which is not supported for being transformed into an array!"
@@ -1701,14 +1648,10 @@ Public Function VarAsFile(ByVal v_items As Variant, _
     
 End Function
 
-Public Function VarAsDictionary(ByVal v_items As Variant, _
-                  Optional ByVal v_file As String, _
-                  Optional ByVal v_items_split As String = vbCrLf) As Dictionary
+Public Function VarAsDictionary(ByVal v_items As Variant) As Dictionary
 ' ----------------------------------------------------------------------------
 '
 ' ----------------------------------------------------------------------------
-    Const PROC = "VarAsDictionary"
-    
     Dim dct As New Dictionary
     
     Select Case True
@@ -1724,13 +1667,11 @@ Public Function VarAsDictionary(ByVal v_items As Variant, _
     
 End Function
 
-Public Function VarAsString(ByVal v_items As Variant, _
-                    Optional ByVal v_items_split As String = vbCrLf) As String
+Public Function VarAsString(ByVal v_items As Variant) As String
 ' ----------------------------------------------------------------------------
 '
 ' ----------------------------------------------------------------------------
-    Const PROC = "VarAsString"
-    
+
     Select Case True
         Case TypeName(v_items) = "Collection":  VarAsString = CollectionAsString(v_items)
         Case TypeName(v_items) = "File":        VarAsString = FileAsString(v_items)

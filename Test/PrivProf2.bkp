@@ -1,11 +1,11 @@
 [@NamesHousekeeping]
-DoneNamesHskpng=clsLog:clsQ:Last_Modified_AtDateTime>Last_Modified_UTC_AtDateTime
+DoneNamesHskpng=:RawRevisionNumber;ExportFileExtention;Last_Modified_AtDateTime:LastModifiedAtDateTime:RevisionNumber;LastModExpFileFullNameOrigin:LastModExpFileFullName;Last_Modified_InWbkFullName:LastModifiedInWbkFullName:LastModWbkFullName;Last_Modified_InWbkName:LastModifiedInWbkName;Last_Modified_OnMachine:LastModifiedOnMachine;PendingRelease_Modified_InWorkbookName;PendingRelease_Modified_InWorkbookFullName;PendingRelease_Modified_ExportFileFullName:PendingRelease_Modified_ExportFile;PendingRelease_Modified_AtDateTime;PendingRelease_Modified_OnMachine
 
 [clsLog]
 ExportFileExtention=cls
+Last_Modified_AtDateTime=2024-04-11-12-32-01 (UTC)
 Last_Modified_InWbkFullName=E:\Sync\Excel VBA\DevAndTest\CompMan\CompMan.xlsb
 Last_Modified_InWbkName=CompMan.xlsb
-Last_Modified_UTC_AtDateTime=2024-04-11-12-32-01 (UTC)
 LastModExpFileFullNameOrigin=E:\Sync\Excel VBA\DevAndTest\CompMan\source\clsLog.cls
 
 [clsPrivProf]
@@ -17,9 +17,9 @@ LastModExpFileFullNameOrigin=E:\Sync\Excel VBA\DevAndTest\PrivProf\source\clsPri
 
 [clsQ]
 ExportFileExtention=cls
+Last_Modified_AtDateTime=2024-01-24-16-30-53 (UTC)
 Last_Modified_InWbkFullName=E:\Excel VBA\DevAndTest\VBA-Component-Management\CompMan.xlsb
 Last_Modified_InWbkName=CompMan.xlsb
-Last_Modified_UTC_AtDateTime=2024-01-24-16-30-53 (UTC)
 LastModExpFileFullNameOrigin=E:\Excel VBA\DevAndTest\VBA-Component-Management\source\clsQ.cls
 
 [clsStk]

@@ -1,291 +1,167 @@
-24-05-01 10:13:19 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-24-05-01 10:13:19 seconds seconds >> Regression Test class module clsPrivProf
-24-05-01 10:13:19 00,0000         |  >> mPrivProfTest.Test_000_Regression
-24-05-01 10:13:19 00,0006         |  |  >> mPrivProfTest.Test_001_Tests
-24-05-01 10:13:19 00,0105         |  |  |  >> clsPrivProf.FileName-Let
-24-05-01 10:13:19 00,0114         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,0116         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,0177 00,0060 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,0212 00,0097 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,0214 00,0109 |  |  |  << clsPrivProf.FileName-Let
-24-05-01 10:13:19 00,0216         |  |  |  >> 001-2.1 Property clsTestAid.Result and .ResultExpected: Result is the result expected
-24-05-01 10:13:19 00,0218 00,0002 |  |  |  << 001-2.1 Property clsTestAid.Result and .ResultExpected: Result is the result expected (> Passed )
-24-05-01 10:13:19 00,0220         |  |  |  >> 001-3.1 Property clsTestAid.Result and .ResultExpected: Result is  F a i l e d  because the result/expected boolean differs
-24-05-01 10:13:19 00,0222 00,0002 |  |  |  << 001-3.1 Property clsTestAid.Result and .ResultExpected: Result is  F a i l e d  because the result/expected boolean differs (> F a i l e d ! )
-24-05-01 10:13:19 00,0237         |  |  |  >> 001-4.1 Property clsTestAid.Result and .ResultExpected: Result is  F a i l e d  because the result/expected files differ
-24-05-01 10:13:19 00,0263 00,0026 |  |  |  << 001-4.1 Property clsTestAid.Result and .ResultExpected: Result is  F a i l e d  because the result/expected files differ (> F a i l e d ! )
-24-05-01 10:13:19 00,0277         |  |  |  >> 001-5.1 Property clsTestAid.Result and .ResultExpected: Result is  F a i l e d  because result/expected files differ
-24-05-01 10:13:19 00,0306 00,0029 |  |  |  << 001-5.1 Property clsTestAid.Result and .ResultExpected: Result is  F a i l e d  because result/expected files differ (> F a i l e d ! )
-24-05-01 10:13:19 00,0315 00,0309 |  |  << mPrivProfTest.Test_001_Tests
-24-05-01 10:13:19 00,0378         |  |  >> mPrivProfTest.Test_100_Property_FileName
-24-05-01 10:13:19 00,0406         |  |  |  >> 100-1.1 Property clsPrivProf.FileName_Let: Initialize PP-file
-24-05-01 10:13:19 00,0408         |  |  |  |  >> clsPrivProf.FileName-Let
-24-05-01 10:13:19 00,0418         |  |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,0420         |  |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,0520 00,0100 |  |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,0560 00,0142 |  |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,0563 00,0154 |  |  |  |  << clsPrivProf.FileName-Let
-24-05-01 10:13:19 00,0575 00,0170 |  |  |  << 100-1.1 Property clsPrivProf.FileName_Let: Initialize PP-file (> Passed )
-24-05-01 10:13:19 00,0578         |  |  |  >> clsPrivProf.FileName-Let
-24-05-01 10:13:19 00,0589         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,0595 00,0006 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,0598 00,0019 |  |  |  << clsPrivProf.FileName-Let
-24-05-01 10:13:19 00,0612         |  |  |  >> 100-2.1 Property clsPrivProf.Let FileName: Specifying a file valid name
-24-05-01 10:13:19 00,0615 00,0003 |  |  |  << 100-2.1 Property clsPrivProf.Let FileName: Specifying a file valid name (> Passed )
-24-05-01 10:13:19 00,0619 00,0241 |  |  << mPrivProfTest.Test_100_Property_FileName
-24-05-01 10:13:19 00,0696         |  |  >> mPrivProfTest.Test_110_Methods_xExists
-24-05-01 10:13:19 00,0716         |  |  |  >> clsPrivProf.FileName-Let
-24-05-01 10:13:19 00,0726         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,0728         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,0782 00,0055 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,0822 00,0097 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,0826 00,0110 |  |  |  << clsPrivProf.FileName-Let
-24-05-01 10:13:19 00,0829         |  |  |  >> 110-1.1 Method   clsPrivProf.Exists: Section not exists
-24-05-01 10:13:19 00,0831         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,0845         |  |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,0854 00,0009 |  |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,0858 00,0027 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,0863 00,0034 |  |  |  << 110-1.1 Method   clsPrivProf.Exists: Section not exists (> Passed )
-24-05-01 10:13:19 00,0865         |  |  |  >> 110-3.1 Method   clsPrivProf.Exists: Section exists
-24-05-01 10:13:19 00,0867         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,0880         |  |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,0885 00,0005 |  |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,0887 00,0020 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,0890 00,0025 |  |  |  << 110-3.1 Method   clsPrivProf.Exists: Section exists (> Passed )
-24-05-01 10:13:19 00,0892         |  |  |  >> 110-3.1 Method   clsPrivProf.Exists: Value-Name exists
-24-05-01 10:13:19 00,0894         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,0906         |  |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,0911 00,0005 |  |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,0913 00,0018 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,0916 00,0023 |  |  |  << 110-3.1 Method   clsPrivProf.Exists: Value-Name exists (> Passed )
-24-05-01 10:13:19 00,0918         |  |  |  >> 110-4.1 Method   clsPrivProf.Exists: Value-Name not exists
-24-05-01 10:13:19 00,0920         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,0931         |  |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,0936 00,0005 |  |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,0938 00,0018 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,0941 00,0023 |  |  |  << 110-4.1 Method   clsPrivProf.Exists: Value-Name not exists (> Passed )
-24-05-01 10:13:19 00,0943 00,0247 |  |  << mPrivProfTest.Test_110_Methods_xExists
-24-05-01 10:13:19 00,1011         |  |  >> mPrivProfTest.Test_120_Property_Value
-24-05-01 10:13:19 00,1031         |  |  |  >> clsPrivProf.FileName-Let
-24-05-01 10:13:19 00,1041         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,1043         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,1098 00,0054 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,1132 00,0091 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,1135 00,0104 |  |  |  << clsPrivProf.FileName-Let
-24-05-01 10:13:19 00,1138         |  |  |  >> 120-1.1 Property clsPrivProf.Get Value: Read non-existing value from a non-existing file
-24-05-01 10:13:19 00,1141         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,1147 00,0006 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,1159 00,0021 |  |  |  << 120-1.1 Property clsPrivProf.Get Value: Read non-existing value from a non-existing file (> Passed )
-24-05-01 10:13:19 00,1162         |  |  |  >> 120-2.1 Property clsPrivProf.Get Value: Read existing value
-24-05-01 10:13:19 00,1165         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,1171 00,0007 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,1181 00,0019 |  |  |  << 120-2.1 Property clsPrivProf.Get Value: Read existing value (> Passed )
-24-05-01 10:13:19 00,1183         |  |  |  >> 120-3.1 Property clsPrivProf.Let Value: Write changed value
-24-05-01 10:13:19 00,1186         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,1191 00,0005 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,1213         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,1218 00,0005 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,1227 00,0044 |  |  |  << 120-3.1 Property clsPrivProf.Let Value: Write changed value (> Passed )
-24-05-01 10:13:19 00,1229         |  |  |  >> 120-4.1 Property clsPrivProf.Let Value: Write new value in existing section
-24-05-01 10:13:19 00,1231         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,1236 00,0005 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,1260         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,1265         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,1324 00,0059 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,1364 00,0105 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,1367         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,1372 00,0005 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,1382 00,0153 |  |  |  << 120-4.1 Property clsPrivProf.Let Value: Write new value in existing section (> Passed )
-24-05-01 10:13:19 00,1384         |  |  |  >> 120-5.1 Property clsPrivProf.Let Value: Write new value in new section
-24-05-01 10:13:19 00,1386         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,1392 00,0005 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,1415         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,1421         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,1479 00,0058 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,1528 00,0113 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,1531         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,1537 00,0006 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,1547 00,0163 |  |  |  << 120-5.1 Property clsPrivProf.Let Value: Write new value in new section (> Passed )
-24-05-01 10:13:19 00,1550         |  |  |  >> 120-6.1 Property clsPrivProf.Let Value: Change value and value plus section comments
-24-05-01 10:13:19 00,1552         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,1557 00,0005 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,1597 00,0047 |  |  |  << 120-6.1 Property clsPrivProf.Let Value: Change value and value plus section comments (> Passed )
-24-05-01 10:13:19 00,1600         |  |  |  >> 120-7.1 Property clsPrivProf.Let Value: Changes value and value comments but not the section comments
-24-05-01 10:13:19 00,1602         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,1607 00,0005 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,1661 00,0061 |  |  |  << 120-7.1 Property clsPrivProf.Let Value: Changes value and value comments but not the section comments (> Passed )
-24-05-01 10:13:19 00,1665 00,0654 |  |  << mPrivProfTest.Test_120_Property_Value
-24-05-01 10:13:19 00,1716         |  |  >> mPrivProfTest.Test_200_Property_Comments
-24-05-01 10:13:19 00,1762         |  |  |  >> clsPrivProf.FileName-Let
-24-05-01 10:13:19 00,1772         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,1774         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,1852 00,0079 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,1884 00,0112 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,1887 00,0124 |  |  |  << clsPrivProf.FileName-Let
-24-05-01 10:13:19 00,1892         |  |  |  >> 200-1.1 Property clsPrivProf.Let Comment: Write file comment
-24-05-01 10:13:19 00,1894         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,1900 00,0006 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,1918         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,1923         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,1963 00,0040 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,2001 00,0083 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,2019 00,0127 |  |  |  << 200-1.1 Property clsPrivProf.Let Comment: Write file comment (> Passed )
-24-05-01 10:13:19 00,2023         |  |  |  >> 200-3.1 Property clsPrivProf.Get Comment: File comment read
-24-05-01 10:13:19 00,2027         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,2034 00,0007 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,2041 00,0018 |  |  |  << 200-3.1 Property clsPrivProf.Get Comment: File comment read (> Passed )
-24-05-01 10:13:19 00,2045         |  |  |  >> 200-4.1 Property clsPrivProf.Let Comment: Write section comment
-24-05-01 10:13:19 00,2048         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,2054 00,0006 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,2068         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,2074         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,2110 00,0036 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,2154 00,0086 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,2169 00,0125 |  |  |  << 200-4.1 Property clsPrivProf.Let Comment: Write section comment (> Passed )
-24-05-01 10:13:19 00,2172         |  |  |  >> 200-5.1 Property clsPrivProf.Get Comment: Read section comment
-24-05-01 10:13:19 00,2175         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,2181 00,0006 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,2186 00,0014 |  |  |  << 200-5.1 Property clsPrivProf.Get Comment: Read section comment (> Passed )
-24-05-01 10:13:19 00,2190         |  |  |  >> 200-6.1 Property clsPrivProf.Let Comment: Write value comment
-24-05-01 10:13:19 00,2192         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,2197 00,0006 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,2212         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,2217         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,2254 00,0037 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,2286 00,0074 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,2302 00,0112 |  |  |  << 200-6.1 Property clsPrivProf.Let Comment: Write value comment (> Passed )
-24-05-01 10:13:19 00,2305         |  |  |  >> 200-7.1 Property clsPrivProf.Get Comment: Read value comment
-24-05-01 10:13:19 00,2308         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,2315 00,0007 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,2322 00,0017 |  |  |  << 200-7.1 Property clsPrivProf.Get Comment: Read value comment (> Passed )
-24-05-01 10:13:19 00,2328         |  |  |  >> 200-8.1 Property clsPrivProf.Let Value: Write a new value including a value comment
-24-05-01 10:13:19 00,2331         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,2337 00,0006 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,2380         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,2387         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,2425 00,0039 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,2463 00,0083 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,2477 00,0150 |  |  |  << 200-8.1 Property clsPrivProf.Let Value: Write a new value including a value comment (> Passed )
-24-05-01 10:13:19 00,2481         |  |  |  >> 200-9.1 Property clsPrivProf.Get Value: Read a value-comment along with a value
-24-05-01 10:13:19 00,2484         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,2491 00,0007 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,2504 00,0023 |  |  |  << 200-9.1 Property clsPrivProf.Get Value: Read a value-comment along with a value (> Passed )
-24-05-01 10:13:19 00,2508 00,0792 |  |  << mPrivProfTest.Test_200_Property_Comments
-24-05-01 10:13:19 00,2584         |  |  >> mPrivProfTest.Test_300_Method_SectionNames
-24-05-01 10:13:19 00,2639         |  |  |  >> clsPrivProf.FileName-Let
-24-05-01 10:13:19 00,2659         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,2663         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,2745 00,0082 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,2809 00,0151 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,2814 00,0175 |  |  |  << clsPrivProf.FileName-Let
-24-05-01 10:13:19 00,2818         |  |  |  >> 300-1.1 Function clsPrivProf.SectionNames: Get all section names in a Dictionary
-24-05-01 10:13:19 00,2822         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,2831 00,0009 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,2846 00,0028 |  |  |  << 300-1.1 Function clsPrivProf.SectionNames: Get all section names in a Dictionary (> Passed )
-24-05-01 10:13:19 00,2851 00,0267 |  |  << mPrivProfTest.Test_300_Method_SectionNames
-24-05-01 10:13:19 00,2937         |  |  >> mPrivProfTest.Test_400_Method_ValueNames
-24-05-01 10:13:19 00,2964         |  |  |  >> clsPrivProf.FileName-Let
-24-05-01 10:13:19 00,2990         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,2994         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,3108 00,0114 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,3151 00,0162 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,3155 00,0190 |  |  |  << clsPrivProf.FileName-Let
-24-05-01 10:13:19 00,3158         |  |  |  >> 400-1.1 Function clsPrivProf.ValueNames: Get all value names of all sections in a Dictionary
-24-05-01 10:13:19 00,3160         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,3167 00,0007 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,3175 00,0017 |  |  |  << 400-1.1 Function clsPrivProf.ValueNames: Get all value names of all sections in a Dictionary (> Passed )
-24-05-01 10:13:19 00,3178         |  |  |  >> 400-2.1 Function clsPrivProf.ValueNames: Get all value names of a certain section in a Dictionary
-24-05-01 10:13:19 00,3179         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,3184 00,0005 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,3188 00,0011 |  |  |  << 400-2.1 Function clsPrivProf.ValueNames: Get all value names of a certain section in a Dictionary (> Passed )
-24-05-01 10:13:19 00,3190 00,0253 |  |  << mPrivProfTest.Test_400_Method_ValueNames
-24-05-01 10:13:19 00,3192         |  |  >> mPrivProfTest.Test_400_Method_ValueNameRename
-24-05-01 10:13:19 00,3211         |  |  |  >> clsPrivProf.FileName-Let
-24-05-01 10:13:19 00,3221         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,3223         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,3284 00,0061 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,3324 00,0103 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,3327 00,0116 |  |  |  << clsPrivProf.FileName-Let
-24-05-01 10:13:19 00,3330         |  |  |  >> 410-1.1 Method   clsPrivProf.ValueNameRename: Rename a value name in each section.
-24-05-01 10:13:19 00,3333         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,3340 00,0006 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,3342         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,3357         |  |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,3363 00,0006 |  |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,3366 00,0023 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,3380         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,3386         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,3426 00,0040 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,3466 00,0086 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,3486 00,0156 |  |  |  << 410-1.1 Method   clsPrivProf.ValueNameRename: Rename a value name in each section. (> Passed )
-24-05-01 10:13:19 00,3489 00,0297 |  |  << mPrivProfTest.Test_400_Method_ValueNameRename
-24-05-01 10:13:19 00,3543         |  |  >> mPrivProfTest.Test_600_Method_Remove
-24-05-01 10:13:19 00,3562         |  |  |  >> clsPrivProf.FileName-Let
-24-05-01 10:13:19 00,3572         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,3574         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,3683 00,0109 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,3777 00,0205 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,3782 00,0219 |  |  |  << clsPrivProf.FileName-Let
-24-05-01 10:13:19 00,3786         |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,3802 00,0016 |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,3834         |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,3844         |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,3899 00,0055 |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,3952 00,0118 |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,3956         |  |  |  >> 600-1.1 Method   clsPrivProf.ValueRemove: Remove a value from a section including its comments.
-24-05-01 10:13:19 00,3959         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,3968 00,0009 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,3971         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,3977 00,0006 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,3981         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,4001 00,0020 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,4011 00,0056 |  |  |  << 600-1.1 Method   clsPrivProf.ValueRemove: Remove a value from a section including its comments. (> Passed )
-24-05-01 10:13:19 00,4014         |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,4019 00,0005 |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,4030         |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,4034         |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,4072 00,0038 |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,4103 00,0073 |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,4105         |  |  |  >> 600-2.1 Method   clsPrivProf.SectionRemove: Removes a section including its comments.
-24-05-01 10:13:19 00,4107         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,4112 00,0005 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,4115         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,4130 00,0016 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,4143 00,0038 |  |  |  << 600-2.1 Method   clsPrivProf.SectionRemove: Removes a section including its comments. (> Passed )
-24-05-01 10:13:19 00,4147 00,0603 |  |  << mPrivProfTest.Test_600_Method_Remove
-24-05-01 10:13:19 00,4260         |  |  >> clsPrivProf.FileName-Let
-24-05-01 10:13:19 00,4281         |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,4285         |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,4405 00,0120 |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,4447 00,0166 |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,4450 00,0191 |  |  << clsPrivProf.FileName-Let
-24-05-01 10:13:19 00,4453         |  |  >> mPrivProfTest.Test_800_Lifecycle
-24-05-01 10:13:19 00,4477         |  |  |  >> clsPrivProf.FileName-Let
-24-05-01 10:13:19 00,4489         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,4491         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,4562 00,0071 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,4593 00,0105 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,4596 00,0119 |  |  |  << clsPrivProf.FileName-Let
-24-05-01 10:13:19 00,4601         |  |  |  >> 800-1.1 Method   clsPrivProf.Let Comment/Footer: Writes a file comment and footer into an empty file.
-24-05-01 10:13:19 00,4603         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,4605 00,0002 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,4611         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,4615         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,4625 00,0010 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,4640 00,0029 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,4643         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,4649 00,0006 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,4668 00,0067 |  |  |  << 800-1.1 Method   clsPrivProf.Let Comment/Footer: Writes a file comment and footer into an empty file. (> Passed )
-24-05-01 10:13:19 00,4671         |  |  |  >> 800-2.1 Method   clsPrivProf.Let Comment/Footer: Writes a file comment and footer into an empty file.
-24-05-01 10:13:19 00,4674         |  |  |  |  >> clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,4681 00,0007 |  |  |  |  << clsPrivProf.IsValidFile
-24-05-01 10:13:19 00,4713         |  |  |  |  >> clsPrivProf.PPmanage
-24-05-01 10:13:19 00,4717         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,4733 00,0016 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf.dat)
-24-05-01 10:13:19 00,4748 00,0035 |  |  |  |  << clsPrivProf.PPmanage
-24-05-01 10:13:19 00,4759 00,0088 |  |  |  << 800-2.1 Method   clsPrivProf.Let Comment/Footer: Writes a file comment and footer into an empty file. (> Passed )
-24-05-01 10:13:19 00,4762 00,0309 |  |  << mPrivProfTest.Test_800_Lifecycle
-24-05-01 10:13:19 00,5791 00,5791 |  << mPrivProfTest.Test_000_Regression
-24-05-01 10:13:19 00,5791 00,5791 << Regression Test class module clsPrivProf
-24-05-01 10:13:19                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-24-05-01 10:13:19                 Impact on the overall performance (caused by the trace itself): 0,2 milliseconds!
+24-05-09 21:09:31 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-05-09 21:09:31 seconds seconds >> Regression Test class module clsPrivProf
+24-05-09 21:09:31 00,0000         |  >> mPrivProfTest.Test_000_Regression
+24-05-09 21:09:31 00,0016         |  >> mPrivProfTest.Test_001_Tests
+24-05-09 21:09:31 00,1491         |  |  >> clsPrivProf.FileName-Let
+24-05-09 21:09:31 00,1549         |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf1.dat)
+24-05-09 21:09:31 00,1658 00,0108 |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf1.dat)
+24-05-09 21:09:31 00,2534 00,1043 |  |  << clsPrivProf.FileName-Let
+24-05-09 21:09:31 00,2544         |  |  >> 001-2.1 Property clsTestAid.Result and .ResultExpected: Result is the result expected
+24-05-09 21:09:31 00,2553 00,0009 |  |  << 001-2.1 Property clsTestAid.Result and .ResultExpected: Result is the result expected (> Passed )
+24-05-09 21:09:31 00,2562         |  |  >> 001-3.1 Property clsTestAid.Result and .ResultExpected: Result is  F a i l e d  because the result/expected boolean differs
+24-05-09 21:09:31 00,2571 00,0008 |  |  << 001-3.1 Property clsTestAid.Result and .ResultExpected: Result is  F a i l e d  because the result/expected boolean differs (> F a i l e d ! )
+24-05-09 21:09:31 00,2854         |  |  >> 001-4.1 Property clsTestAid.Result and .ResultExpected: Result is  F a i l e d  because the result/expected files differ
+24-05-09 21:09:31 00,2922 00,0068 |  |  << 001-4.1 Property clsTestAid.Result and .ResultExpected: Result is  F a i l e d  because the result/expected files differ (> F a i l e d ! )
+24-05-09 21:09:31 00,2951         |  |  >> 001-5.1 Property clsTestAid.Result and .ResultExpected: Result is  F a i l e d  because result/expected files differ
+24-05-09 21:09:31 00,2988 00,0037 |  |  << 001-5.1 Property clsTestAid.Result and .ResultExpected: Result is  F a i l e d  because result/expected files differ (> F a i l e d ! )
+24-05-09 21:09:31 00,2992 00,2977 |  << mPrivProfTest.Test_001_Tests
+24-05-09 21:09:31 00,3178         |  >> mPrivProfTest.Test_100_Property_FileName
+24-05-09 21:09:31 00,4246         |  |  >> 100-1.1 Property clsPrivProf.FileName_Let: Initialize PP-file
+24-05-09 21:09:31 00,4259         |  |  |  >> clsPrivProf.FileName-Let
+24-05-09 21:09:31 00,4324         |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf1.dat)
+24-05-09 21:09:31 00,4468 00,0144 |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf1.dat)
+24-05-09 21:09:31 00,4574 00,0315 |  |  |  << clsPrivProf.FileName-Let
+24-05-09 21:09:31 00,4603 00,0357 |  |  << 100-1.1 Property clsPrivProf.FileName_Let: Initialize PP-file (> Passed )
+24-05-09 21:09:31 00,4609         |  |  >> clsPrivProf.FileName-Let
+24-05-09 21:09:31 00,4639 00,0030 |  |  << clsPrivProf.FileName-Let
+24-05-09 21:09:31 00,4645         |  |  >> 100-2.1 Property clsPrivProf.Let FileName: Specifying a file valid name
+24-05-09 21:09:31 00,4669 00,0024 |  |  << 100-2.1 Property clsPrivProf.Let FileName: Specifying a file valid name (> Passed )
+24-05-09 21:09:31 00,4674 00,1496 |  << mPrivProfTest.Test_100_Property_FileName
+24-05-09 21:09:32 00,4856         |  >> mPrivProfTest.Test_110_Methods_xExists
+24-05-09 21:09:32 00,4933         |  |  >> clsPrivProf.FileName-Let
+24-05-09 21:09:32 00,4963         |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf1.dat)
+24-05-09 21:09:32 00,5015 00,0052 |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf1.dat)
+24-05-09 21:09:32 00,5111 00,0178 |  |  << clsPrivProf.FileName-Let
+24-05-09 21:09:32 00,5115         |  |  >> 110-1.1 Method   clsPrivProf.Exists: Section not exists
+24-05-09 21:09:32 00,5155 00,0040 |  |  << 110-1.1 Method   clsPrivProf.Exists: Section not exists (> Passed )
+24-05-09 21:09:32 00,5159         |  |  >> 110-3.1 Method   clsPrivProf.Exists: Section exists
+24-05-09 21:09:32 00,5180 00,0020 |  |  << 110-3.1 Method   clsPrivProf.Exists: Section exists (> Passed )
+24-05-09 21:09:32 00,5184         |  |  >> 110-3.1 Method   clsPrivProf.Exists: Value-Name exists
+24-05-09 21:09:32 00,5205 00,0021 |  |  << 110-3.1 Method   clsPrivProf.Exists: Value-Name exists (> Passed )
+24-05-09 21:09:32 00,5210         |  |  >> 110-4.1 Method   clsPrivProf.Exists: Value-Name not exists
+24-05-09 21:09:32 00,5230 00,0020 |  |  << 110-4.1 Method   clsPrivProf.Exists: Value-Name not exists (> Passed )
+24-05-09 21:09:32 00,5234 00,0378 |  << mPrivProfTest.Test_110_Methods_xExists
+24-05-09 21:09:32 00,5409         |  >> mPrivProfTest.Test_120_Property_Value
+24-05-09 21:09:32 00,6234         |  |  >> clsPrivProf.FileName-Let
+24-05-09 21:09:32 00,6302         |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf1.dat)
+24-05-09 21:09:32 00,6423 00,0121 |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf1.dat)
+24-05-09 21:09:32 00,6637 00,0403 |  |  << clsPrivProf.FileName-Let
+24-05-09 21:09:32 00,6641         |  |  >> 120-1.1 Property clsPrivProf.Get Value: Read non-existing value from a non-existing file
+24-05-09 21:09:32 00,6658 00,0016 |  |  << 120-1.1 Property clsPrivProf.Get Value: Read non-existing value from a non-existing file (> Passed )
+24-05-09 21:09:32 00,6664         |  |  >> 120-2.1 Property clsPrivProf.Get Value: Read existing value
+24-05-09 21:09:32 00,6695 00,0032 |  |  << 120-2.1 Property clsPrivProf.Get Value: Read existing value (> Passed )
+24-05-09 21:09:32 00,6702         |  |  >> 120-3.1 Property clsPrivProf.Let Value: Write changed value
+24-05-09 21:09:32 00,6812 00,0109 |  |  << 120-3.1 Property clsPrivProf.Let Value: Write changed value (> Passed )
+24-05-09 21:09:32 00,6818         |  |  >> 120-4.1 Property clsPrivProf.Let Value: Write new value in existing section
+24-05-09 21:09:32 00,6917 00,0099 |  |  << 120-4.1 Property clsPrivProf.Let Value: Write new value in existing section (> Passed )
+24-05-09 21:09:32 00,6922         |  |  >> 120-5.1 Property clsPrivProf.Let Value: Write new value in new section
+24-05-09 21:09:32 00,6994 00,0072 |  |  << 120-5.1 Property clsPrivProf.Let Value: Write new value in new section (> Passed )
+24-05-09 21:09:32 00,6998         |  |  >> 120-6.1 Property clsPrivProf.Let Value: Change value plus the value and the section comments
+24-05-09 21:09:32 00,7070 00,0072 |  |  << 120-6.1 Property clsPrivProf.Let Value: Change value plus the value and the section comments (> Passed )
+24-05-09 21:09:32 00,7074         |  |  >> 120-7.1 Property clsPrivProf.Let Value: Changes value and value comments but not the section comments
+24-05-09 21:09:32 00,7151 00,0077 |  |  << 120-7.1 Property clsPrivProf.Let Value: Changes value and value comments but not the section comments (> Passed )
+24-05-09 21:09:32 00,7155 00,1746 |  << mPrivProfTest.Test_120_Property_Value
+24-05-09 21:09:32 00,7285         |  >> mPrivProfTest.Test_200_Property_Comments
+24-05-09 21:09:32 00,7842         |  |  >> clsPrivProf.FileName-Let
+24-05-09 21:09:32 00,7906         |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf1.dat)
+24-05-09 21:09:32 00,8048 00,0142 |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf1.dat)
+24-05-09 21:09:32 00,8176 00,0334 |  |  << clsPrivProf.FileName-Let
+24-05-09 21:09:32 00,8181         |  |  >> 200-1.1 Property clsPrivProf.Let Comment: Write a file header
+24-05-09 21:09:32 00,8233 00,0052 |  |  << 200-1.1 Property clsPrivProf.Let Comment: Write a file header (> Passed )
+24-05-09 21:09:32 00,8237         |  |  >> 200-3.1 Property clsPrivProf.Get Comment: File comment read
+24-05-09 21:09:32 00,8251 00,0013 |  |  << 200-3.1 Property clsPrivProf.Get Comment: File comment read (> Passed )
+24-05-09 21:09:32 00,8255         |  |  >> 200-4.1 Property clsPrivProf.Let Comment: Write section comment
+24-05-09 21:09:32 00,8317 00,0062 |  |  << 200-4.1 Property clsPrivProf.Let Comment: Write section comment (> Passed )
+24-05-09 21:09:32 00,8321         |  |  >> 200-5.1 Property clsPrivProf.Get Comment: Read section comment
+24-05-09 21:09:32 00,8334 00,0014 |  |  << 200-5.1 Property clsPrivProf.Get Comment: Read section comment (> Passed )
+24-05-09 21:09:32 00,8338         |  |  >> 200-6.1 Property clsPrivProf.Let Comment: Write value comment
+24-05-09 21:09:32 00,8403 00,0065 |  |  << 200-6.1 Property clsPrivProf.Let Comment: Write value comment (> Passed )
+24-05-09 21:09:32 00,8407         |  |  >> 200-7.1 Property clsPrivProf.Get Comment: Read value comment
+24-05-09 21:09:32 00,8422 00,0014 |  |  << 200-7.1 Property clsPrivProf.Get Comment: Read value comment (> Passed )
+24-05-09 21:09:32 00,8426         |  |  >> 200-8.1 Property clsPrivProf.Let Value: Write a new value including a value comment
+24-05-09 21:09:32 00,8511 00,0086 |  |  << 200-8.1 Property clsPrivProf.Let Value: Write a new value including a value comment (> Passed )
+24-05-09 21:09:32 00,8515         |  |  >> 200-9.1 Property clsPrivProf.Get Value: Read a value-comment along with a value
+24-05-09 21:09:32 00,8529 00,0014 |  |  << 200-9.1 Property clsPrivProf.Get Value: Read a value-comment along with a value (> Passed )
+24-05-09 21:09:32 00,8533 00,1248 |  << mPrivProfTest.Test_200_Property_Comments
+24-05-09 21:09:32 00,8661         |  >> mPrivProfTest.Test_300_Method_SectionNames
+24-05-09 21:09:32 00,9140         |  |  >> clsPrivProf.FileName-Let
+24-05-09 21:09:32 00,9211         |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf1.dat)
+24-05-09 21:09:32 00,9300 00,0088 |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf1.dat)
+24-05-09 21:09:32 00,9374 00,0234 |  |  << clsPrivProf.FileName-Let
+24-05-09 21:09:32 00,9379         |  |  >> 300-1.1 Function clsPrivProf.SectionNames: Get all section names in a Dictionary
+24-05-09 21:09:32 00,9393 00,0014 |  |  << 300-1.1 Function clsPrivProf.SectionNames: Get all section names in a Dictionary (> Passed )
+24-05-09 21:09:32 00,9397 00,0736 |  << mPrivProfTest.Test_300_Method_SectionNames
+24-05-09 21:09:32 00,9525         |  >> mPrivProfTest.Test_400_Method_ValueNames
+24-05-09 21:09:32 01,0147         |  |  >> clsPrivProf.FileName-Let
+24-05-09 21:09:32 01,0192         |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf1.dat)
+24-05-09 21:09:32 01,0283 00,0092 |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf1.dat)
+24-05-09 21:09:32 01,0493 00,0346 |  |  << clsPrivProf.FileName-Let
+24-05-09 21:09:32 01,0497         |  |  >> 400-1.1 Function clsPrivProf.ValueNames: Get all value names of all sections in a Dictionary
+24-05-09 21:09:32 01,0528 00,0031 |  |  << 400-1.1 Function clsPrivProf.ValueNames: Get all value names of all sections in a Dictionary (> Passed )
+24-05-09 21:09:32 01,0536         |  |  >> 400-2.1 Function clsPrivProf.ValueNames: Get all value names of a certain section in a Dictionary
+24-05-09 21:09:32 01,0575 00,0039 |  |  << 400-2.1 Function clsPrivProf.ValueNames: Get all value names of a certain section in a Dictionary (> Passed )
+24-05-09 21:09:32 01,0655         |  |  >> clsPrivProf.FileName-Let
+24-05-09 21:09:32 01,0712         |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf2.dat)
+24-05-09 21:09:32 01,0859 00,0147 |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf2.dat)
+24-05-09 21:09:32 01,1227 00,0573 |  |  << clsPrivProf.FileName-Let
+24-05-09 21:09:32 01,1232         |  |  >> 400-3.1 Function clsPrivProf.ValueNames: Get all value names of all sections in a Dictionary
+24-05-09 21:09:32 01,1267 00,0036 |  |  << 400-3.1 Function clsPrivProf.ValueNames: Get all value names of all sections in a Dictionary (> Passed )
+24-05-09 21:09:32 01,1271 00,1745 |  << mPrivProfTest.Test_400_Method_ValueNames
+24-05-09 21:09:32 01,1274         |  >> mPrivProfTest.Test_400_Method_ValueNameRename
+24-05-09 21:09:32 01,2789         |  |  >> clsPrivProf.FileName-Let
+24-05-09 21:09:32 01,2827         |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf1.dat)
+24-05-09 21:09:32 01,2866 00,0039 |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf1.dat)
+24-05-09 21:09:32 01,2934 00,0145 |  |  << clsPrivProf.FileName-Let
+24-05-09 21:09:32 01,2938         |  |  >> 410-1.1 Method   clsPrivProf.ValueNameRename: Rename a value name in each section.
+24-05-09 21:09:32 01,3024 00,0086 |  |  << 410-1.1 Method   clsPrivProf.ValueNameRename: Rename a value name in each section. (> Passed )
+24-05-09 21:09:32 01,3028 00,1753 |  << mPrivProfTest.Test_400_Method_ValueNameRename
+24-05-09 21:09:32 01,3153         |  >> mPrivProfTest.Test_500_Method_Remove
+24-05-09 21:09:32 01,3194         |  |  >> clsPrivProf.FileName-Let
+24-05-09 21:09:32 01,3215         |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf1.dat)
+24-05-09 21:09:32 01,3273 00,0058 |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf1.dat)
+24-05-09 21:09:32 01,3374 00,0180 |  |  << clsPrivProf.FileName-Let
+24-05-09 21:09:32 01,3466         |  |  >> 500-1.1 Method   clsPrivProf.ValueRemove: Remove a value from a section including its comments.
+24-05-09 21:09:32 01,3550 00,0083 |  |  << 500-1.1 Method   clsPrivProf.ValueRemove: Remove a value from a section including its comments. (> Passed )
+24-05-09 21:09:32 01,3599         |  |  >> 500-2.1 Method   clsPrivProf.SectionRemove: Removes a section including its comments.
+24-05-09 21:09:32 01,3651 00,0052 |  |  << 500-2.1 Method   clsPrivProf.SectionRemove: Removes a section including its comments. (> Passed )
+24-05-09 21:09:32 01,3675         |  |  >> clsPrivProf.FileName-Let
+24-05-09 21:09:32 01,3706         |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf2.dat)
+24-05-09 21:09:32 01,3796 00,0090 |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf2.dat)
+24-05-09 21:09:32 01,4147 00,0472 |  |  << clsPrivProf.FileName-Let
+24-05-09 21:09:32 01,4153         |  |  >> 500-3.1 Method   clsPrivProf.SectionRemove: Removes several names in several sections.
+24-05-09 21:09:32 01,4277 00,0124 |  |  << 500-3.1 Method   clsPrivProf.SectionRemove: Removes several names in several sections. (> Passed )
+24-05-09 21:09:32 01,4281 00,1128 |  << mPrivProfTest.Test_500_Method_Remove
+24-05-09 21:09:32 01,4423         |  >> mPrivProfTest.Test_600_Lifecycle
+24-05-09 21:09:32 01,4437         |  |  >> clsPrivProf.FileName-Let
+24-05-09 21:09:32 01,4446 00,0010 |  |  << clsPrivProf.FileName-Let
+24-05-09 21:09:32 01,4450         |  |  >> clsPrivProf.FileName-Let
+24-05-09 21:09:32 01,4461 00,0011 |  |  << clsPrivProf.FileName-Let
+24-05-09 21:09:32 01,4468         |  |  >> 600-1.1 Property clsPrivProf.Comment-Let (Header) and Footer-Let: Writes a file header and footer into an empty file.
+24-05-09 21:09:32 01,4560 00,0092 |  |  << 600-1.1 Property clsPrivProf.Comment-Let (Header) and Footer-Let: Writes a file header and footer into an empty file. (> Passed )
+24-05-09 21:09:32 01,4567         |  |  >> 600-2.1 Method   clsPrivProf.Value-Let: Writes a new section and value in a file with header and footer only.
+24-05-09 21:09:32 01,4648 00,0081 |  |  << 600-2.1 Method   clsPrivProf.Value-Let: Writes a new section and value in a file with header and footer only. (> Passed )
+24-05-09 21:09:32 01,4669         |  |  >> clsPrivProf.FileName-Let
+24-05-09 21:09:32 01,4688 00,0019 |  |  << clsPrivProf.FileName-Let
+24-05-09 21:09:32 01,4694         |  |  >> clsPrivProf.FileName-Let
+24-05-09 21:09:32 01,4711 00,0017 |  |  << clsPrivProf.FileName-Let
+24-05-09 21:09:32 01,4719         |  |  >> 600-3.1 Method   clsPrivProf.Let Comment/Footer: Writes a footer and a header into an empty file.
+24-05-09 21:09:33 01,4813 00,0093 |  |  << 600-3.1 Method   clsPrivProf.Let Comment/Footer: Writes a footer and a header into an empty file. (> Passed )
+24-05-09 21:09:33 01,4822 00,0400 |  << mPrivProfTest.Test_600_Lifecycle
+24-05-09 21:09:33 01,4949         |  >> mPrivProfTest. Test_700_HskpngNames
+24-05-09 21:09:33 01,4973         |  |  >> clsPrivProf.FileName-Let
+24-05-09 21:09:33 01,5037         |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf2.dat)
+24-05-09 21:09:33 01,5167 00,0129 |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf2.dat)
+24-05-09 21:09:33 01,5753 00,0779 |  |  << clsPrivProf.FileName-Let
+24-05-09 21:09:33 01,5759         |  |  >> 700-1.1 Method   clsPrivProf.Houskeeping Names for dedicated sections: Maintains outdated valu-names by forwarding them to a new name.
+24-05-09 21:09:33 01,5983 00,0224 |  |  << 700-1.1 Method   clsPrivProf.Houskeeping Names for dedicated sections: Maintains outdated valu-names by forwarding them to a new name. (> Passed )
+24-05-09 21:09:33 01,6028         |  |  >> clsPrivProf.FileName-Let
+24-05-09 21:09:33 01,6057         |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf2.dat)
+24-05-09 21:09:33 01,6144 00,0087 |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\Test\PrivProf2.dat)
+24-05-09 21:09:33 01,6485 00,0457 |  |  << clsPrivProf.FileName-Let
+24-05-09 21:09:33 01,6490         |  |  >> 700-2.1 Method   clsPrivProf.Houskeeping Names for all sections: Maintains outdated valu-names by forwarding them to a new name.
+24-05-09 21:09:33 01,7154 00,0663 |  |  << 700-2.1 Method   clsPrivProf.Houskeeping Names for all sections: Maintains outdated valu-names by forwarding them to a new name. (> Passed )
+24-05-09 21:09:33 01,7159 00,2209 |  << mPrivProfTest. Test_700_HskpngNames
+24-05-09 21:09:33 01,8712 01,8712 << mPrivProfTest.Test_000_Regression
+24-05-09 21:09:33 01,8712 01,8712 << Regression Test class module clsPrivProf
+24-05-09 21:09:33                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-05-09 21:09:33                 Impact on the overall performance (caused by the trace itself): 0,6 milliseconds!
