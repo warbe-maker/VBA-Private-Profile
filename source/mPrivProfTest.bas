@@ -1,4 +1,6 @@
 Attribute VB_Name = "mPrivProfTest"
+Option Explicit
+#Const mTrc = 1
 ' ----------------------------------------------------------------
 ' Standard Module mPrivProvTest: Test of all services provided by
 ' ============================== the clsPrivProf class module.
@@ -17,7 +19,7 @@ Attribute VB_Name = "mPrivProfTest"
 ' ----------------------------------------------------------------
 Public PrivProf         As clsPrivProf
 Public PrivProfTests    As New clsPrivProfTests
-Public Tests            As clsTestAid
+Public TestAid            As clsTestAid
 Private cllExpctd       As Collection
 Private FSo             As New FileSystemObject
 
@@ -113,7 +115,7 @@ Public Sub Prepare(Optional ByVal p_no As Long = 1, _
     
     Dim sFile As String
     On Error GoTo eh
-    If Tests Is Nothing Then Set Tests = New clsTestAid
+    If TestAid Is Nothing Then Set TestAid = New clsTestAid
     Set PrivProf = Nothing
     Set PrivProf = New clsPrivProf
     PrivProfTests.ProvideTestPrivProf p_no
@@ -143,18 +145,18 @@ Public Sub Test_000_Regression()
     
     '~~ Initialization (must be done prior the first BoP!)
     Set PrivProfTests = New clsPrivProfTests
-    mTrc.FileFullName = Tests.TestFolder & "\Regression.ExecTrace.log"
+    mTrc.FileFullName = TestAid.TestFolder & "\Regression.ExecTrace.log"
     mTrc.Title = "Regression Test class module clsPrivProf"
     mTrc.NewFile
     bModeRegression = True
     mErH.Regression = bModeRegression
-    Tests.ModeRegression = bModeRegression
-    Tests.TestFilesRemove "Result_" ' remove any files resulting from individual tests
+    TestAid.ModeRegression = bModeRegression
+    TestAid.TestFilesRemove "Result_" ' remove any files resulting from individual tests
     
     BoP ErrSrc(PROC)
     sTestStatus = "clsPrivProf Regression Test: "
 
-    mPrivProfTest.Test_001_Tests
+    mPrivProfTest.Test_001_TestAid
     mPrivProfTest.Test_100_Property_FileName
     mPrivProfTest.Test_110_Method_Exists
     mPrivProfTest.Test_120_Property_Value
@@ -165,13 +167,12 @@ Public Sub Test_000_Regression()
     mPrivProfTest.Test_500_Method_Remove
     mPrivProfTest.Test_600_Lifecycle
     mPrivProfTest.Test_700_HskpngNames
-    Tests.DsplySummary
+    TestAid.DsplySummary
     
 xt: EoP ErrSrc(PROC)
     mErH.Regression = False
     mTrc.Dsply
-    Set Test = Nothing
-    Set Tests = Nothing
+    Set TestAid = Nothing
     Exit Sub
     
 eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
@@ -180,11 +181,11 @@ eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_001_Tests()
+Public Sub Test_001_TestAid()
 ' ----------------------------------------------------------------------------
 ' Test of the means (clsTestAid) used by all tests.
 ' ----------------------------------------------------------------------------
-    Const PROC = "Test_001_Tests"
+    Const PROC = "Test_001_TestAid"
     
     On Error GoTo eh
     Dim sFileResult     As String
@@ -192,7 +193,7 @@ Public Sub Test_001_Tests()
     
     BoP ErrSrc(PROC)
     Prepare 1, False
-    With Tests
+    With TestAid
         .ModeRegression = mErH.Regression
         .TestNumber = "001-1"
         .TestedComp = "clsPrivProf"
@@ -253,7 +254,7 @@ Public Sub Test_001_Tests()
     End With
 
 xt: EoP ErrSrc(PROC)
-    Tests.TestFilesRemove
+    TestAid.TestFilesRemove
     Exit Sub
     
 eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
@@ -269,7 +270,7 @@ Public Sub Test_100_Property_FileName()
         
     BoP ErrSrc(PROC)
     Prepare 1, False ' The FileName property is provided in the test
-    With Tests
+    With TestAid
         .TestNumber = "100-1"
         .TestedComp = "clsPrivProf"
         .TestedProc = "FileName_Let"
@@ -295,7 +296,7 @@ Public Sub Test_100_Property_FileName()
     End With
     
 xt: EoP ErrSrc(PROC)
-    Tests.TestFilesRemove
+    TestAid.TestFilesRemove
     Exit Sub
     
 eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
@@ -313,7 +314,7 @@ Public Sub Test_110_Method_Exists()
     '~~ Test preparation
     Prepare
        
-    With Tests
+    With TestAid
         .TestedProc = "Exists"
         .TestedType = "Method"
         .TestNumber = "110-1"
@@ -356,7 +357,7 @@ Public Sub Test_110_Method_Exists()
     End With
     
 xt: EoP ErrSrc(PROC)
-    Tests.TestFilesRemove
+    TestAid.TestFilesRemove
     Exit Sub
 
 eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
@@ -377,7 +378,7 @@ Public Sub Test_120_Property_Value()
     BoP ErrSrc(PROC)
     Prepare
     
-    With Tests
+    With TestAid
         .TestNumber = "120-1"
         .TestedProc = "Get Value"
         .TestedType = "Property"
@@ -446,8 +447,6 @@ Public Sub Test_120_Property_Value()
         .BoTP
         PrivProf.Value(name_value:=PrivProfTests.ValueName(11, 1) _
                      , name_section:=PrivProfTests.SectionName(11) _
-                     , comments_value:="Value comment" _
-                     , comments_section:="Section comment (by the way)" _
                       ) = "Changed new value, new section"
         .Result = PrivProfTests.PrivProfFile
         .EoTP
@@ -456,11 +455,10 @@ Public Sub Test_120_Property_Value()
         .TestNumber = "120-7"
         .TestedProc = "Let Value"
         .TestedType = "Property"
-        .TestDscrpt = "Changes value and value comments but not the section comments"
+        .TestDscrpt = "Changed again"
         .BoTP
         PrivProf.Value(name_value:=PrivProfTests.ValueName(11, 1) _
                      , name_section:=PrivProfTests.SectionName(11) _
-                     , comments_value:="Value comment changed" _
                       ) = "Changed again new value, new section"
         .Result = PrivProfTests.PrivProfFile
         .ResultExpected = .ExpectedTestResultFile(.TestNumber)
@@ -469,7 +467,7 @@ Public Sub Test_120_Property_Value()
     End With
     
 xt: EoP ErrSrc(PROC)
-    Tests.TestFilesRemove
+    TestAid.TestFilesRemove
     Exit Sub
     
 eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
@@ -492,27 +490,28 @@ Public Sub Test_200_Property_Comments()
     Dim sCommentSect    As String
     Dim sFileHeader     As String
     Dim sFileFooter     As String
+    Dim cllResultExpectd As Collection
     
     BoP ErrSrc(PROC)
     Prepare ' Test preparation
        
-    With Tests
+    With TestAid
         .TestNumber = "200-1"
-        .TestedProc = "Let Comment"
+        .TestedProc = "FileHeader-Let"
         .TestedType = "Property"
         .TestDscrpt = "Write a file header"
         .ResultExpected = .ExpectedTestResultFile(.TestNumber)
         .BoTP
         '~~ Note: For the missing file name the property FileName is used
         '~~ and the missing section- and value-name indicate a file header
-        PrivProf.Comments() = "File Comment Line 1 (the comments delimiter below is adjusted to the longest comment)" & vbCrLf & _
-                              "File Comment Line 2"
-        .Result = FSo.GetFile(PrivProf.FileName)
+        PrivProf.FileHeader() = "File Comment Line 1 (the comments delimiter below is adjusted to the longest comment)" & vbCrLf & _
+                                "File Comment Line 2"
+        .Result = PrivProfTests.PrivProfFile
         .EoTP
         ' ======================================================================
-        
+
         .TestNumber = "200-3"
-        .TestedProc = "Get Comment"
+        .TestedProc = "FileHeader-Get"
          .TestedType = "Property"
         .TestDscrpt = "File comment read"
         Set cllResultExpectd = New Collection
@@ -521,79 +520,61 @@ Public Sub Test_200_Property_Comments()
         cllResultExpectd.Add "; ====================================================================================="
         .ResultExpected = cllResultExpectd
         .BoTP
-        .Result = PrivProf.Comments()
+        .Result = TestAid.StringAsCollection(PrivProf.FileHeader())
         .EoTP
         ' ======================================================================
         
         .TestNumber = "200-4"
-        .TestedProc = "Let Comment"
+        .TestedProc = "SectionComment-Let"
         .TestedType = "Property"
         .TestDscrpt = "Write section comment"
         .ResultExpected = .ExpectedTestResultFile(.TestNumber)
         .BoTP
-        PrivProf.Comments(, PrivProfTests.SectionName(6)) = "Comment Section 06 Line 1" & vbCrLf & _
-                                                    "Comment Section 06 Line 2"
+        PrivProf.SectionComment(PrivProfTests.SectionName(6)) = "Comment Section 06 Line 1" _
+                                                     & vbCrLf & "Comment Section 06 Line 2"
         .Result = PrivProfTests.PrivProfFile
         .EoTP
         ' ======================================================================
         
         .TestNumber = "200-5"
-        .TestedProc = "Get Comment"
+        .TestedProc = "SectionComment-Get"
         .TestedType = "Property"
         .TestDscrpt = "Read section comment"
-        .ResultExpected = ",; Comment Section 06 Line 1,; Comment Section 06 Line 2"
+        .ResultExpected = "Comment Section 06 Line 1" _
+               & vbCrLf & "Comment Section 06 Line 2"
         .BoTP
-        .Result = PrivProf.Comments(, PrivProfTests.SectionName(6))
+        .Result = PrivProf.SectionComment(PrivProfTests.SectionName(6))
         .EoTP
         ' =====================================================================
         
         .TestNumber = "200-6"
-        .TestedProc = "Let Comment"
+        .TestedProc = "ValueComment-Let"
         .TestedType = "Property"
         .TestDscrpt = "Write value comment"
         .ResultExpected = .ExpectedTestResultFile(.TestNumber)
         .BoTP
-        PrivProf.Comments(, PrivProfTests.SectionName(6), PrivProfTests.ValueName(6, 2)) = "Comment Section 06 Value 02 Line 1" & vbCrLf & _
-                                                                        "Comment Section 06 Value 02 Line 2"
-        .Result = FSo.GetFile(PrivProf.FileName)
+        PrivProf.ValueComment(PrivProfTests.ValueName(6, 2), PrivProfTests.SectionName(6)) = "Comment Section 06 Value 02 Line 1" _
+                                                                                  & vbCrLf & "Comment Section 06 Value 02 Line 2"
+        .Result = PrivProfTests.PrivProfFile
         .EoTP
         ' ======================================================================
         
         .TestNumber = "200-7"
-        .TestedProc = "Get Comment"
+        .TestedProc = "Value-Comment-Get"
         .TestedType = "Property"
         .TestDscrpt = "Read value comment"
-        .ResultExpected = "; Comment Section 06 Value 02 Line 1,; Comment Section 06 Value 02 Line 2"
+        .ResultExpected = "Comment Section 06 Value 02 Line 1" _
+               & vbCrLf & "Comment Section 06 Value 02 Line 2"
         .BoTP
-        .Result = PrivProf.Comments(, PrivProfTests.SectionName(6), PrivProfTests.ValueName(6, 2))
+        .Result = PrivProf.ValueComment(PrivProfTests.ValueName(6, 2), PrivProfTests.SectionName(6))
         .EoTP
         ' ======================================================================
-        
-        .TestNumber = "200-8"
-        .TestedProc = "Let Value"
-        .TestedType = "Property"
-        .TestDscrpt = "Write a new value including a value comment"
-        .ResultExpected = .ExpectedTestResultFile(.TestNumber)
-        .BoTP
-        PrivProf.Value(PrivProfTests.ValueName(12, 1), PrivProfTests.SectionName(12), , , "The new value's comment line 1;The new value's comment line 2!") = "New value"
-        .Result = PrivProfTests.PrivProfFile
-        .EoTP
-        ' ======================================================================
-    
-        .TestNumber = "200-9"
-        .TestedProc = "Get Value"
-        .TestedType = "Property"
-        .TestDscrpt = "Read a value-comment along with a value"
-        .ResultExpected = "; The new value's comment line 1" & vbCrLf & "; The new value's comment line 2!"
-        .BoTP
-        sValue = PrivProf.Value(PrivProfTests.ValueName(12, 1), PrivProfTests.SectionName(12), , , sCommentValue, sCommentSect, sFileHeader, sFileFooter)
-        .Result = sCommentValue
-        .EoTP
-        ' ======================================================================
+            
     End With
 
 xt: EoP ErrSrc(PROC)
-    Tests.TestFilesRemove
+    TestAid.TestFilesRemove
+    If Not mErH.Regression Then mTrc.Dsply
     Exit Sub
 
 eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
@@ -614,7 +595,7 @@ Public Sub Test_300_Method_SectionNames()
     BoP ErrSrc(PROC)
     Prepare ' Test preparation
        
-    With Tests
+    With TestAid
         .TestNumber = "300-1"
         .TestedProc = "SectionNames"
         .TestedType = "Function"
@@ -626,7 +607,7 @@ Public Sub Test_300_Method_SectionNames()
     End With
     
 xt: EoP ErrSrc(PROC)
-    Tests.TestFilesRemove
+    TestAid.TestFilesRemove
     Set dct = Nothing
     Exit Sub
     
@@ -648,7 +629,7 @@ Public Sub Test_400_Method_ValueNames()
     BoP ErrSrc(PROC)
     Prepare ' Test preparation
        
-    With Tests
+    With TestAid
         .TestNumber = "400-1"
         .TestedProc = "ValueNames"
         .TestedType = "Function"
@@ -702,7 +683,7 @@ Public Sub Test_410_Method_ValueNameRename()
     BoP ErrSrc(PROC)
     Prepare ' Test preparation
        
-    With Tests
+    With TestAid
         .TestNumber = "410-1"
         .TestedProc = "ValueNameRename"
         .TestedType = "Method"
@@ -710,14 +691,13 @@ Public Sub Test_410_Method_ValueNameRename()
         .ResultExpected = .ExpectedTestResultFile(.TestNumber)
         .BoTP
         PrivProf.ValueNameRename PrivProfTests.ValueName(2, 2), "Renamed_" & PrivProfTests.ValueName(2, 2)
-        .Result = FSo.GetFile(PrivProf.FileName)
+        .Result = PrivProfTests.PrivProfFile
         .EoTP
         ' ======================================================================
     End With
     
 xt: EoP ErrSrc(PROC)
-    Set dct = Nothing
-    Tests.TestFilesRemove
+    TestAid.TestFilesRemove
     Exit Sub
     
 eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
@@ -737,8 +717,8 @@ Public Sub Test_500_Method_Remove()
     BoP ErrSrc(PROC)
     Prepare ' Test preparation
     
-    With Tests
-        PrivProf.Comments(, PrivProfTests.SectionName(6), PrivProfTests.ValueName(6, 4)) = "Comment value 06-04"
+    With TestAid
+        PrivProf.ValueComment(PrivProfTests.SectionName(6), PrivProfTests.ValueName(6, 4)) = "Comment value 06-04"
         .TestNumber = "500-1"
         .TestedProc = "ValueRemove"
         .TestedType = "Method"
@@ -746,11 +726,11 @@ Public Sub Test_500_Method_Remove()
         .ResultExpected = .ExpectedTestResultFile(.TestNumber)
         .BoTP
         PrivProf.ValueRemove PrivProfTests.ValueName(6, 4), PrivProfTests.SectionName(6)
-        .Result = FSo.GetFile(PrivProf.FileName)
+        .Result = PrivProfTests.PrivProfFile
         .EoTP
         ' ======================================================================
         
-        PrivProf.Comments(, PrivProfTests.SectionName(6)) = "Comment section 06"
+        PrivProf.SectionComment(PrivProfTests.SectionName(6)) = "Comment section 06"
         .TestNumber = "500-2"
         .TestedProc = "SectionRemove"
         .TestedType = "Method"
@@ -758,18 +738,36 @@ Public Sub Test_500_Method_Remove()
         .ResultExpected = .ExpectedTestResultFile(.TestNumber)
         .BoTP
         PrivProf.SectionRemove PrivProfTests.SectionName(6)
-        .Result = FSo.GetFile(PrivProf.FileName)
+        .Result = PrivProfTests.PrivProfFile
         .EoTP
         ' ======================================================================
     
         .TestNumber = "500-3"
         Prepare 2
-        .TestedProc = "SectionRemove"
+        .TestedProc = "ValueRemove"
         .TestedType = "Method"
         .TestDscrpt = "Removes several names in several sections."
         .BoTP
         PrivProf.ValueRemove name_value:="Last_Modified_AtDateTime,Last_Modified_InWbkFullName", name_section:="clsLog,clsQ"
-        .Result = FSo.GetFile(PrivProf.FileName)
+        .Result = PrivProfTests.PrivProfFile
+        .ResultExpected = .ExpectedTestResultFile(.TestNumber)
+        .EoTP
+        ' ======================================================================
+    
+        .TestNumber = "500-4"
+        Prepare 2
+        .TestedProc = "ValueRemove"
+        .TestedType = "Method"
+        .TestDscrpt = "Removes all values in one section which removes the section."
+        .BoTP
+        PrivProf.ValueRemove name_value:="ExportFileExtention" & _
+                                         ",Last_Modified_AtDateTime" & _
+                                         ",Last_Modified_InWbkFullName" & _
+                                         ",Last_Modified_InWbkName" & _
+                                         ",LastModExpFileFullNameOrigin" _
+                           , name_section:="clsQ"
+        
+        .Result = PrivProfTests.PrivProfFile
         .ResultExpected = .ExpectedTestResultFile(.TestNumber)
         .EoTP
         ' ======================================================================
@@ -777,7 +775,7 @@ Public Sub Test_500_Method_Remove()
     End With
 
 xt: EoP ErrSrc(PROC)
-    Tests.TestFilesRemove
+    TestAid.TestFilesRemove
     Exit Sub
     
 eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
@@ -798,39 +796,35 @@ Public Sub Test_600_Lifecycle()
     Prepare 0, False
     BoP ErrSrc(PROC)
     
-    With Tests
+    With TestAid
         .TestNumber = "600-1"
-        '~~ Begin with a non existing file
+        '~~ Begin with a non existing file.
+        '~~ Note 1: Since there is no file without at least one section with at least one value,
+        '~~         live starts with a value in a section in a yet not existing Private Profile file
+        '~~ Note 2: When a header/footer is specified, the strings may preferrably delimited by a vbCrLf
+        '~~         in order not to conflict withe any used character.
         If FSo.FileExists(PrivProfTests.PrivProfFileFullName) Then .FSo.DeleteFile PrivProfTests.PrivProfFileFullName
-        Set PrivProv = New clsPrivProf
+        Set PrivProf = New clsPrivProf
         PrivProf.FileName = PrivProfTests.PrivProfFileFullName
-        .TestedProc = "Comment-Let (Header) and Footer-Let"
+        .TestedProc = "Value-Let"
         .TestedType = "Property"
-        .TestDscrpt = "Writes a file header and footer into an empty file."
+        .TestDscrpt = "Writes a new file with 1 section, 1 value and  a file header/footer."
         PrivProf.FileName = PrivProfTests.PrivProfFileFullName
-        .ResultExpected = .ExpectedTestResultFile(.TestNumber)
         .BoTP
-        PrivProf.Comments() = "File Comment Line 1 (the delimiter below is adjusted to the longest comment)" & vbCrLf & _
-                              "File Comment Line 2"
-        PrivProf.Footer() = "File Footer Line 1 (the delimiter below is adjusted to the longest comment)" & vbCrLf & _
-                            "File Footer Line 2"
-        .Result = FSo.GetFile(PrivProf.FileName)
+        PrivProf.Value(name_value:="Any-Value-Name" _
+                    , name_section:="Any-Section-Name" _
+                    , name_file:=PrivProfTests.PrivProfFileFullName _
+                      ) = "Any-Value"
+        .Result = PrivProfTests.PrivProfFile
+        .ResultExpected = .ExpectedTestResultFile(.TestNumber)
         .EoTP
         ' ======================================================================
         
         .TestNumber = "600-2"
-        .TestedProc = "Value-Let"
-        .TestedType = "Method"
-        .TestDscrpt = "Writes a new section and value in a file with header and footer only."
-        .BoTP
-        PrivProf.Value("AnyValueName", "AnySectionName") = "AnyValue"
-        .Result = FSo.GetFile(PrivProf.FileName)
-        .ResultExpected = .ExpectedTestResultFile(.TestNumber)
-        .EoTP
-        ' ======================================================================
-        
-        .TestNumber = "600-3"
-        '~~ Begin with a non existing file
+        '~~ Beginning a non existing file with writing header and/or footer raises an error
+        '~~ (display ignored with Regression True)
+        '~~ Note: This is consequent since ther is no Private Profile file without
+        '~~       at least on section with one value
         If FSo.FileExists(PrivProfTests.PrivProfFileFullName) Then FSo.DeleteFile PrivProfTests.PrivProfFileFullName
         Set PrivProf = New clsPrivProf
         PrivProf.FileName = PrivProfTests.PrivProfFileFullName
@@ -838,20 +832,43 @@ Public Sub Test_600_Lifecycle()
         .TestedType = "Method"
         .TestDscrpt = "Writes a footer and a header into an empty file."
         PrivProf.FileName = PrivProfTests.PrivProfFileFullName
-        .ResultExpected = .ExpectedTestResultFile(.TestNumber)
+        .ResultExpected = True
         .BoTP
-        PrivProf.Footer() = "File Footer Line 1 (the delimiter below is adjusted to the longest comment)" & vbCrLf & _
-                            "File Footer Line 2"
-        PrivProf.Comments() = "File Comment Line 1 (the delimiter below is adjusted to the longest comment)" & vbCrLf & _
-                              "File Comment Line 2"
-        .Result = FSo.GetFile(PrivProf.FileName)
+        mErH.Asserted AppErr(1) ' effective only when mErH.Regression = True
+        PrivProf.FileFooter() = "File Footer Line 1 (the delimiter below is adjusted to the longest comment)" & vbCrLf & _
+                                "File Footer Line 2"
+        PrivProf.FileHeader() = "File Comment Line 1 (the delimiter below is adjusted to the longest comment)" & vbCrLf & _
+                                "File Comment Line 2"
+        mErH.Asserted ' reset to none
+        .Result = Not FSo.FileExists(PrivProfTests.PrivProfFileFullName)
         .EoTP
         ' ======================================================================
         
+        .TestNumber = "600-3"
+        '~~ Removing the only value in the only section ends with no file
+        '~~ Note: This is consequent since there is no Private Profile file without
+        '~~       at least on section with one value
+        Set PrivProf = New clsPrivProf
+        PrivProf.FileName = PrivProfTests.PrivProfFileFullName
+        .TestedProc = "ValueRemove"
+        .TestedType = "Method"
+        .TestDscrpt = "Removes the only value in the only section"
+        PrivProf.FileName = PrivProfTests.PrivProfFileFullName
+        .ResultExpected = True
+        .BoTP
+        mErH.Asserted AppErr(1) ' effective only when mErH.Regression = True
+        PrivProf.ValueRemove name_value:="Any-Value-Name" _
+                           , name_section:="Any-Section-Name"
+        mErH.Asserted ' reset to none
+        .Result = Not FSo.FileExists(PrivProfTests.PrivProfFileFullName)
+        .EoTP
+        ' ======================================================================
+        
+    
     End With
 
 xt: EoP ErrSrc(PROC)
-    Tests.TestFilesRemove
+    TestAid.TestFilesRemove
     Exit Sub
 
 eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
@@ -872,7 +889,7 @@ Public Sub Test_700_HskpngNames()
     BoP ErrSrc(PROC)
     
     Prepare 2   ' uses a ready for test file copied from a backup
-    With Tests
+    With TestAid
         .TestNumber = "700-1"
         .TestedProc = "Houskeeping Names for dedicated sections"
         .TestedType = "Method"
@@ -880,7 +897,7 @@ Public Sub Test_700_HskpngNames()
         .ResultExpected = .ExpectedTestResultFile(.TestNumber)
         .BoTP
         PrivProf.HskpngNames PrivProf.FileName, "clsLog:clsQ:Last_Modified_AtDateTime>Last_Modified_UTC_AtDateTime"
-        .Result = FSo.GetFile(PrivProf.FileName)
+        .Result = PrivProfTests.PrivProfFile
         .EoTP
         ' ======================================================================
                 
@@ -892,14 +909,14 @@ Public Sub Test_700_HskpngNames()
         .ResultExpected = .ExpectedTestResultFile(.TestNumber)
         .BoTP
         PrivProf.HskpngNames PrivProf.FileName, "Last_Modified_AtDateTime>Last_Modified_UTC_AtDateTime"
-        .Result = FSo.GetFile(PrivProf.FileName)
+        .Result = PrivProfTests.PrivProfFile
         .EoTP
         ' ======================================================================
                 
     End With
 
 xt: EoP ErrSrc(PROC)
-    Tests.TestFilesRemove
+    TestAid.TestFilesRemove
     Exit Sub
 
 eh: Select Case mErH.ErrMsg(ErrSrc(PROC))

@@ -49,7 +49,5 @@ Section_10_Name_12=Section_10-Value-12
 Section_10_Name_14=Section_10-Value-14
 Section_10_Name_16=Section_10-Value-16
 
-; Section comment (by the way)
 [Section_11]
-; Value comment
 Section_11_Name_01=Changed new value, new section

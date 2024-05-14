@@ -53,9 +53,9 @@ Private Sub Class_Initialize()
     lNoOfTestValues = 16
     
     '~~ Test folder
-    If Tests Is Nothing Then Set Tests = New clsTestAid
-    Tests.TestedComp = "clsPrivProf"
-    sFolder = Tests.TestFolder
+    If TestAid Is Nothing Then Set TestAid = New clsTestAid
+    TestAid.TestedComp = "clsPrivProf"
+    sFolder = TestAid.TestFolder
     Set cllTestFiles = New Collection
     
 End Sub
@@ -100,7 +100,7 @@ End Function
 Public Function ExpectedTestResultFile(ByVal e_test_no As String, _
                               Optional ByVal e_test_folder As String = vbNullString) As File
     
-    If e_test_folder = vbNullString Then e_test_folder = Tests.TestFolder
+    If e_test_folder = vbNullString Then e_test_folder = TestAid.TestFolder
     Set ExpectedTestResultFile = FSo.GetFile(ExpectedTestResultFileName(e_test_no, e_test_folder))
      
 End Function
@@ -108,7 +108,7 @@ End Function
 Public Function ExpectedTestResultFileName(ByVal e_test_no As String, _
                                   Optional ByVal e_test_folder As String = vbNullString) As String
                                   
-    If e_test_folder = vbNullString Then e_test_folder = Tests.TestFolder
+    If e_test_folder = vbNullString Then e_test_folder = TestAid.TestFolder
     ExpectedTestResultFileName = e_test_folder & "\ResultExpected-" & e_test_no & ".dat"
 
 End Function
@@ -122,7 +122,7 @@ Private Function FileAsString(Optional ByVal f_file_full_name As String, _
 ' ----------------------------------------------------------------------------
 
     Open f_file_full_name For Input As #1
-    FileAsString = Input$(LOF(1), 1)
+    FileAsString = Input$(lOf(1), 1)
     Close #1
     
     Select Case True
@@ -217,7 +217,7 @@ Public Function ProvideTestPrivProf(ByVal p_no As Long, _
     Dim sFolder     As String
     Dim arr()       As Variant
     
-    sFolder = Tests.TestFolder
+    sFolder = TestAid.TestFolder
     If Not FSo.FolderExists(sFolder) Then FSo.CreateFolder (sFolder)
     
     Select Case p_no

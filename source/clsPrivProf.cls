@@ -16,15 +16,20 @@ Option Compare Text
 ' file directly, PPtwin... operates on/with a Private Profile file's twin
 ' maintained in the form of a Directories/Collections structure.
 '
-' Public properties:
+' Public properties: (* with the exception of these properties all properties
+'                       have arguments:
 ' ------------------
-' FileName    r/w Specifies/returns a Private Profile file full name
-' Footer      r/w Reads/writes a file footer
-' Comments    r/w Reads(writes) a file, section, or value comment
-' Section     r/w Specifies/returns the current specified Section, used
-'                 when the corresponding argument is omitted omitted.
-' Value       r/w Reads/writes a value from/to a Private Profile File,
-'                 optionally reads/writes a value comment
+' FileName *)     r/w Specifies/returns the Private Profile file full name
+'                     used as the default when the corresponding argument
+'                     is omitted.
+' FileFooter      r/w Reads/writes a file footer
+' FileHeader      r/w Reads/writes a file footer
+' Section *)      r/w Specifies/returns the current specified Section, used
+'                     as default when the corresponding argument is omitted.
+' SectionComment  r/w Reads(writes) a section's comments
+' Value           r/w Reads/writes a value from/to a Private Profile File,
+'                     optionally reads/writes a value comment
+' ValueComment    r/w Reads(writes) a section's comments
 '
 ' Public methods:
 ' ---------------
@@ -103,7 +108,7 @@ Private Const VALUE_FALSE               As String = "FALSE"
 
 Private Declare PtrSafe Function apiShellExecute _
                 Lib "shell32.dll" Alias "ShellExecuteA" _
-               (ByVal hWnd As Long, _
+               (ByVal hwnd As Long, _
                 ByVal lpOperation As String, _
                 ByVal lpFile As String, _
                 ByVal lpParameters As String, _
@@ -132,8 +137,6 @@ Private dctPPtwins                                     As Dictionary ' All Priva
                         Private vPPtwinValue           As Variant    ' The value
         Private cllPPtwinFooter                        As Collection ' The file's footer comments (may be 0)
 ' -----------------------------------------------------------------------------------------------------------------------------------------
-
-Public Property Get NameHskpngSection() As String: NameHskpngSection = NAMES_HSKPNG_SECT_NAME: End Property
 
 Private Sub Class_Initialize()
     Const PROC = "Class_Initialize"
@@ -164,74 +167,44 @@ End Sub
 
 Public Property Let BooleanAsTrueFalseString(ByVal b As Boolean):   bBooleanAsTrueFalseString = b:  End Property
 
-Public Property Get Comments(Optional ByVal name_file As String = vbNullString, _
-                           Optional ByVal name_section As String = vbNullString, _
-                           Optional ByVal name_value As String = vbNullString) As Variant
+Public Property Get FileFooter(Optional ByVal name_file As String = vbNullString) As String
 ' ------------------------------------------------------------------------------
-'
+' Returns the header of a file as a strings delimited by vbCrLf, ",", ", ", ";",
+' or "; ".
 ' ------------------------------------------------------------------------------
-    Const PROC = "Comments-Get"
-    
-    Dim cll As New Collection
+    Const PROC = "SectionComment-Get"
     
     If Not IsValidFile(name_file) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
-                                    
-    Select Case True
-        Case name_section = vbNullString And name_value = vbNullString:   Set cll = PPtwinHeader(name_file)
-        Case name_section <> vbNullString And name_value = vbNullString:  Set cll = PPtwinSectionComments(name_file, name_section)
-        Case name_section <> vbNullString And name_value <> vbNullString: Set cll = PPtwinValueComments(name_file, name_section, name_value)
-    End Select
-    
-    Set Comments = cll
-    Set cll = Nothing
-    
+                                     
+    FileFooter = CollectionAsString(PPtwinFileFooter(name_file))
+
 End Property
 
-Public Property Let Comments(Optional ByVal name_file As String = vbNullString, _
-                             Optional ByVal name_section As String = vbNullString, _
-                             Optional ByVal name_value As String = vbNullString, _
-                                      ByVal h_comments As Variant)
+Public Property Let FileFooter(Optional ByVal name_file As String = vbNullString, _
+                                        ByVal comments As String)
 ' ------------------------------------------------------------------------------
-' Adds/replaces:
-' - a file header when either only a file name or no arguments at all are
-'   provided
-' - a section comment when a section but no value name is provided
-' - a value comment when a section and a value-name is provided
-' The comments (h_comments) may be a series of delimited strings or a Collection
-' of strings.
+' Write a header for a file (name_fiel) provided as a strings delimited by
+' vbCrLf, ",", ", ", ";", or "; ".
 ' ------------------------------------------------------------------------------
-    Const PROC = "Comments-Let"
-    
-    On Error GoTo eh
-    Dim arr             As Variant
-    Dim sInvalidLine    As String
+    Const PROC = "SectionComment-Get"
     
     If Not IsValidFile(name_file) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
+                                     
+    PPtwinFileFooter(name_file) = StringAsCollection(comments)
+
+End Property
+
+Public Property Get FileHeader(Optional ByVal name_file As String = vbNullString) As String
+' ------------------------------------------------------------------------------
+' Returns the header of a file as a strings delimited by vbCrLf, ",", ", ", ";",
+' or "; ".
+' ------------------------------------------------------------------------------
+    Const PROC = "FileHeader-Get"
     
-    Select Case True
-        Case name_section = vbNullString And name_value = vbNullString
-            PPtwinHeader(name_file) = h_comments
-        
-        Case name_section <> vbNullString And name_value = vbNullString
-            If PPtwinSectionExists(name_file, name_section) Then
-                Set cllPPtwinSectionComments = SectionComments(h_comments)
-                PPtwinSectionReplace name_section
-                PPtwinReplace name_file
-            End If
-        
-        Case name_section <> vbNullString And name_value <> vbNullString
-            If PPtwinSectionExists(name_file, name_section) Then
-                If PPtwinValueExists(name_file, name_section, name_value) Then
-                    Set cllPPtwinValueComments = ValueComments(h_comments)
-                    PPtwinValueReplace name_value
-                    PPtwinSectionReplace name_section
-                    PPtwinReplace name_file
-                End If
-            End If
-    End Select
-    
-    PPmanage name_file ' ensure ascending order
-                                    
+    On Error GoTo eh
+    If Not IsValidFile(name_file) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
+    FileHeader = CollectionAsString(PPtwinFileHeader(name_file))
+
 xt: Exit Property
 
 eh: Select Case ErrMsg(ErrSrc(PROC))
@@ -240,72 +213,18 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Property
 
-Private Property Get CommentsSection(Optional ByVal h_sect_name As String, _
-                                   Optional ByVal p_file As String = vbNullString) As Variant
-' ----------------------------------------------------------------------------
-' Returns a Collection with the section's (h_sect_name_name) comment lines
-' (possibly empty).The provided (name_file) may be an array already with the
-' file's content.
-' ----------------------------------------------------------------------------
-    
-    Dim arr     As Variant
-    Dim cll     As New Collection
-    Dim i       As Long
-    
-    arr = FileAsArray(p_file)
-    If PPfileSectionExists(arr, h_sect_name, i, cll) Then
-        Set CommentsSection = cll
-    End If
-    
-xt: Set cll = Nothing
-    
-End Property
-
-Private Property Let CommentsSection(Optional ByVal h_sect_name As String, _
-                                     Optional ByVal p_file As String = vbNullString, _
-                                              ByVal h_sect_comments As Variant)
-' ----------------------------------------------------------------------------
-' Replaces in file (p_file) an old section comment - if any - with the a
-' new one (h_comment) - which may be a series of strings delimited by vbCrLf,
-' vbLf, "|" or "||", or a Collection of strings.
-' ----------------------------------------------------------------------------
-    Const PROC = "CommentsSection-Let"
+Public Property Let FileHeader(Optional ByVal name_file As String, _
+                                        ByVal file_header As String)
+' ------------------------------------------------------------------------------
+' Write a header for a file (name_fiel) provided as a strings delimited by
+' vbCrLf, ",", ", ", ";", or "; ".
+' ------------------------------------------------------------------------------
+    Const PROC = "FileHeader-Let"
     
     On Error GoTo eh
-    Dim cllCommentsOld As Collection
-    Dim i            As Long
-    Dim k            As Long
-    Dim arr          As Variant
-    Dim v            As Variant
-    Dim arrOut       As Variant
-    Dim bSepAdded    As Boolean
-    
-    arr = FileAsArray(p_file)
-    If Not PPfileSectionExists(arr, h_sect_name, k, cllCommentsOld) Then GoTo xt
-    
-    '~~ Transfer down to section excluding an old comment
-    For i = LBound(arr) To k - 1 - cllCommentsOld.Count
-        ArrayAdd arrOut, arr(i)
-    Next i
-    
-    '~~ Insert new comment
-    For Each v In VarAsCollection(h_sect_comments)
-        If bSectionsSeparated And Not bSepAdded Then
-            If Len(Trim(v)) <> 0 Then
-                ArrayAdd arrOut, vbNullString
-                bSepAdded = True
-            End If
-        End If
-        ArrayAdd arrOut, Comment(v)
-    Next v
-    
-    '~~ Transfer all remaining lines
-    For i = k To UBound(arr)
-        ArrayAdd arrOut, arr(i)
-    Next i
-    
-    StringAsFile Join(arrOut, vbCrLf), p_file
-    
+    If Not IsValidFile(name_file) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
+    PPtwinFileHeader(name_file) = StringAsCollection(file_header)
+
 xt: Exit Property
 
 eh: Select Case ErrMsg(ErrSrc(PROC))
@@ -313,84 +232,6 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
         Case Else:      GoTo xt
     End Select
 End Property
-
-'Private Property Get CommentsValue(Optional ByVal h_valu_name As String, _
-'                                   Optional ByVal h_sect_name As String = vbNullString, _
-'                                   Optional ByVal p_file As String = vbNullString) As Collection
-'' ----------------------------------------------------------------------------
-'' Returns a Collection with the value's (h_sect_name) comment lines (may be
-'' empty). The provided (name_file) may be an array already with the file's
-'' content.
-'' ----------------------------------------------------------------------------
-'    Const PROC = "CommentsValue-Get"
-'
-'    On Error GoTo eh
-'    Dim arr     As Variant
-'    Dim cll     As New Collection
-'    Dim i       As Long
-'    Dim sValue  As String
-'
-'    Set CommentsValue = cll
-'    arr = FileAsArray(p_file)
-'    If PPfileValueExists(arr, h_sect_name, h_valu_name, sValue, i, cll) Then
-'        Set CommentsValue = cll
-'    End If
-'
-'xt: Exit Property
-'
-'eh: Select Case ErrMsg(ErrSrc(PROC))
-'        Case vbResume:  Stop: Resume
-'        Case Else:      GoTo xt
-'    End Select
-'End Property
-'
-'Private Property Let CommentsValue(Optional ByVal h_valu_name As String, _
-'                                   Optional ByVal h_sect_name As String = vbNullString, _
-'                                   Optional ByVal p_file As String = vbNullString, _
-'                                            ByVal h_valu_comments As Variant)
-'' ----------------------------------------------------------------------------
-'' Replaces in an - optionally provided file's - section's (s_section) value
-'' (h_value_name) a comment with a provided comment (h_comment) which may be
-'' provided as a series of strings delimited by a | (vertical bar) or as a
-'' collection of strings.
-'' ----------------------------------------------------------------------------
-'    Const PROC = "CommentsValue-Let"
-'
-'    On Error GoTo eh
-'    Dim arrOut          As Variant
-'    Dim arr             As Variant
-'    Dim i               As Long
-'    Dim j               As Long
-'    Dim cllCommentsOld  As Collection
-'    Dim sValue          As String
-'    Dim v               As Variant
-'
-'    arr = FileAsArray(p_file)
-'    If Not IsValidSectName(h_sect_name) Then Err.Raise AppErr(2), ErrSrc(PROC), ErrInvalidSectName(h_sect_name)
-'    If Not PPfileValueExists(arr, h_sect_name, h_valu_name, sValue, j, cllCommentsOld) Then GoTo xt
-'
-'    '~~ Transfer all lines down to value except a possible old comment
-'    For i = LBound(arr) To j - 1 - cllCommentsOld.Count
-'        ArrayAdd arrOut, arr(i)
-'    Next i
-'    '~~ Insert the new comment
-'    For Each v In VarAsCollection(h_valu_comments)
-'        ArrayAdd arrOut, Comment(v)
-'    Next v
-'    '~~ Transfer all remaining lines
-'    For i = j To UBound(arr)
-'        ArrayAdd arrOut, arr(i)
-'    Next i
-'
-'    StringAsFile Join(arrOut, vbCrLf), p_file
-'
-'xt: Exit Property
-'
-'eh: Select Case ErrMsg(ErrSrc(PROC))
-'        Case vbResume:  Stop: Resume
-'        Case Else:      GoTo xt
-'    End Select
-'End Property
 
 Public Property Get FileName() As String:               FileName = sFileName:       End Property
 
@@ -403,6 +244,7 @@ Public Property Let FileName(ByVal f_file As String)
 ' ----------------------------------------------------------------------------
     Const PROC = "FileName-Let"
     
+    On Error GoTo eh
     Dim sInvalidLine    As String
     Dim arr             As Variant
     
@@ -416,7 +258,12 @@ Public Property Let FileName(ByVal f_file As String)
     PPmanage f_file
 
 xt: EoP ErrSrc(PROC)
+    Exit Property
 
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
 End Property
 
 Public Property Get Footer(Optional ByVal name_file As String = vbNullString) As Variant
@@ -424,13 +271,8 @@ Public Property Get Footer(Optional ByVal name_file As String = vbNullString) As
 ' When the file has no footer an empty Collection is returned. A footer is
 ' at least one comment line with a footer delimiter lin above.
 ' ----------------------------------------------------------------------------
-    Const PROC = "Footer-Get"
     
-    Dim bActive As Boolean
-    Dim cll     As New Collection
-    Dim arr     As Variant
-    
-    If PPtwinExists(name_file) Then
+    If PPtwinExists(name_file) Then ' cllPPtwin, cllPPtwinHeader, dctPPtwinSections, cllPPtwinFooter
         Set Footer = cllPPtwinFooter
     End If
     
@@ -447,8 +289,14 @@ Public Property Let Footer(Optional ByVal name_file As String = vbNullString, _
         
     On Error GoTo eh
     If Not IsValidFile(name_file) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
-    PPtwinFooter(name_file) = file_footer
-    PPmanage name_file
+    If PPtwinExists(name_file) Then         ' cllPPtwin, cllPPtwinHeader, dctPPtwinSections, cllPPtwinFooter
+        PPtwinFileFooter(name_file) = file_footer
+        PPmanage name_file
+    Else
+        Err.Raise AppErr(1), ErrSrc(PROC), "Writing a file footer into a yet not existing file is not supported! " & _
+                                           "A footer may be written with any Value Property or explicitely once " & _
+                                           "at least one value had been written."
+    End If
     
 xt: Exit Property
 
@@ -458,16 +306,67 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Property
 
-Private Property Let HskpngNamesDone(Optional ByVal h_file As String, _
-                                              ByVal h_hist As String)
+Public Property Get NameHskpngSection() As String: NameHskpngSection = NAMES_HSKPNG_SECT_NAME: End Property
+
+Private Property Get PPtwinFileFooter(ByVal p_file As String) As Collection
+    
+    Set PPtwinFileFooter = New Collection
+    If PPtwinExists(p_file) Then    ' cllPPtwin, cllPPtwinHeader, dctPPtwinSections, cllPPtwinFooter
+        Set PPtwinFileFooter = cllPPtwinFooter
+    End If
+    
+End Property
+
+Private Property Let PPtwinFileFooter(Optional ByVal p_file As String = vbNullString, _
+                                           ByVal p_comments As Variant)
+' ----------------------------------------------------------------------------
+' Replaces or adds a file footer to a Private Profile file's (p_file) twin.
+' Note: The file needs to be existing, i.e. it must have at least one section
+'       with one value
+' ----------------------------------------------------------------------------
+        
+    If PPtwinExists(p_file) Then                    ' cllPPtwin, cllPPtwinHeader, dctPPtwinSections, cllPPtwinFooter
+        Set cllPPtwinFooter = PPtwinFileFooterPrepare(p_comments)
+        PPtwinReplace p_file
+    End If
+
+End Property
+
+Private Property Get PPtwinFileHeader(ByVal p_file As String) As Collection
+    Set PPtwinFileHeader = New Collection
+    If PPtwinExists(p_file) Then    ' cllPPtwin, cllPPtwinHeader, dctPPtwinSections, cllPPtwinFooter
+        Set PPtwinFileHeader = cllPPtwinHeader
+    End If
+End Property
+
+Private Property Let PPtwinFileHeader(Optional ByVal p_file As String = vbNullString, _
+                                           ByVal p_comments As Collection)
+' ----------------------------------------------------------------------------
+' Replaces any existing file comments with new ones (p_comments),
+' whereby the new comments (p_comments) may be provided as a series
+' of strings delimited by vbCrLf, vbLf, "|" or "||", a Collection of
+' strings, or a Dictionary with the comments a key.
+' ----------------------------------------------------------------------------
+        
+    If PPtwinExists(p_file) Then                        ' cllPPtwin, cllPPtwinHeader, dctPPtwinSections, cllPPtwinFooter
+        Set cllPPtwinHeader = PPtwinFileHeaderPrepare(p_comments)
+        PPtwinReplace p_file
+        PPmanage p_file
+    End If
+
+End Property
+
+Private Property Let PPtwinHskpngNamesDone(Optional ByVal h_file As String, _
+                                                    ByVal h_hist As String)
 ' ----------------------------------------------------------------------------
 ' Keeps a record of a done name housekeeping (h_hist) in a Private Profile
 ' file (h_file).
 ' ----------------------------------------------------------------------------
     Dim s As String
     
-    If PPtwinSectionExists(h_file, NAMES_HSKPNG_SECT_NAME) Then
-        If PPtwinValueExists(h_file, NAMES_HSKPNG_SECT_NAME, NAMES_HSKPNG_VALUE_NAME) Then
+    If PPtwinSectionExists(NAMES_HSKPNG_SECT_NAME, h_file) Then                             ' cllPPtwinSection, cllPPtwinSectionComments, dctPPtwinValues
+        If PPtwinValueExists(NAMES_HSKPNG_VALUE_NAME, NAMES_HSKPNG_SECT_NAME, h_file) Then  ' cllPPtwin, cllPPtwinHeader, dctPPtwinSections, cllPPtwinFooter
+                                                                                            ' cllPPtwinValue, cllPPtwinValueComments, vPPtwinValue
             s = vPPtwinValue
             If InStr(s, ">") = 0 And InStr(s, "<") = 0 Then
                 '~~ There is either no "done record" yet or the current "done record"
@@ -476,112 +375,102 @@ Private Property Let HskpngNamesDone(Optional ByVal h_file As String, _
             Else
                 s = s & NAMES_HSKPNG_DONE_DELIM & h_hist
             End If
-            vPPtwinValue = s
-            PPtwinValueReplace NAMES_HSKPNG_VALUE_NAME
-            PPtwinSectionReplace NAMES_HSKPNG_SECT_NAME
-            PPtwinReplace h_file
-        Else
-            PPtwinValueNew NAMES_HSKPNG_VALUE_NAME, h_hist
-            PPtwinSectionReplace NAMES_HSKPNG_SECT_NAME
-            PPtwinReplace h_file
         End If
+        PPtwinValue(NAMES_HSKPNG_VALUE_NAME, NAMES_HSKPNG_SECT_NAME, h_file) = s
     Else
-        PPtwinSectionNew NAMES_HSKPNG_SECT_NAME, NAMES_HSKPNG_VALUE_NAME, h_hist
+        '~~ Add a new section with a new value (empty sections do not exist)
+        PPtwinNewSection NAMES_HSKPNG_VALUE_NAME, NAMES_HSKPNG_SECT_NAME, h_hist
         PPtwinReplace h_file
     End If
                     
 End Property
 
-Private Property Get PPtwinHeader(ByVal p_file As String) As Collection
-    Set PPtwinHeader = New Collection
-    If PPtwinExists(p_file) Then    ' cllPPtwin, cllPPtwinHeader, dctPPtwinSections, cllPPtwinFooter
-        Set PPtwinHeader = cllPPtwinHeader
+Private Property Get PPtwinSectionComments(Optional ByVal p_sect As String, _
+                                           Optional ByVal p_file As String) As Collection
+' ----------------------------------------------------------------------------
+' Returns an existing sections comments excluding the empty separator line
+' when SectionSeparated = True.
+' ----------------------------------------------------------------------------
+    Set PPtwinSectionComments = New Collection
+    
+    If PPtwinSectionExists(p_sect, p_file) Then ' cllPPtwinSection, cllPPtwinSectionComments, dctPPtwinValues
+        Set PPtwinSectionComments = cllPPtwinSectionComments
     End If
+    
 End Property
 
-Private Property Get PPtwinFooter(ByVal p_file As String) As Collection
-    Set PPtwinFooter = New Collection
-    If PPtwinExists(p_file) Then    ' cllPPtwin, cllPPtwinHeader, dctPPtwinSections, cllPPtwinFooter
-        Set PPtwinFooter = cllPPtwinFooter
-    End If
-End Property
-
-Private Property Let PPtwinHeader(Optional ByVal p_file As String = vbNullString, _
-                                           ByVal p_comments As Variant)
+Private Property Let PPtwinSectionComments(Optional ByVal p_sect As String, _
+                                           Optional ByVal p_file As String, _
+                                                    ByVal p_comments As Collection)
 ' ----------------------------------------------------------------------------
-' Replaces any existing file comments with new ones (p_comments),
-' whereby the new comments (p_comments) may be provided as a series
-' of strings delimited by vbCrLf, vbLf, "|" or "||", a Collection of
-' strings, or a Dictionary with the comments a key.
+' Writes comments to a section.
 ' ----------------------------------------------------------------------------
+    Const PROC = "PPtwinSectionComments"
     
-    Dim cll             As New Collection
-    Dim v               As Variant
-    Dim lLenMax         As Long
-    Dim sComment        As String
-    Dim cllFooter       As New Collection
-    Dim dctSections     As New Dictionary
-    
-    If PPtwinExists(p_file) Then
-        Set cllPPtwinHeader = FileHeader(p_comments)
+    On Error GoTo eh
+    If PPtwinSectionExists(p_sect, p_file) Then ' cllPPtwinSection, cllPPtwinSectionComments, dctPPtwinValues
+        Set cllPPtwinSectionComments = PPtwinSectionCommentsLet(p_comments)
+        PPtwinReplaceSection p_sect
         PPtwinReplace p_file
-    Else
-        cll.Add FileHeader(p_comments)
-        cll.Add dctSections
-        cll.Add cllFooter
-        dctPPtwins.Add p_file, cll
         PPmanage p_file
     End If
-
-End Property
-
-Private Property Let PPtwinFooter(Optional ByVal p_file As String = vbNullString, _
-                                           ByVal p_comments As Variant)
-' ----------------------------------------------------------------------------
-' Replaces or adds a file footer to a Private Profile file's (p_file) twin.
-' ----------------------------------------------------------------------------
     
-    Dim cll             As New Collection
-    Dim v               As Variant
-    Dim lLenMax         As Long
-    Dim sComment        As String
-    Dim cllHeader       As New Collection
-    Dim dctSections     As New Dictionary
-    
-    If PPtwinExists(p_file) Then
-        Set cllPPtwinFooter = FileFooter(p_comments)
-        PPtwinReplace p_file
-    Else
-        cll.Add cllHeader
-        cll.Add dctSections
-        cll.Add FileFooter(p_comments)
-        dctPPtwins.Add p_file, cll
-    End If
+xt: Exit Property
 
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
 End Property
-                                                                                   
+                                                                                
+Private Function PPtwinSectionCommentsLet(ByVal p_comments As Collection) As Collection
+    Dim cll As New Collection
+    Dim v   As Variant
+    
+    If bSectionsSeparated Then cll.Add vbNullString
+    For Each v In p_comments
+        If cll.Count = 0 And v = vbNullString Then
+        Else
+            cll.Add Comment(v)
+        End If
+    Next v
+    Set PPtwinSectionCommentsLet = cll
+    
+End Function
+
+Private Function PPtwinSectionCommentsGet(ByVal p_comments As Collection) As String
+    Dim cll     As New Collection
+    Dim sDelim  As String
+    Dim s       As String
+    Dim v       As Variant
+    
+    For Each v In p_comments
+        If cll.Count = 0 And Not v = vbNullString Then
+            s = sDelim & Right(v, Len(v) - 2)
+            sDelim = vbCrLf
+        Else
+            s = sDelim & Right(v, Len(v) - 2)
+            sDelim = vbCrLf
+        End If
+    Next v
+    PPtwinSectionCommentsGet = 2
+    
+End Function
+
 Private Property Get PPtwinValue(Optional ByVal p_name As String, _
                                  Optional ByVal p_sect As String, _
                                  Optional ByVal p_file As String, _
-                                 Optional ByVal p_default As Variant, _
-                                 Optional ByRef p_valu_comments As Variant, _
-                                 Optional ByRef p_sect_comments As Variant, _
-                                 Optional ByRef p_file_header As Variant, _
-                                 Optional ByRef p_file_footer As Variant) As Variant
+                                 Optional ByVal p_default As Variant) As Variant
 ' ----------------------------------------------------------------------------
 '
 ' ----------------------------------------------------------------------------
     
-    If Not IsMissing(p_default) _
-    Then PPtwinValue = p_default _
-    Else PPtwinValue = vbNullString
+    If IsMissing(p_default) Then p_default = vbNullString
     
-    If PPtwinValueExists(p_file, p_sect, p_name) Then
-        p_file_header = CollectionAsString(cllPPtwinHeader)
-        p_file_footer = CollectionAsString(cllPPtwinFooter)
-        p_sect_comments = CollectionAsString(cllPPtwinSectionComments)
-        PPtwinValue = PPvalue(vPPtwinValue)
-        p_valu_comments = CollectionAsString(cllPPtwinValueComments)
+    If PPtwinValueExists(p_name, p_sect, p_file) Then
+        PPtwinValue = PPvalue(vPPtwinValue, p_default)
+    Else
+        PPtwinValue = p_default
     End If
             
 End Property
@@ -590,69 +479,145 @@ Private Property Let PPtwinValue(Optional ByVal p_name As String, _
                                  Optional ByVal p_sect As String, _
                                  Optional ByVal p_file As String, _
                                  Optional ByVal p_default As Variant, _
-                                 Optional ByRef p_valu_comments As Variant = vbNullString, _
-                                 Optional ByRef p_sect_comments As Variant = vbNullString, _
-                                 Optional ByRef p_file_header As Variant = vbNullString, _
-                                 Optional ByRef p_file_footer As Variant = vbNullString, _
                                           ByVal p_valu As Variant)
 ' ----------------------------------------------------------------------------
 ' Modifies or adds a value (p_value) under a value name (p_name) in a section
 ' (p_sect) in a Private Profile file's twin (p_file) whereby anything missing
 ' is created.
+' Note! When no value comments are provided any existing comment is removed.
+'       However, section comment and file header/footer are only changed when
+'       provided.
 ' ----------------------------------------------------------------------------
     Const PROC = "PPtwinValue-Let"
-        
-    Dim cll As Collection
     
-    If PPtwinExists(p_file) Then
-        If p_file_header <> vbNullString _
-        Then Set cllPPtwinHeader = StringAsCollection(p_file_header)
-        If p_file_footer <> vbNullString _
-        Then Set cllPPtwinFooter = StringAsCollection(p_file_footer)
+    On Error GoTo eh
+    If PPtwinExists(p_file) Then                    ' cllPPtwin, cllPPtwinHeader, dctPPtwinSections, cllPPtwinFooter
         If dctPPtwinSections.Exists(p_sect) Then
-            PPtwinSectionSet p_sect
-            If p_sect_comments <> vbNullString Then
-                '~~ The section comment may be changed but not removed along with the value change
-                Set cllPPtwinSectionComments = SectionComments(p_sect_comments, cllPPtwinSectionComments)
-            End If
+            PPtwinSectionSet p_sect                 ' cllPPtwinSection, cllPPtwinSectionComments, dctPPtwinValues
             If dctPPtwinValues.Exists(p_name) Then
-                PPtwinValueSet p_name
-                Set cllPPtwinValueComments = ValueComments(p_valu_comments)
+                PPtwinValueSet p_name               ' cllPPtwinValue, cllPPtwinValueComments, vPPtwinValue
                 vPPtwinValue = PPvalue(p_valu)
-                PPtwinValueReplace p_name
-                PPtwinSectionReplace p_sect
+                PPtwinReplaceValue p_name           ' the/any comment remains unchanged
+                PPtwinReplaceSection p_sect
                 PPtwinReplace p_file
             Else
                 '~~ New value
-                PPtwinValueNew p_name, PPvalue(p_valu), p_valu_comments
-                PPtwinSectionReplace p_sect
+                If dctPPtwinValues Is Nothing Then Set dctPPtwinValues = New Dictionary
+                dctPPtwinValues.Add p_name, PPtwinNewValue(PPvalue(p_valu))
+                PPtwinReplaceSection p_sect
                 PPtwinReplace p_file
             End If
         Else
             '~~ New section, new value
-            PPtwinSectionNew p_sect, p_name, PPvalue(p_valu), p_valu_comments, p_sect_comments
+            If dctPPtwinSections Is Nothing Then Set dctPPtwinSections = New Dictionary
+            dctPPtwinSections.Add p_sect, PPtwinNewSection(p_name, p_sect, p_valu)
             PPtwinReplace p_file
         End If
     Else
         ' New file, new section, new value
-        PPtwinNew p_file, p_sect, p_name, PPvalue(p_valu), p_valu_comments, p_sect_comments, p_file_header, p_file_footer
+        dctPPtwins.Add p_file, PPtwinNew(p_name, p_sect, p_file, p_valu)
     End If
-    PPmanage p_file
+
+xt: Exit Property
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+End Property
+
+Private Property Get PPtwinValueComments(Optional ByVal p_name As String, _
+                                         Optional ByVal p_sect As String, _
+                                         Optional ByVal p_file As String) As Collection
+' ------------------------------------------------------------------------------
+'
+' ------------------------------------------------------------------------------
+    Set PPtwinValueComments = New Collection
+    
+    If PPtwinValueExists(p_name, p_sect, p_file) Then   ' cllPPtwinValue, cllPPtwinValueComments, vPPtwinValue
+        Set PPtwinValueComments = cllPPtwinValueComments
+    End If
 
 End Property
 
+Private Property Let PPtwinValueComments(Optional ByVal p_name As String, _
+                                         Optional ByVal p_sect As String, _
+                                         Optional ByVal p_file As String, _
+                                                  ByVal p_comments As Collection)
+' ------------------------------------------------------------------------------
+'
+' ------------------------------------------------------------------------------
+    
+    If PPtwinValueExists(p_name, p_sect, p_file) Then   ' cllPPtwinValue, cllPPtwinValueComments, vPPtwinValue
+        Set cllPPtwinValueComments = PPtwinValueCommentsLet(p_comments)
+        PPtwinReplaceValue p_name
+        PPtwinReplaceSection p_sect
+        PPtwinReplace p_file
+        PPmanage p_file
+    End If
+
+End Property
+
+Private Function PPtwinValueCommentsLet(ByVal p_comments As Collection) As Collection
+    Dim cll As New Collection
+    Dim v   As Variant
+    
+    For Each v In p_comments
+        cll.Add Comment(v)
+    Next v
+    Set PPtwinValueCommentsLet = cll
+    Set cll = Nothing
+    
+End Function
 Public Property Get Section() As String:        Section = sSection: End Property
 
 Public Property Let Section(ByVal s As String)
 ' ----------------------------------------------------------------------------
-' Note: Only a Section provided as Property becomes the default section name.
-'       Any section name provided along with a property or method call is only
-'       valid for the call.
+' Note: A provided valid Section name becomes the default when subsequently
+'       the corresponding argument is omitted.
 ' ----------------------------------------------------------------------------
     Const PROC = "Section-Let"
     
-    If Not IsValidSectName(s) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidSectName(s)
+    On Error GoTo eh
+    If Not IsValidNameSection(s) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidSectName(s)
     sSection = s
+    
+xt: Exit Property
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+End Property
+
+Public Property Get SectionComment(Optional ByVal name_section As String = vbNullString, _
+                                   Optional ByVal name_file As String = vbNullString) As String
+' ------------------------------------------------------------------------------
+' Returns the comments of a section as a strings delimited by
+' vbCrLf, ",", ", ", ";", "; ".
+' ------------------------------------------------------------------------------
+    Const PROC = "SectionComment-Get"
+    
+    If Not IsValidFile(name_file) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
+    If Not IsValidNameSection(name_section) Then Err.Raise AppErr(2), ErrSrc(PROC), ErrInvalidSectName(name_section)
+                                     
+    SectionComment = CommentsGet(PPtwinSectionComments(name_section, name_file))
+
+End Property
+
+Public Property Let SectionComment(Optional ByVal name_section As String = vbNullString, _
+                                   Optional ByVal name_file As String = vbNullString, _
+                                            ByVal value_comment As String)
+' ------------------------------------------------------------------------------
+' Returns the comments of a section as a vbCrLf delimited string.
+' ------------------------------------------------------------------------------
+    Const PROC = "SectionComment-Let"
+    
+    If Not IsValidFile(name_file) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
+    If Not IsValidNameSection(name_section) Then Err.Raise AppErr(2), ErrSrc(PROC), ErrInvalidSectName(name_section)
+                                     
+    PPtwinSectionComments(name_section, name_file) = StringAsCollection(value_comment)
+    PPmanage name_file
     
 End Property
 
@@ -662,10 +627,6 @@ Public Property Let Value(Optional ByVal name_value As String = vbNullString, _
                           Optional ByVal name_section As String = vbNullString, _
                           Optional ByVal name_file As String = vbNullString, _
                           Optional ByVal value_default As Variant, _
-                          Optional ByRef comments_value As String = vbNullString, _
-                          Optional ByRef comments_section As String = vbNullString, _
-                          Optional ByRef file_header As String = vbNullString, _
-                          Optional ByRef file_footer As String = vbNullString, _
                                    ByVal v_value As Variant)
 ' ----------------------------------------------------------------------------
 ' Writes a value (v_value) under a given name (name_value) into a section
@@ -677,13 +638,12 @@ Public Property Let Value(Optional ByVal name_value As String = vbNullString, _
     Const PROC = "Value-Let"
         
     On Error GoTo eh
-    Dim bIsNew      As Boolean
     
     If Not IsValidFile(name_file) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
-    If Not IsValidSectName(name_section) Then Err.Raise AppErr(2), ErrSrc(PROC), ErrInvalidSectName(name_section)
-    If Not IsValidValuName(name_value) Then Err.Raise AppErr(3), ErrSrc(PROC), ErrInvalidValuName(name_value)
+    If Not IsValidNameSection(name_section) Then Err.Raise AppErr(2), ErrSrc(PROC), ErrInvalidSectName(name_section)
+    If Not IsValidNameValue(name_value) Then Err.Raise AppErr(3), ErrSrc(PROC), ErrInvalidValuName(name_value)
     
-    PPtwinValue(name_value, name_section, name_file, , comments_value, comments_section, file_header, file_footer) = PPvalue(v_value)
+    PPtwinValue(name_value, name_section, name_file) = v_value
     PPmanage name_file ' re-setup the Private Profile file's twin
     
 xt: Exit Property
@@ -697,11 +657,7 @@ End Property
 Public Property Get Value(Optional ByVal name_value As String = vbNullString, _
                           Optional ByVal name_section As String = vbNullString, _
                           Optional ByVal name_file As String = vbNullString, _
-                          Optional ByVal value_default As Variant, _
-                          Optional ByRef comments_value As String, _
-                          Optional ByRef comments_section As String, _
-                          Optional ByRef file_header As String, _
-                          Optional ByRef file_footer As String) As Variant
+                          Optional ByVal value_default As Variant) As Variant
 ' ----------------------------------------------------------------------------
 ' Returns value name's (name_value) value from a section (name_section) in a
 ' Private Profile file (name_file) - plus its comment (it any) as a string of
@@ -712,12 +668,68 @@ Public Property Get Value(Optional ByVal name_value As String = vbNullString, _
 ' ----------------------------------------------------------------------------
     Const PROC  As String = "Value-Get"
            
-    Dim bExists As Boolean
     If Not IsValidFile(name_file) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
-    If Not IsValidSectName(name_section) Then Err.Raise AppErr(2), ErrSrc(PROC), ErrInvalidSectName(name_section)
-    If Not IsValidValuName(name_value) Then Err.Raise AppErr(3), ErrSrc(PROC), ErrInvalidValuName(name_value)
+    If Not IsValidNameSection(name_section) Then Err.Raise AppErr(2), ErrSrc(PROC), ErrInvalidSectName(name_section)
+    If Not IsValidNameValue(name_value) Then Err.Raise AppErr(3), ErrSrc(PROC), ErrInvalidValuName(name_value)
     
-    Value = PPtwinValue(name_value, name_section, name_file, value_default, comments_value, comments_section, file_header, file_footer)
+    Value = PPtwinValue(name_value, name_section, name_file, value_default)
+    
+End Property
+
+Public Property Get ValueComment(Optional ByVal name_value As String = vbNullString, _
+                                 Optional ByVal name_section As String = vbNullString, _
+                                 Optional ByVal name_file As String = vbNullString) As String
+' ------------------------------------------------------------------------------
+' Returns the comments of a value as a vbCrLf delimited string.
+' ------------------------------------------------------------------------------
+    Const PROC = "ValueComment-Get"
+    
+    If Not IsValidFile(name_file) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
+    If Not IsValidNameSection(name_section) Then Err.Raise AppErr(2), ErrSrc(PROC), ErrInvalidSectName(name_section)
+    If Not IsValidNameValue(name_value) Then Err.Raise AppErr(3), ErrSrc(PROC), ErrInvalidValuName(name_value)
+                                     
+    ValueComment = CommentsGet(PPtwinValueComments(name_value, name_section, name_file))
+
+End Property
+
+Private Function CommentsGet(ByVal c_comments As Collection) As String
+' ------------------------------------------------------------------------------
+' Returns a collection (c_comments) with a first empty item ignored and all
+' the other items with the comment prefix "; " unstripped.
+' ------------------------------------------------------------------------------
+
+    Dim s       As String
+    Dim sDelim  As String
+    Dim v       As Variant
+    
+    For Each v In c_comments
+        If v = vbNullString And s = vbNullString Then
+            '~~ A first empty comment is ignored
+        Else
+            s = s & sDelim & Right(v, Len(v) - 2)
+            sDelim = vbCrLf
+        End If
+    Next v
+    CommentsGet = s
+    
+End Function
+
+Public Property Let ValueComment(Optional ByVal name_value As String = vbNullString, _
+                                 Optional ByVal name_section As String = vbNullString, _
+                                 Optional ByVal name_file As String = vbNullString, _
+                                          ByVal value_comment As String)
+' ------------------------------------------------------------------------------
+' Writes comments for a value provided as strings delimited by
+' vbCrLf, ",", ", ", ";", "; ".
+' ------------------------------------------------------------------------------
+    Const PROC = "ValueComment-Let"
+    
+    If Not IsValidFile(name_file) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
+    If Not IsValidNameSection(name_section) Then Err.Raise AppErr(2), ErrSrc(PROC), ErrInvalidSectName(name_section)
+    If Not IsValidNameValue(name_value) Then Err.Raise AppErr(3), ErrSrc(PROC), ErrInvalidValuName(name_value)
+                                     
+    PPtwinValueComments(name_value, name_section, name_file) = StringAsCollection(value_comment)
+    PPmanage name_file
     
 End Property
 
@@ -729,7 +741,7 @@ Private Function AppErr(ByVal app_err_no As Long) As Long
 ' negative value. When the provided number is negative it returns the original
 ' positive "application" error number e.g. for being used with an error message.
 ' ------------------------------------------------------------------------------
-    AppErr = IIf(app_err_no < 0, app_err_no - vbObjectError, vbObjectError - app_err_no)
+    If app_err_no >= 0 Then AppErr = app_err_no + vbObjectError Else AppErr = Abs(app_err_no - vbObjectError)
 End Function
 
 Private Sub ArrayAdd(ByRef a_arr As Variant, _
@@ -964,8 +976,8 @@ End Function
 
 Private Function Comment(ByVal s As String) As String
 ' ----------------------------------------------------------------------------
-' Returns a string (s) as Private Profile file comment line by considering
-' that an empty line is a valid comment line.
+' Returns a string (s) as a propert Private Profile file comment line by
+' considering that an empty line is a valid comment line.
 ' ----------------------------------------------------------------------------
     If Len(Trim(s)) = 0 Then
         Comment = Trim(s)   ' accepts an empty line as a valid quasi comment
@@ -978,54 +990,6 @@ Private Function Comment(ByVal s As String) As String
     End If
     
 End Function
-
-Private Sub CommentsFileRestore(ByVal f_file_name As String, _
-                                ByVal f_file_comment As Collection)
-' ----------------------------------------------------------------------------
-'
-' ----------------------------------------------------------------------------
-    Dim arrIn   As Variant
-    Dim arrOut  As Variant
-    Dim i       As Long
-    Dim v       As Variant
-    
-    arrIn = FileAsArray(f_file_name)
-    For Each v In f_file_comment
-        ArrayAdd arrOut, v
-    Next v
-    For i = LBound(arrIn) To UBound(arrIn)
-        ArrayAdd arrOut, arrIn(i)
-    Next i
-    StringAsFile Join(arrOut, vbCrLf), f_file_name
-    
-End Sub
-
-'Private Function CommentsFileSave(ByVal f_file_name As String) As Collection
-'' ----------------------------------------------------------------------------
-''
-'' ----------------------------------------------------------------------------
-'    Dim arrIn   As Variant
-'    Dim arrOut  As Variant
-'    Dim cll     As Collection
-'    Dim i       As Long
-'
-'    Set cll = PPfileComments(f_file_name)
-'    If cll.Count = 0 Then GoTo xt
-'    arrIn = FileAsArray(f_file_name)
-'    For i = cll.Count To UBound(arrIn)
-'        ArrayAdd arrOut, arrIn(i)
-'    Next i
-'    If Not ArrayIsAllocated(arrOut) Then
-'        FSo.DeleteFile f_file_name
-'        FSo.CreateTextFile f_file_name
-'    Else
-'        StringAsFile Join(arrOut, vbCrLf), f_file_name
-'    End If
-'
-'xt: Set CommentsFileSave = cll
-'    Set cll = Nothing
-'
-'End Function
 
 Private Function CommentsOfItem(ByVal h_arr As Variant, _
                               ByRef h_idx As Long) As Collection
@@ -1134,7 +1098,7 @@ End Function
 Private Function ErrInvalidSectName(ByVal s As String) As String
     ErrInvalidSectName = "The provided section name (" & s & ") is invalid! " & _
                          "In a Private Profile files a section names may only " & _
-                         "contain the characters A-Z, a-z, 0-9, and _ !"
+                         "contain the characters A-Z, a-z, 0-9, _ (underscore), and @ (at) !"
 End Function
 
 Private Function ErrInvalidValuName(ByVal s As String) As String
@@ -1266,14 +1230,13 @@ Public Function Exists(ByVal name_file As String, _
     On Error GoTo eh
     Dim arr     As Variant
     Dim bActive As Boolean
-    Dim i       As Long
     
     If Not IsValidFile(name_file, arr, bActive) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
     If Not bActive Then GoTo xt
         
     Select Case True
-        Case name_section <> vbNullString And name_value = vbNullString:    Exists = PPtwinSectionExists(name_file, name_section)
-        Case name_section <> vbNullString And name_value <> vbNullString:   Exists = PPtwinValueExists(name_file, name_section, name_value)
+        Case name_section <> vbNullString And name_value = vbNullString:    Exists = PPtwinSectionExists(name_section, name_file)
+        Case name_section <> vbNullString And name_value <> vbNullString:   Exists = PPtwinValueExists(name_value, name_section, name_file)
     End Select
     
 xt: Exit Function
@@ -1478,55 +1441,6 @@ Private Function FileAsStringEmptyExcluded(ByVal s_s As String) As String
     
 End Function
 
-Private Function FileFooter(ByVal f_comments As Variant) As Collection
-
-    Dim cll       As New Collection
-    Dim lMax      As Long
-    Dim v         As Variant
-    Dim cllFooter As Collection
-    
-    Set cllFooter = VarAsCollection(f_comments)
-    If cllFooter.Count <> 0 Then
-        '~~ Get max length footer comment
-        For Each v In cllFooter
-            If Not IsDelimiterFileHeader(v) Then
-                lMax = Max(lMax, Len(Comment(v)) - 2)
-            End If
-        Next v
-        
-        '~~ Prepare with footer delimiter
-        cll.Add DelimiterFileFooter(lMax)
-        For Each v In cllFooter
-            If Not IsDelimiterFileFooter(v) Then
-                cll.Add Comment(v)
-            End If
-        Next v
-    End If
-    
-    Set FileFooter = cll
-    Set cll = Nothing
-    
-End Function
-
-
-Private Function FileHeader(ByVal f_comments As Variant) As Collection
-
-    Dim cll     As New Collection
-    Dim lMax    As Long
-    Dim v       As Variant
-    
-    For Each v In VarAsArray(f_comments)
-        If Not IsDelimiterFileHeader(Comment(v)) Then
-            lMax = Max(lMax, Len(Comment(v)) - 2)
-            cll.Add Comment(v)
-        End If
-    Next v
-    If cll.Count > 0 Then cll.Add Comment(DelimiterFileHeader(lMax))
-    Set FileHeader = cll
-    Set cll = Nothing
-    
-End Function
-
 Private Function FileStringTrimmed(ByVal s_s As String, _
                           Optional ByRef s_as_dict As Dictionary = Nothing) As String
 ' ----------------------------------------------------------------------------
@@ -1560,30 +1474,6 @@ Private Function FileStringTrimmed(ByVal s_s As String, _
                 .Add i, v
             Next v
         End With
-    End If
-    
-End Function
-
-Private Function HskpngIsDone(ByVal h_file As String, _
-                              ByVal h_hist As String) As Boolean
-' ----------------------------------------------------------------------------
-' Returns TRUE when a name's (h_hist) housekeeping is done
-' ----------------------------------------------------------------------------
-    Dim s As String
-    Dim v As Variant
-    
-    If PPtwinSectionExists(h_file, NAMES_HSKPNG_SECT_NAME) Then
-        If PPtwinValueExists(h_file, NAMES_HSKPNG_SECT_NAME, NAMES_HSKPNG_VALUE_NAME) Then
-            s = vPPtwinValue
-            If s <> vbNullString Then
-                For Each v In StringAsArray(s, NAMES_HSKPNG_DONE_DELIM)
-                    If v = h_hist Then
-                        HskpngIsDone = True
-                        Exit For
-                    End If
-                Next v
-            End If
-        End If
     End If
     
 End Function
@@ -1624,7 +1514,7 @@ Public Sub HskpngNames(ByVal h_file As String, _
     
     If Not ArrayIsAllocated(h_hist) Then GoTo xt
     For Each v In h_hist
-        If Not HskpngIsDone(h_file, v) Then
+        If Not PPtwinHskpngIsDone(h_file, v) Then
             sSects = vbNullString
             If InStr(v, ":") <> 0 Then
                 '~~ Do names forwarding for specified section/s
@@ -1663,7 +1553,7 @@ Public Sub HskpngNames(ByVal h_file As String, _
                 If sNameNew = vbNullString _
                 Then PPtwinValueRemove h_file, sSects, aNames(i) _
                 Else PPtwinValueRename h_file, sSects, aNames(i), sNameNew
-                HskpngNamesDone(h_file) = v
+                PPtwinHskpngNamesDone(h_file) = v
             Next i
         End If
     Next v
@@ -1733,12 +1623,12 @@ Private Function IsObject(ByVal i_var As Variant, _
     
 End Function
 
-Private Function IsValidFile(ByRef i_file_name As String, _
+Private Function IsValidFile(ByRef i_file As String, _
                     Optional ByRef i_arr As Variant, _
-                    Optional ByRef i_valid_content As Boolean, _
+                    Optional ByRef i_valid As Boolean, _
                     Optional ByRef i_error As String = vbNullString) As Boolean
 ' ----------------------------------------------------------------------------
-' Returns TRUE when a provided string (i_file_name) is a vaild Private Profile
+' Returns TRUE when a provided string (i_file) is a vaild Private Profile
 ' file, which is: - The file does not exist (but may be created)
 '                 - or the file is empty
 '                 - or the file is not empty and has no other lines but
@@ -1753,15 +1643,15 @@ Private Function IsValidFile(ByRef i_file_name As String, _
     On Error GoTo eh
     Dim sInvalidLine    As String
     
-    If i_file_name = vbNullString And sFileName <> vbNullString Then
-        '~~ The file has already been checkedd as valid
-        i_file_name = sFileName
+    If i_file = vbNullString And sFileName <> vbNullString Then
+        '~~ The file has already been checked as valid
+        i_file = sFileName
         IsValidFile = True
-        If FSo.FileExists(i_file_name) Then
-            i_valid_content = Not IsEmptyFile(i_file_name, i_arr)
+        If FSo.FileExists(i_file) Then
+            i_valid = Not IsEmptyFile(i_file, i_arr)
+            PPmanage i_file
+            GoTo xt
         End If
-        PPmanage i_file_name
-        GoTo xt
      End If
      
     '~~ An explicitely specified file name is checked for validity and when valid
@@ -1769,24 +1659,24 @@ Private Function IsValidFile(ByRef i_file_name As String, _
     '~~ have a file name provided as argument.
     IsValidFile = True
     Select Case True
-        Case Not IsValidFileName(i_file_name)
+        Case Not IsValidFileName(i_file)
             IsValidFile = False
-            i_error = ErrInvalidFileName(i_file_name)
+            i_error = ErrInvalidFileName(i_file)
             GoTo xt
-        Case Not IsValidFileContent(i_file_name, i_arr, sInvalidLine)
+        Case Not IsValidFileContent(i_file, i_arr, sInvalidLine)
             '~~ The file is valid when it has a valid content (may be empty however)
             IsValidFile = False
-            i_error = ErrInvalidFileContent(i_file_name, sInvalidLine)
+            i_error = ErrInvalidFileContent(i_file, sInvalidLine)
         Case Else
-            i_valid_content = True
+            i_valid = True
             IsValidFile = True
-            If Not IsEmptyFile(i_file_name) Then
-                '~~ An explicitely specified valid non empty file is immediately
-                '~~ provided as twin when yet unknown or when known but the
-                '~~ specifiec Private Profile file has changed meanwhile.
-                PPmanage i_file_name
-            End If
     End Select
+    If Not FSo.FileExists(i_file) Then
+        PPtwinRemove i_file
+    ElseIf IsValidFile = True Then
+        PPmanage i_file
+    End If
+
     
 xt: Exit Function
 
@@ -1846,7 +1736,6 @@ Private Function IsValidFileName(ByVal i_file As String) As Boolean
 ' Returns TRUE when the file either exists or does not exist but may be
 ' created.
 ' ----------------------------------------------------------------------------
-    Const PROC = "IsValidFileName"
     
     With FSo
         If Not .FileExists(i_file) Then
@@ -1867,27 +1756,63 @@ Private Function IsValidFileName(ByVal i_file As String) As Boolean
 
 End Function
 
-Private Function IsValidSectName(ByRef i_section As String) As Boolean
+Private Function IsValidNameSection(ByRef i_section As String) As Boolean
+' ------------------------------------------------------------------------------
+' Validate a section name on naming conventions in a Private Profile file
+' Rules for are:
+' - Must start with an alphanumeric character a _ or a @
+' - May contain alphanumeric characters, hyphens, and underscores
+' - Avoid spaces and special characters
+' When no name is provided, the Property Section is used instead which had
+' already been checked.
+' ------------------------------------------------------------------------------
+    Const PROC = "IsValidNameSection"
     
+    On Error GoTo eh
     If i_section = vbNullString Then
-        i_section = sSection ' provide the default section
-        IsValidSectName = True
-    Else
-        IsValidSectName = True
-'        With Reg
-'            .Pattern = "^[a-zA-Z0-9_@]+$"
-'            IsValidSectName = .Test(i_section)
-'        End With
+        i_section = sSection
+        Exit Function
     End If
     
+    With Reg
+        .Global = True
+        .IgnoreCase = True
+        .Pattern = "^[A-Za-z0-9_@][A-Za-z0-9_@-]*$"
+        IsValidNameSection = .Test(i_section)
+    End With
+   
+xt: Exit Function
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
 End Function
 
-Private Function IsValidValuName(ByVal i_name As String) As Boolean
-'    With Reg
-'        .Pattern = "^[a-zA-Z0-9_]{1,128}$"
-'        IsValidValuName = .Test(i_name)
-'    End With
-    IsValidValuName = True
+Private Function IsValidNameValue(ByVal i_name As String) As Boolean
+' ------------------------------------------------------------------------------
+' Validate a value name/key on naming conventions in a Private Profile file
+' Rules for are:
+' - Must start with an alphanumeric character or a _
+' - Can contain alphanumeric characters, hyphens, and underscores
+' - Avoid spaces and special characters
+' ------------------------------------------------------------------------------
+    Const PROC = "IsValidNameValue"
+    
+    On Error GoTo eh
+    IsValidNameValue = True
+
+    With Reg
+        .Global = True
+        .IgnoreCase = True
+        .Pattern = "^[A-Za-z0-9_][A-Za-z0-9_/-]*$"
+        IsValidNameValue = .Test(i_name)
+    End With
+    
+xt: Exit Function
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
 End Function
 
 Private Function IsValue(ByVal i_item As String, _
@@ -2129,10 +2054,10 @@ Private Sub PPfileAsPPtwinAddRemoveTopSectionSeparator()
     
     If dctPPtwinSections.Count = 0 Then GoTo xt
     sSect = dctPPtwinSections.Keys()(0)                 ' get the top section's key
-    PPtwinSectionSet sSect
+    PPtwinSectionSet sSect                              ' cllPPtwinSection, cllPPtwinSectionComments, dctPPtwinValues
     If cllPPtwinSectionComments(1) = vbNullString Then  ' remove a separator item if any
         cllPPtwinSectionComments.Remove 1
-        PPtwinSectionReplace sSect                          ' update/re-write the twin section
+        PPtwinReplaceSection sSect                      ' update/re-write the twin section
     End If
 
 xt: Exit Sub
@@ -2142,6 +2067,80 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
         Case Else:      GoTo xt
     End Select
 End Sub
+
+Private Function PPfileAsPPtwinPPfileFooter(ByVal p_source As Variant) As Collection
+' ----------------------------------------------------------------------------
+' Returns a Private Profile file's footer comments as Collection which may be
+' empty.
+' ----------------------------------------------------------------------------
+    Const PROC = "PPfileFooterGet"
+    
+    On Error GoTo eh
+    Dim a   As Variant
+    Dim cll As New Collection
+    Dim i   As Long
+    
+    Set PPfileAsPPtwinPPfileFooter = cll
+    Select Case VarType(p_source)
+        Case vbArray:   a = p_source
+        Case vbString:  a = FileAsArray(FSo.GetFile(p_source))
+        Case Else:      Err.Raise AppErr(1), ErrSrc(PROC), "The provided source is neither an array nor a string which specifies an existing file!"
+    End Select
+    i = UBound(a)
+    If i >= 0 Then
+        Do While IsComment(a(i)) And i >= LBound(a)
+            '~~ Any bottom comment up to the first non-comment is regarded a file footer
+            cll.Add a(i)
+            If i = LBound(a) Then Exit Do
+            i = i - 1
+        Loop
+        If IsDelimiterFileFooter(a(i)) Then cll.Add a(i)
+    End If
+    Set PPfileAsPPtwinPPfileFooter = RevertOrder(cll)
+
+xt: Set cll = Nothing
+    Exit Function
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+End Function
+
+Private Function PPfileAsPPtwinPPfileHeader(ByVal p_source As Variant) As Collection
+    Const PROC = "PPfileAsPPtwinPPfileHeader"
+    
+    On Error GoTo eh
+    Dim a   As Variant
+    Dim cll As New Collection
+    Dim i   As Long
+    
+    Set PPfileAsPPtwinPPfileHeader = cll
+    Select Case VarType(p_source)
+        Case vbArray:   a = p_source
+        Case vbString:  a = FileAsArray(FSo.GetFile(p_source))
+        Case Else:      Err.Raise AppErr(1), ErrSrc(PROC), "The provided source is neither an array nor a string which specifies an existing file!"
+    End Select
+    If UBound(a) >= 0 Then
+        i = LBound(a)
+        Do While IsComment(a(i)) And i <= UBound(a)
+            '~~ Any top comment down to the first non-comment is regarded a file header
+            cll.Add a(i)
+            If i = UBound(a) Then Exit Do
+            i = i + 1
+        Loop
+        If IsDelimiterFileHeader(a(i)) Then cll.Add a(i)
+    End If
+    Set PPfileAsPPtwinPPfileHeader = cll
+    
+xt: Set cll = Nothing
+    Exit Function
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+End Function
 
 Private Sub PPfileAsPPtwinSectAdd(ByVal p_sect As String, _
                                   ByRef p_sect_comment As Collection)
@@ -2221,82 +2220,6 @@ Private Sub PPfileAsPPtwinValueAdd(ByVal p_value_name As String, _
     
 End Sub
 
-Private Function PPfileAsPPtwinPPfileFooter(ByVal p_source As Variant) As Collection
-' ----------------------------------------------------------------------------
-' Returns a Private Profile file's footer comments as Collection which may be
-' empty.
-' ----------------------------------------------------------------------------
-    Const PROC = "PPfileFooterGet"
-    
-    On Error GoTo eh
-    Dim a   As Variant
-    Dim cll As New Collection
-    Dim i   As Long
-    
-    Set PPfileAsPPtwinPPfileFooter = cll
-    Select Case VarType(p_source)
-        Case vbArray:   a = p_source
-        Case vbString:  a = FileAsArray(FSo.GetFile(p_source))
-        Case Else:      Err.Raise AppErr(1), ErrSrc(PROC), "The provided source is neither an array nor a string which specifies an existing file!"
-    End Select
-    i = UBound(a)
-    If i >= 0 Then
-        Do While IsComment(a(i)) And i >= LBound(a)
-            '~~ Any bottom comment up to the first non-comment is regarded a file footer
-            cll.Add a(i)
-            If i = LBound(a) Then Exit Do
-            i = i - 1
-        Loop
-        If IsDelimiterFileFooter(a(i)) Then cll.Add a(i)
-    End If
-    Set PPfileAsPPtwinPPfileFooter = RevertOrder(cll)
-
-xt: Set cll = Nothing
-    Exit Function
-
-eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbResume:  Stop: Resume
-        Case Else:      GoTo xt
-    End Select
-End Function
-
-'Private Sub PPfileFooterRestore(ByVal p_file As String, _
-'                                ByVal p_footer As Collection)
-'' ----------------------------------------------------------------------------
-'' Re-appends a saved - and removed - file footer (p_footer) to the Private
-'' Profile file (p_file).
-'' ----------------------------------------------------------------------------
-'    CollectionAsFile c_coll:=p_footer _
-'                   , c_file:=p_file _
-'                   , c_append:=True
-'
-'End Sub
-
-'Private Function PPfileFooterSave(ByVal p_file As String) As Collection
-'' ----------------------------------------------------------------------------
-'' Returns and removes a footer from a Private Profile file (p_file).
-'' ----------------------------------------------------------------------------
-'    Dim arrIn   As Variant
-'    Dim arrOut  As Variant
-'    Dim cll     As Collection
-'    Dim i       As Long
-'
-'    Set cll = PPfileAsPPtwinPPfileFooter(p_file)
-'    arrIn = FileAsArray(p_file)
-'    For i = LBound(arrIn) To UBound(arrIn) - cll.Count
-'        ArrayAdd arrOut, arrIn(i)
-'    Next i
-'    If Not ArrayIsAllocated(arrOut) Then
-'        FSo.DeleteFile p_file
-'        FSo.CreateTextFile p_file
-'    Else
-'        StringAsFile Join(arrOut, vbCrLf), p_file
-'    End If
-'    Set PPfileFooterSave = cll
-'    Set cll = Nothing
-'
-'End Function
-
 Private Function PPfileHasChanged(ByVal p_file As String) As Boolean
 ' ----------------------------------------------------------------------------
 ' Returns TRUE when the Private Profile file (p_file) has changed.
@@ -2304,41 +2227,6 @@ Private Function PPfileHasChanged(ByVal p_file As String) As Boolean
    PPfileHasChanged = StrComp(FileAsString(p_file) _
                             , dctPPtwinsAsString(p_file) _
                             , vbBinaryCompare) <> 0
-End Function
-
-Private Function PPfileAsPPtwinPPfileHeader(ByVal p_source As Variant) As Collection
-    Const PROC = "PPfileAsPPtwinPPfileHeader"
-    
-    On Error GoTo eh
-    Dim a   As Variant
-    Dim cll As New Collection
-    Dim i   As Long
-    
-    Set PPfileAsPPtwinPPfileHeader = cll
-    Select Case VarType(p_source)
-        Case vbArray:   a = p_source
-        Case vbString:  a = FileAsArray(FSo.GetFile(p_source))
-        Case Else:      Err.Raise AppErr(1), ErrSrc(PROC), "The provided source is neither an array nor a string which specifies an existing file!"
-    End Select
-    If UBound(a) >= 0 Then
-        i = LBound(a)
-        Do While IsComment(a(i)) And i <= UBound(a)
-            '~~ Any top comment down to the first non-comment is regarded a file header
-            cll.Add a(i)
-            If i = UBound(a) Then Exit Do
-            i = i + 1
-        Loop
-        If IsDelimiterFileHeader(a(i)) Then cll.Add a(i)
-    End If
-    Set PPfileAsPPtwinPPfileHeader = cll
-    
-xt: Set cll = Nothing
-    Exit Function
-
-eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbResume:  Stop: Resume
-        Case Else:      GoTo xt
-    End Select
 End Function
 
 Private Function PPfileIsSection(ByVal i_item As String, _
@@ -2391,53 +2279,6 @@ xt:
 
 End Function
 
-'Private Function PPfileValueExists(ByVal v_source As Variant, _
-'                                   ByVal v_sect_name As String, _
-'                                   ByVal v_valu_name As String, _
-'                          Optional ByRef v_valu As String, _
-'                          Optional ByRef v_index As Long, _
-'                          Optional ByRef v_valu_comments As Collection, _
-'                          Optional ByRef v_sect_comments As Collection) As Boolean
-'' ----------------------------------------------------------------------------
-'' Returns TRUE when a value (v_sect_name, v_valu_name) exists in a source
-'' (v_source) which might be an array or a string specifiying a files's full
-'' name. When the value exists its section comments (v_sect_coments) and
-'' ----------------------------------------------------------------------------
-'    Const PROC = "PPfileValueExists"
-'
-'    On Error GoTo eh
-'    Dim i   As Long
-'
-'    If TypeName(v_source) = "String" And Not ArrayIsAllocated(v_source) Then
-'        '~~ When the source is a file's full name the file is transformed into an array
-'        v_source = FileAsArray(v_source)
-'    End If
-'    If Not ArrayIsAllocated(v_source) Then GoTo xt ' in case the file is empty
-'    If Not PPfileSectionExists(v_source, v_sect_name, i, v_sect_comments) Then GoTo xt
-'    '~~ When the section exists, continue with the next line
-'    i = i + 1
-'    If i <= UBound(v_source) Then
-'        Do While Not PPfileIsSection(v_source(i), v_sect_name)
-'            '~~ Loop down to the next section or the end of the file when it is the last section
-'            If IsValue(v_source(i), v_valu_name, v_valu) Then
-'                PPfileValueExists = True
-'                v_index = i
-'                Set v_valu_comments = CommentsOfItem(v_source, i) ' Return the value's comments (may be none)
-'                Exit Do
-'            End If
-'            If i = UBound(v_source) Then Exit Do
-'            i = i + 1
-'        Loop
-'    End If
-'
-'xt: Exit Function
-'
-'eh: Select Case ErrMsg(ErrSrc(PROC))
-'        Case vbResume:  Stop: Resume
-'        Case Else:      GoTo xt
-'    End Select
-'End Function
-
 Private Sub PPmanage(ByVal p_file As String)
 ' ----------------------------------------------------------------------------
 ' Manages a Private Profile by:
@@ -2456,9 +2297,11 @@ Private Sub PPmanage(ByVal p_file As String)
     Select Case True
         Case Not FSo.FileExists(p_file) And PPtwinExists(p_file)
             PPtwinAsPPfile p_file
+            PPtwinClear
         Case Not PPtwinExists(p_file) And FSo.FileExists(p_file)
             PPfileAsPPtwin p_file
             PPtwinAsPPfile p_file ' ensure ascending order
+            PPtwinClear
         Case PPtwinExists(p_file) And FSo.FileExists(p_file)
             bPPtwinHasChanged = PPtwinHasChanged(p_file)
             bPPfileHasChanged = PPfileHasChanged(p_file)
@@ -2468,11 +2311,13 @@ Private Sub PPmanage(ByVal p_file As String)
                 Case bPPtwinHasChanged And Not bPPfileHasChanged
                    '~~ re-write Private Profile file from the twin
                     PPtwinAsPPfile p_file
+                    PPtwinClear
                 Case bPPfileHasChanged And Not bPPtwinHasChanged
                     '~~ re-setup the twin to possibly re-organize items in ascending order
                     '~~ and replace the Private Profile file with the reorganized twin as string
                     PPfileAsPPtwin p_file
                     PPtwinAsPPfile p_file
+                    PPtwinClear
                 Case Else
                     Err.Raise AppErr(1), _
                     ErrSrc(PROC), "The twin has changed and the file has changed too, which is a severe logic error."
@@ -2545,7 +2390,7 @@ Private Function PPtwinAsString(ByVal p_file As String) As String
     Dim sName       As String
     
     If PPtwinExists(p_file) Then                                        ' cllPPtwin, cllPPtwinHeader, dctPPtwinSections, cllPPtwinFooter
-        PPtwinAsStringComments arrOut, cllPPtwinHeader                  ' File comment
+        PPtwinAsStringComments arrOut, cllPPtwinHeader                  ' File header
         For Each vSect In dctPPtwinSections
             sSect = vSect
             PPtwinSectionSet sSect                                      ' cllPPtwinSection, cllPPtwinSectionComments, dctPPtwinValues
@@ -2584,11 +2429,55 @@ Private Sub PPtwinAsStringComments(ByRef p_arr As Variant, _
     
 End Sub
 
+Private Sub PPtwinClear()
+    Set cllPPtwin = Nothing
+    Set cllPPtwinHeader = Nothing
+    Set dctPPtwinSections = Nothing
+    Set cllPPtwinSection = Nothing
+    Set cllPPtwinSectionComments = Nothing
+    Set dctPPtwinValues = Nothing
+    Set cllPPtwinValue = Nothing
+    Set cllPPtwinValueComments = Nothing
+    Set cllPPtwinFooter = Nothing
+End Sub
+
 Private Function PPtwinExists(ByVal p_file As String) As Boolean
     If dctPPtwins.Exists(p_file) Then
         PPtwinExists = True
         PPtwinSet p_file ' cllPPtwin, cllPPtwinHeader, dctPPtwinSections, cllPPtwinFooter
     End If
+End Function
+
+Private Function PPtwinFileFooterPrepare(ByVal f_comments As Collection) As Collection
+' ----------------------------------------------------------------------------
+' Returns comments (f_comments) as Collection representing a Private Profile
+' file's footer - with a footer delimiter line at the top.
+' ----------------------------------------------------------------------------
+
+    Dim cll       As New Collection
+    Dim lMax      As Long
+    Dim v         As Variant
+    
+    If f_comments.Count > 0 Then
+        '~~ Get max length footer comment
+        For Each v In f_comments
+            If Not IsDelimiterFileFooter(v) Then
+                lMax = Max(lMax, Len(Comment(v)) - 2)
+            End If
+        Next v
+        
+        '~~ Prepare with footer delimiter
+        cll.Add DelimiterFileFooter(lMax)
+        For Each v In f_comments
+            If Not IsDelimiterFileFooter(v) Then
+                cll.Add Comment(v)
+            End If
+        Next v
+    End If
+    
+    Set PPtwinFileFooterPrepare = cll
+    Set cll = Nothing
+    
 End Function
 
 Private Function PPtwinHasChanged(ByVal p_file As String) As Boolean
@@ -2601,35 +2490,150 @@ Private Function PPtwinHasChanged(ByVal p_file As String) As Boolean
     
 End Function
 
-                           
-Private Function PPtwinNew(ByVal p_file As String, _
-                  Optional ByVal p_sect As String = vbNullString, _
-                  Optional ByVal p_name As String = vbNullString, _
-                  Optional ByVal p_valu As String = vbNullString, _
-                  Optional ByVal p_valu_comments As String = vbNullString, _
-                  Optional ByVal p_sect_comments As String = vbNullString, _
-                  Optional ByVal p_file_header As String = vbNullString, _
-                  Optional ByVal p_file_footer As String = vbNullString) As Dictionary
+Private Function PPtwinFileHeaderPrepare(ByVal f_comments As Collection) As Collection
 ' ----------------------------------------------------------------------------
-' Adds a new file with a new section with a new value to the Private Profile
-' file twins.
+' Returns comments (f_comments) as Collection representing a Private Profile
+' file's header - with a header delimiter line at the bottom.
 ' ----------------------------------------------------------------------------
+    Dim cll     As New Collection
+    Dim lMax    As Long
+    Dim v       As Variant
+    
+    If f_comments.Count > 0 Then
+        For Each v In f_comments
+            If Not IsDelimiterFileHeader(Comment(v)) Then
+                lMax = Max(lMax, Len(Comment(v)) - 2)
+                cll.Add Comment(v)
+            End If
+        Next v
+        cll.Add Comment(DelimiterFileHeader(lMax))
+    End If
+    Set PPtwinFileHeaderPrepare = cll
+    Set cll = Nothing
+    
+End Function
+
+Private Function PPtwinHskpngIsDone(ByVal h_file As String, _
+                                    ByVal h_hist As String) As Boolean
+' ----------------------------------------------------------------------------
+' Returns TRUE when a name's (h_hist) housekeeping is done
+' ----------------------------------------------------------------------------
+    Dim s As String
+    Dim v As Variant
+    
+    s = PPtwinValue(NAMES_HSKPNG_VALUE_NAME, NAMES_HSKPNG_SECT_NAME, h_file)
+    If s <> vbNullString Then
+        For Each v In StringAsArray(s, NAMES_HSKPNG_DONE_DELIM)
+            '~~ Loop through all names housekeeping done strings
+            If v = h_hist Then
+                PPtwinHskpngIsDone = True
+                Exit For
+            End If
+        Next v
+    End If
+    
+End Function
+
+                          
+Private Function PPtwinNew(ByVal p_name As String, _
+                           ByVal p_sect As String, _
+                           ByVal p_file As String, _
+                           ByVal p_valu As Variant, _
+                  Optional ByVal p_valu_comments As Collection, _
+                  Optional ByVal p_sect_comments As Collection, _
+                  Optional ByVal p_file_header As Collection, _
+                  Optional ByVal p_file_footer As Collection) As Collection
+' ----------------------------------------------------------------------------
+' Adds a new Private Profile file's twin with one section (p_sect) and one
+' value (p_name, p_valu).
+' Note: There's no Private Profile file without at least on section with at
+' one value (no values = no sections = no file).
+' ----------------------------------------------------------------------------
+    Const PROC = "PPtwinNew"
+    
+    On Error GoTo eh
     Dim cll As New Collection
     
+    If Not IsValidNameValue(p_name) _
+    Then Err.Raise AppErr(1), ErrSrc(PROC), "The new value's name does not meet the rules for value names in Provate Profile files!"
+    If Not IsValidNameSection(p_sect) _
+    Then Err.Raise AppErr(1), ErrSrc(PROC), "The new section's name does not meet the rules for section names in a Private Profile file!" & vbLf & _
+                                            "The name must start with an alpanumeric character, a _ or a @."
+        
+    Set cllPPtwin = New Collection
+    cllPPtwin.Add cll ' live starts without a header
     Set dctPPtwinSections = New Dictionary
-    If p_sect <> vbNullString Then Set dctPPtwinSections = PPtwinSectionNew(p_sect, p_name, p_valu, p_valu_comments, p_sect_comments)
-    cll.Add StringAsCollection(p_file_header)
-    cll.Add dctPPtwinSections
-    cll.Add StringAsCollection(p_file_footer)
+    dctPPtwinSections.Add p_sect, PPtwinNewSection(p_name, p_sect, p_valu, p_valu_comments, p_sect_comments)
+    cllPPtwin.Add dctPPtwinSections
+    cllPPtwin.Add cll ' live starts without a footer
+    Set PPtwinNew = cllPPtwin
+    PPtwinRemoveTopSectionSeparator dctPPtwinSections
     
-    If dctPPtwins Is Nothing Then Set dctPPtwins = New Dictionary
-    dctPPtwins.Add p_file, cll
+xt: Exit Function
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+
+End Function
+
+Private Function PPtwinNewSection(ByVal p_name As String, _
+                                  ByVal p_sect As String, _
+                                  ByVal p_valu As Variant, _
+                         Optional ByVal p_valu_comments As Collection, _
+                         Optional ByVal p_sect_comments As Collection) As Collection
+' ----------------------------------------------------------------------------
+' Adds a new value (p_name, p_valu) in a new section (p_sect) to a Private
+' Profile file's twin (p_file) - provided the file/twin exists and the names
+' for the value and the section conforms with the rules.
+' Note: A new section allways comes with a new value
+' ----------------------------------------------------------------------------
+    Const PROC = "PPtwinNewSection"
+    
+    On Error GoTo eh
+    Dim cll As New Collection
+    
+    If Not IsValidNameValue(p_name) _
+    Then Err.Raise AppErr(1), ErrSrc(PROC), "The new value's name does not meet the rules for value names in Provate Profile files!"
+    If Not IsValidNameSection(p_sect) _
+    Then Err.Raise AppErr(1), ErrSrc(PROC), "The new section's name does not meet the rules for section names in a Private Profile file!" & vbLf & _
+                                            "The name must start with an alpanumeric character, a _ or a @."
+    Set cllPPtwinSection = New Collection
+    Set dctPPtwinValues = New Dictionary
+    If bSectionsSeparated Then cll.Add vbNullString
+    cllPPtwinSection.Add cll ' live starts witout comments
+    dctPPtwinValues.Add p_name, PPtwinNewValue(p_valu)
+    cllPPtwinSection.Add dctPPtwinValues
+    Set PPtwinNewSection = cllPPtwinSection
+    
+xt: Exit Function
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+End Function
+          
+Private Function PPtwinNewValue(ByVal p_valu As Variant) As Collection
+' ----------------------------------------------------------------------------
+' Returns a Collection with the first item as the comments (p_comments) and
+' the second item a the value (p_value).
+' ----------------------------------------------------------------------------
+    Dim cll As New Collection
+    Set cllPPtwinValue = New Collection
+    cllPPtwinValue.Add cll  ' Live starts without comments
+    cllPPtwinValue.Add p_valu
+    Set PPtwinNewValue = cllPPtwinValue
     
 End Function
 
 Private Sub PPtwinRemove(ByVal p_file As String)
+
     If dctPPtwins.Exists(p_file) Then dctPPtwins.Remove p_file
     If dctPPtwinsAsString.Exists(p_file) Then dctPPtwinsAsString.Remove p_file
+    PPtwinClear
+    
 End Sub
 
 Private Sub PPtwinRemoveTopSectionSeparator(ByVal p_sections As Dictionary)
@@ -2643,12 +2647,13 @@ Private Sub PPtwinRemoveTopSectionSeparator(ByVal p_sections As Dictionary)
     Dim sSect   As String
     
     If p_sections.Count = 0 Then GoTo xt
-    sSect = p_sections.Keys()(0)                 ' get the top section's key
-    PPtwinSectionSet sSect
+    sSect = p_sections.Keys()(0)                    ' get the top section's key
+    PPtwinSectionSet sSect                          ' cllPPtwinSection, cllPPtwinSectionComments, dctPPtwinValues
     If cllPPtwinSectionComments.Count > 0 Then
-        If cllPPtwinSectionComments(1) = vbNullString Then  ' remove a separator item if any
+        If cllPPtwinSectionComments(1) = vbNullString _
+        And bSectionsSeparated Then  ' remove a separator item if any
             cllPPtwinSectionComments.Remove 1
-            PPtwinSectionReplace sSect                          ' update/re-write the twin section
+            PPtwinReplaceSection sSect                          ' update/re-write the twin section
         End If
     End If
     
@@ -2676,85 +2681,7 @@ Private Sub PPtwinReplace(ByVal p_file As String)
     
 End Sub
 
-Private Function PPtwinSectionComments(Optional ByVal p_file As String, _
-                                       Optional ByVal p_sect As String) As Collection
-' ----------------------------------------------------------------------------
-' Returns an existing sections comments.
-' ----------------------------------------------------------------------------
-    Set PPtwinSectionComments = New Collection
-    
-    If PPtwinSectionExists(p_file, p_sect) Then ' cllPPtwinSection, cllPPtwinSectionComments, dctPPtwinValues
-        Set PPtwinSectionComments = cllPPtwinSectionComments
-    End If
-    
-End Function
-
-Private Function PPtwinSectionExists(ByVal p_file As String, _
-                                     ByVal p_sect As String) As Boolean
-' ----------------------------------------------------------------------------
-' Returns TRUE when a section (p_sect) exists in the Private Profile file
-' twin.
-' ----------------------------------------------------------------------------
-    If PPtwinExists(p_file) Then
-        If dctPPtwinSections.Exists(p_sect) Then
-            PPtwinSectionExists = True
-            PPtwinSectionSet p_sect
-        End If
-    End If
-    
-End Function
-          
-Private Function PPtwinSectionNew(Optional ByVal p_sect As String = vbNullString, _
-                                  Optional ByVal p_name As String = vbNullString, _
-                                  Optional ByVal p_valu As String = vbNullString, _
-                                  Optional ByVal p_valu_comments As String = vbNullString, _
-                                  Optional ByVal p_sect_comments As String = vbNullString) As Dictionary
-' ----------------------------------------------------------------------------
-' Adds a new section plus a value to an Private Profile file.
-' Precondition: PPtwinSet had been processed.
-' ----------------------------------------------------------------------------
-    Dim cll As New Collection
-    
-    Set cllPPtwinSectionComments = SectionComments(p_sect_comments)
-    Set dctPPtwinValues = New Dictionary
-    If p_name <> vbNullString Then Set dctPPtwinValues = PPtwinValueNew(p_name, p_valu, p_valu_comments)
-    If dctPPtwinSections Is Nothing Then Set dctPPtwinSections = New Dictionary
-    
-    cll.Add cllPPtwinSectionComments
-    cll.Add dctPPtwinValues
-    dctPPtwinSections.Add p_sect, cll
-    KeySort dctPPtwinSections
-    PPtwinRemoveTopSectionSeparator dctPPtwinSections
-    Set PPtwinSectionNew = dctPPtwinSections
-    
-End Function
-
-Private Sub PPtwinSectionRemove(ByVal p_file As String, _
-                                ByVal p_section As String)
-' ----------------------------------------------------------------------------
-' Removes an existing section (p_section) from a Private Profile file (p_file)
-' twin.
-' See PPfileAsPPtwin for the implemented structure.
-' ----------------------------------------------------------------------------
-    Const PROC = "PPtwinSectionRemove"
-    
-    On Error GoTo eh
-    
-    If PPtwinSectionExists(p_file, p_section) Then          ' cllPPtwinSection, cllPPtwinSectionComments, dctPPtwinValues
-        dctPPtwinSections.Remove p_section
-        '~~ Replace twin in twins Dictionary
-        PPtwinReplace p_file
-    End If
-    
-xt: Exit Sub
-
-eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbResume:  Stop: Resume
-        Case Else:      GoTo xt
-    End Select
-End Sub
-
-Private Sub PPtwinSectionReplace(ByVal p_section As String)
+Private Sub PPtwinReplaceSection(ByVal p_section As String)
 ' ----------------------------------------------------------------------------
 ' Returns/replaces a Private Profile twin's section elements in the
 ' dtcPPtwinSections and arranges the sections in ascending order.
@@ -2770,6 +2697,85 @@ Private Sub PPtwinSectionReplace(ByVal p_section As String)
     KeySort dctPPtwinSections
     Set cll = Nothing
 
+End Sub
+
+                  
+Private Sub PPtwinReplaceValue(ByVal p_name As String)
+' ----------------------------------------------------------------------------
+' Removes an exsting name (p_name) and re-adds it - whereby the comments and
+' or the value may have changed
+' ----------------------------------------------------------------------------
+    Dim cll As New Collection
+    
+    cll.Add cllPPtwinValueComments
+    cll.Add vPPtwinValue
+    If dctPPtwinValues.Exists(p_name) Then dctPPtwinValues.Remove p_name
+    dctPPtwinValues.Add p_name, cll
+    KeySort dctPPtwinValues
+    Set cll = Nothing
+    
+End Sub
+
+Private Function PPtwinSectionCommentPrepare(ByVal p_comments As Collection) As Collection
+    
+    Dim cll As New Collection
+    Dim v   As Variant
+    
+    If p_comments.Count > 0 Then
+        For Each v In p_comments
+            cll.Add Comment(v)
+        Next v
+    End If
+    Set PPtwinSectionCommentPrepare = cll
+    Set cll = Nothing
+    
+End Function
+
+Private Function PPtwinSectionExists(ByVal p_sect As String, _
+                                     ByVal p_file As String) As Boolean
+' ----------------------------------------------------------------------------
+' Returns TRUE when a section (p_sect) exists in the Private Profile file
+' twin.
+' ----------------------------------------------------------------------------
+    If PPtwinExists(p_file) Then
+        If dctPPtwinSections.Exists(p_sect) Then
+            PPtwinSectionExists = True
+            PPtwinSectionSet p_sect                 ' cllPPtwinSection, cllPPtwinSectionComments, dctPPtwinValues
+        End If
+    End If
+    
+End Function
+
+Private Sub PPtwinSectionRemove(ByVal p_file As String, _
+                                ByVal p_section As String)
+' ----------------------------------------------------------------------------
+' Removes an existing section (p_section) from a Private Profile file (p_file)
+' twin.
+' See PPfileAsPPtwin for the implemented structure.
+' ----------------------------------------------------------------------------
+    Const PROC = "PPtwinSectionRemove"
+    
+    On Error GoTo eh
+    
+    If PPtwinSectionExists(p_section, p_file) Then          ' cllPPtwinSection, cllPPtwinSectionComments, dctPPtwinValues
+        dctPPtwinSections.Remove p_section
+    End If
+    
+    If dctPPtwinSections.Count > 0 Then
+        PPtwinReplace p_file            ' Replace the twin in the twins Directory
+    Else
+        '~~ When all sections had been removed the Private Profile file has become obsolete to and will be removed
+        dctPPtwins.Remove p_file
+        dctPPtwinsAsString.Remove p_file
+        FSo.DeleteFile p_file
+    End If
+    
+xt: Exit Sub
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
 End Sub
 
 Private Sub PPtwinSectionSet(ByVal p_section As String)
@@ -2792,98 +2798,29 @@ Private Sub PPtwinSet(ByVal p_file As String)
     Set cllPPtwinFooter = cllPPtwin(3)
 End Sub
 
-Private Sub PPtwinValueAddReplace(ByVal p_file As String, _
-                                  ByVal p_sect As String, _
-                                  ByVal p_name As String, _
-                                  ByVal p_valu As Variant, _
-                         Optional ByVal p_valu_comments As String = vbNullString, _
-                         Optional ByVal p_sect_comments As String = vbNullString, _
-                         Optional ByVal p_file_header As String = vbNullString, _
-                         Optional ByVal p_file_footer As String = vbNullString)
-' ----------------------------------------------------------------------------
-'
-' ----------------------------------------------------------------------------
-                                  
-    If PPtwinExists(p_file) Then
-        If PPtwinSectionExists(p_file, p_sect) Then
-            If PPtwinValueExists(p_file, p_sect, p_name) Then
-                vPPtwinValue = PPvalue(p_valu)
-                PPtwinValueReplace p_name
-                PPtwinSectionReplace p_sect
-                PPtwinReplace p_file
-            Else
-                '~~ New value
-                PPtwinValueNew p_name, PPvalue(p_valu), p_valu_comments
-                PPtwinSectionReplace p_sect
-                PPtwinReplace p_file
-            End If
-        Else
-            '~~ New section, new value
-            PPtwinSectionNew p_sect, p_name, PPvalue(p_valu), p_valu_comments, p_sect_comments
-        End If
-    Else
-        ' New file, new section, new value
-        PPtwinNew p_file, p_sect, p_name, PPvalue(p_valu), p_valu_comments, p_sect_comments, p_file_header, p_file_footer
-    End If
-    PPmanage p_file
-    
-End Sub
-
-Private Function PPtwinValueComments(ByVal p_file As String, _
-                                     ByVal p_sect As String, _
-                                     ByVal p_name As String) As Collection
-' ------------------------------------------------------------------------------
-'
-' ------------------------------------------------------------------------------
-    Set PPtwinValueComments = New Collection
-    
-    If PPtwinValueExists(p_file, p_sect, p_name) Then   ' cllPPtwinValue, cllPPtwinValueComments, vPPtwinValue
-        Set PPtwinValueComments = cllPPtwinValueComments
-    End If
-
-End Function
-
-Private Function PPtwinValueExists(ByVal p_file As String, _
+Private Function PPtwinValueExists(ByVal p_name As String, _
                                    ByVal p_sect As String, _
-                                   ByVal p_name As String) As Boolean
+                                   ByVal p_file As String) As Boolean
 ' ----------------------------------------------------------------------------
 ' Returns TRUE when a value (p_name) exists in a Private Profile file
 ' twin's section.
 ' ----------------------------------------------------------------------------
     
-    If PPtwinExists(p_file) Then
+    If PPtwinExists(p_file) Then                    ' cllPPtwin, cllPPtwinHeader, dctPPtwinSections, cllPPtwinFooter
         If dctPPtwinSections.Exists(p_sect) Then
-            PPtwinSectionSet p_sect
+            PPtwinSectionSet p_sect                 ' cllPPtwinSection, cllPPtwinSectionComments, dctPPtwinValues
             If dctPPtwinValues.Exists(p_name) Then
                 PPtwinValueExists = True
-                PPtwinValueSet p_name
+                PPtwinValueSet p_name               ' cllPPtwinValue, cllPPtwinValueComments, vPPtwinValue
             End If
         End If
     End If
     
 End Function
-                      
-Private Function PPtwinValueNew(ByVal p_name As String, _
-                                ByVal p_valu As Variant, _
-                       Optional ByVal p_valu_comments As String = vbNullString) As Dictionary
-' ----------------------------------------------------------------------------
-' Adds a new value to an existing section.
-' Precondition: PPtwinSectionSet had been processed.
-' ----------------------------------------------------------------------------
 
-    Dim cll As New Collection
-    
-    cll.Add ValueComments(p_valu_comments)
-    cll.Add p_valu
-    If dctPPtwinValues Is Nothing Then Set dctPPtwinValues = New Dictionary
-    dctPPtwinValues.Add p_name, cll
-    Set PPtwinValueNew = dctPPtwinValues
-    
-End Function
-
-Private Function PPtwinValueRemove(ByVal p_file As String, _
-                                   ByVal p_sections As String, _
-                                   ByVal p_name As String) As Boolean
+Private Function PPtwinValueRemove(ByVal p_name As String, _
+                                   ByVal p_sect As String, _
+                                   ByVal p_file As String) As Boolean
 ' ----------------------------------------------------------------------------
 ' Removes from a Private Profile file (p_file) one or more values (p_name) in
 ' one or more sections (p_sections), whereby both may be specified as a comma
@@ -2896,19 +2833,35 @@ Private Function PPtwinValueRemove(ByVal p_file As String, _
     Dim vSect   As Variant
     Dim vName   As Variant
     
-    If p_sections <> vbNullString And p_name <> vbNullString Then
-        For Each vSect In StringAsArray(p_sections)
+    If p_sect <> vbNullString And p_name <> vbNullString Then
+        For Each vSect In StringAsArray(p_sect)
             sSect = vSect
-            For Each vName In StringAsArray(p_name)
-                If PPtwinValueExists(p_file, sSect, vName) Then   ' cllPPtwinValue, cllPPtwinValueComments, vPPtwinValue
-                    dctPPtwinValues.Remove vName    ' removes the value together with possible value comments
-                    PPtwinValueRemove = True
+            If PPtwinSectionExists(sSect, p_file) Then
+                PPtwinSectionSet sSect                              ' cllPPtwinSection, cllPPtwinSectionComments, dctPPtwinValues
+                For Each vName In StringAsArray(p_name)
+                    If dctPPtwinValues.Exists(vName) Then
+                        dctPPtwinValues.Remove vName    ' removes the value together with possible value comments
+                        PPtwinValueRemove = True
+                    End If
+                Next vName
+                
+                '~~ When all values in a section had been removed, the section becomes obsolete and is removed too
+                If dctPPtwinValues.Count > 0 Then
+                    PPtwinReplaceSection p_sect
+                Else
+                    dctPPtwinSections.Remove p_sect
                 End If
-            Next vName
-            PPtwinSectionReplace p_sections ' Re-setup section
-            PPtwinReplace p_file            ' Replace the twin in the twins Directory
-        
+            End If
         Next vSect
+        
+        '~~ When all sections had been removed the Private Profile file has become obsolete to and should be removed
+        If dctPPtwinSections.Count > 0 Then
+            PPtwinReplace p_file            ' Replace the twin in the twins Directory
+        Else
+            dctPPtwins.Remove p_file
+            dctPPtwinsAsString.Remove p_file
+            FSo.DeleteFile p_file
+        End If
     End If
     
 xt: Exit Function
@@ -2939,18 +2892,19 @@ Private Function PPtwinValueRename(ByVal p_file As String, _
     Then aSects = DictionaryAsArray(SectionNames(p_file)) _
     Else aSects = StringAsArray(p_sect)
     
-    If PPtwinExists(p_file) Then                        ' cllPPtwin, cllPPtwinHeader, dctPPtwinSections, cllPPtwinFooter
-        For Each v In aSects
-            sSect = v
-            If PPtwinValueExists(p_file, sSect, p_name_old) Then   ' cllPPtwinValue, cllPPtwinValueComments, vPPtwinValue
-                dctPPtwinValues.Remove p_name_old
-                PPtwinValueReplace p_name_new
-                PPtwinValueRename = True
-                PPtwinSectionReplace sSect
-                PPtwinReplace p_file
-            End If
-        Next v
-    End If
+    If Not PPtwinExists(p_file) Then GoTo xt
+    For Each v In aSects
+        sSect = v
+        If PPtwinValueExists(p_name_old, sSect, p_file) Then    ' cllPPtwin, cllPPtwinHeader, dctPPtwinSections, cllPPtwinFooter
+                                                                ' cllPPtwinSection, cllPPtwinSectionComments, dctPPtwinValues
+                                                                ' cllPPtwinValue, cllPPtwinValueComments, vPPtwinValue
+            dctPPtwinValues.Remove p_name_old
+            PPtwinReplaceValue p_name_new
+            PPtwinValueRename = True
+            PPtwinReplaceSection sSect
+            PPtwinReplace p_file
+        End If
+    Next v
         
 xt: Exit Function
 
@@ -2960,45 +2914,50 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Function
 
-                           
-Private Sub PPtwinValueReplace(ByVal p_name As String)
-' ----------------------------------------------------------------------------
-' Removes an exsting name (p_name) and re-adds it - whereby the comments and
-' or the value may have changed
-' ----------------------------------------------------------------------------
-    Dim cll As New Collection
+Private Function PPtwinValues(ByVal p_file As String, _
+                     Optional ByVal p_sections As String = vbNullString) As Dictionary
+                     
+    Dim dct         As New Dictionary
+    Dim dctSections As Dictionary
+    Dim vSect       As Variant
+    Dim vValue      As Variant
     
-    cll.Add cllPPtwinValueComments
-    cll.Add vPPtwinValue
-    If dctPPtwinValues.Exists(p_name) Then dctPPtwinValues.Remove p_name
-    dctPPtwinValues.Add p_name, cll
-    KeySort dctPPtwinValues
-    Set cll = Nothing
-    
-End Sub
-
-Private Sub PPtwinValueSet(ByVal p_name As String, _
-                  Optional ByVal p_default As Variant)
-' ----------------------------------------------------------------------------
-' Returns from a Private Profile file's twin a value named (p_name), the
-' default when provided and the name does not exist.
-' Precondition: PPtwinSectionSet had been processed.
-' ----------------------------------------------------------------------------
-    If dctPPtwinValues.Exists(p_name) Then
-        Set cllPPtwinValue = dctPPtwinValues(p_name)
-        Set cllPPtwinValueComments = cllPPtwinValue(1)
-        vPPtwinValue = PPvalue(cllPPtwinValue(2))
-    Else
-        Set cllPPtwinValue = New Collection
-        Set cllPPtwinValueComments = New Collection
-        If IsMissing(p_default) _
-        Then vPPtwinValue = vbNullString _
-        Else vPPtwinValue = p_default
+    Set PPtwinValues = dct
+    If PPtwinExists(p_file) Then                        ' cllPPtwin, cllPPtwinHeader, dctPPtwinSections, cllPPtwinFooter
+        If p_sections = vbNullString _
+        Then Set dctSections = dctPPtwinSections _
+        Else Set dctSections = StringAsDictionary(p_sections)
+        
+        For Each vSect In dctPPtwinSections
+            If dctSections.Exists(vSect) Then
+                PPtwinSectionSet vSect                  ' cllPPtwinSection, cllPPtwinSectionComments, dctPPtwinValues
+                For Each vValue In dctPPtwinValues
+                    PPtwinValueSet vValue               ' cllPPtwinValue, cllPPtwinValueComments, vPPtwinValue
+                    If Not dct.Exists(vValue) Then
+                        dct.Add vValue, vPPtwinValue
+                    End If
+                Next vValue
+            End If
+        Next vSect
+        Set PPtwinValues = dct
+        Set dct = Nothing
     End If
+                              
+End Function
+
+Private Sub PPtwinValueSet(ByVal p_name As String)
+' ----------------------------------------------------------------------------
+' Provides from a Private Profile file's twin the value elements.
+' Precondition: The value is existing.
+' ----------------------------------------------------------------------------
+    Set cllPPtwinValue = dctPPtwinValues(p_name)
+    Set cllPPtwinValueComments = cllPPtwinValue(1)
+    vPPtwinValue = cllPPtwinValue(2)
 
 End Sub
 
-Private Function PPvalue(ByVal p_value As Variant) As Variant
+Private Function PPvalue(ByVal p_value As Variant, _
+                Optional ByVal p_default As Variant) As Variant
 ' ----------------------------------------------------------------------------
 ' - When the option BooleanAsTrueFalseString = TRUE the function returns the
 '   value (p_value) transformed into a TRUE/FALSE string when it is Boolean or
@@ -3006,26 +2965,69 @@ Private Function PPvalue(ByVal p_value As Variant) As Variant
 ' - When the option BooleanAsTrueFalseString = FALSE the value is returned
 '   converted into a string.
 ' ----------------------------------------------------------------------------
-    Dim v   As Variant
-    If bBooleanAsTrueFalseString Then
-        Select Case VarType(p_value)
-            Case vbString
-                Select Case p_value
-                    Case VALUE_TRUE:    v = True
-                    Case VALUE_FALSE:   v = False
-                    Case Else:          v = p_value
-                End Select
-            Case vbBoolean
-                Select Case p_value
-                    Case True:  v = VALUE_TRUE
-                    Case False: v = VALUE_FALSE
-                End Select
-        End Select
-        PPvalue = v
-    Else
-        PPvalue = CStr(p_value)
-    End If
+    Const PROC = "PPvalue"
     
+    On Error GoTo eh
+    Dim v   As Variant
+    
+    If Not IsMissing(p_default) Then
+        '~~ When a default had been provided, the string is returned converted
+        '~~ to the value type of the default (typed value return)
+        Select Case VarType(p_default)
+            Case VarType(p_default) = vbBoolean
+                If Not bBooleanAsTrueFalseString Then
+                    '~~ Return the value as Boolean
+                    PPvalue = VBA.CBool(p_value)
+                Else
+                    '~~ Consider the value is stored/returned as a True/False String
+                    Select Case p_value
+                        Case VALUE_TRUE:    PPvalue = True
+                        Case VALUE_FALSE:   PPvalue = False
+                        Case Else:          PPvalue = p_value
+                    End Select
+                End If
+            
+            Case VarType(p_default) = vbByte:       PPvalue = VBA.CByte(p_value)
+            Case VarType(p_default) = vbCurrency:   PPvalue = VBA.CCur(p_value)
+            Case VarType(p_default) = vbDate:       PPvalue = VBA.CDate(p_value)
+            Case VarType(p_default) = vbDecimal:    PPvalue = VBA.CDec(p_value)
+            Case VarType(p_default) = vbDouble:     PPvalue = VBA.CDbl(p_value)
+            Case VarType(p_default) = vbInteger:    PPvalue = VBA.CInt(p_value)
+            Case VarType(p_default) = vbLong:       PPvalue = VBA.CLng(p_value)
+            Case VarType(p_default) = vbLongLong:   PPvalue = VBA.CLngLng(p_value)
+            Case VarType(p_default) = vbSingle:     PPvalue = VBA.CSng(p_value)
+            Case Else
+                If Not bBooleanAsTrueFalseString Then
+                    PPvalue = VBA.CStr(p_value)
+                Else
+                    '~~ Consider the value is stored/returned as a True/False String
+                    Select Case p_value
+                        Case VALUE_TRUE:    PPvalue = True
+                        Case VALUE_FALSE:   PPvalue = False
+                        Case Else:          PPvalue = p_value
+                    End Select
+                End If
+        End Select
+    Else
+        '~~ When no default had been provided the value is returned
+        '~~ considering the BooleanAsTrueFalseString option
+        If bBooleanAsTrueFalseString Then
+            Select Case p_value
+                Case VALUE_TRUE:    PPvalue = True
+                Case VALUE_FALSE:   PPvalue = False
+                Case Else:          PPvalue = CStr(p_value)
+            End Select
+        Else
+            PPvalue = CStr(p_value)
+        End If
+    End If ' Not IsMissing(p_default)
+    
+xt: Exit Function
+    
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
 End Function
 
 Public Sub README(Optional ByVal r_bookmark As String = vbNullString)
@@ -3040,11 +3042,6 @@ Public Sub README(Optional ByVal r_bookmark As String = vbNullString)
     End If
         
 End Sub
-'
-'Private Function Remainder(ByVal m_div As Variant, _
-'                          ByVal m_sor As Variant) As Long
-'    Remainder = m_div Mod m_sor
-'End Function
 
 Private Function RevertOrder(ByVal r_cll As Collection) As Collection
 ' ----------------------------------------------------------------------------
@@ -3059,52 +3056,6 @@ Private Function RevertOrder(ByVal r_cll As Collection) As Collection
         Next i
     End If
     Set RevertOrder = cll
-    
-End Function
-
-Private Function SectionComments(ByVal p_comments As Variant, _
-                        Optional ByVal p_existing As Collection = Nothing) As Collection
-    Dim cll         As New Collection
-    Dim v           As Variant
-    Dim cllComments As Collection
-    
-    Set cllComments = VarAsCollection(p_comments)
-    If cllComments.Count = 0 Then
-        If bSectionsSeparated Then
-            cll.Add vbNullString
-            If Not p_existing Is Nothing Then
-                For Each v In p_existing
-                    If Trim$(v) <> vbNullString Then cll.Add Comment(v)
-                Next v
-            End If
-        End If
-    Else
-        If bSectionsSeparated And cllComments.Count <> 0 Then
-            cll.Add vbNullString
-            For Each v In cllComments
-                If Trim$(v) <> vbNullString Then cll.Add Comment(v)
-            Next v
-        End If
-    End If
-    Set SectionComments = cll
-    Set cll = Nothing
-    
-End Function
-
-Private Function DictionaryAsCollection(ByVal v_items As Dictionary) As Collection
-' ----------------------------------------------------------------------------
-' Returns the Dictionary (v_items) with the keys in ascending order.
-' ----------------------------------------------------------------------------
-    Dim cll As New Collection
-    Dim v   As Variant
-    
-    With cll
-        For Each v In v_items
-            .Add v
-        Next v
-    End With
-    Set DictionaryAsCollection = cll
-    Set cll = Nothing
     
 End Function
 
@@ -3127,7 +3078,7 @@ Public Function SectionNames(Optional ByVal name_file As String, _
     
     If Not IsValidFile(name_file) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
     
-    If PPtwinExists(name_file) Then
+    If PPtwinExists(name_file) Then     ' cllPPtwin, cllPPtwinHeader, dctPPtwinSections, cllPPtwinFooter
         For Each v In dctPPtwinSections
             dct.Add v, vbNullString
             cll.Add v
@@ -3160,7 +3111,7 @@ Public Sub SectionRemove(ByVal name_section As String, _
     Dim v As Variant
     
     If Not IsValidFile(name_file) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
-    If Not IsValidSectName(name_section) Then Err.Raise AppErr(2), ErrSrc(PROC), ErrInvalidSectName(name_section)
+    If Not IsValidNameSection(name_section) Then Err.Raise AppErr(2), ErrSrc(PROC), ErrInvalidSectName(name_section)
     
     If name_section <> vbNullString Then
         For Each v In StringAsArray(name_section)
@@ -3188,7 +3139,7 @@ Public Function Sections(Optional ByVal name_file As String = vbNullString) As D
     Const PROC = "Sections"
     
     If Not IsValidFile(name_file) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
-    If PPtwinExists(name_file) Then
+    If PPtwinExists(name_file) Then         ' cllPPtwin, cllPPtwinHeader, dctPPtwinSections, cllPPtwinFooter
         Set Sections = dctPPtwinSections
     End If
     
@@ -3387,12 +3338,12 @@ Private Function TempFile(Optional ByVal f_path As String = vbNullString, _
 
 End Function
 
-Private Function ValueComments(ByVal p_comments As Variant) As Collection
+Private Function ValueComments(ByVal p_comments As Collection) As Collection
     Dim cll As New Collection
     Dim v   As Variant
     
-    If p_comments <> vbNullString Then
-        For Each v In VarAsArray(p_comments)
+    If p_comments.Count > 0 Then
+        For Each v In p_comments
             If Trim$(v) <> vbNullString Then cll.Add Comment(v)
         Next v
     End If
@@ -3459,37 +3410,6 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
-End Function
-
-Private Function PPtwinValues(ByVal p_file As String, _
-                     Optional ByVal p_sections As String = vbNullString) As Dictionary
-                     
-    Dim dct         As New Dictionary
-    Dim dctSections As Dictionary
-    Dim vSect       As Variant
-    Dim vValue      As Variant
-    
-    Set PPtwinValues = dct
-    If PPtwinExists(p_file) Then
-        If p_sections = vbNullString _
-        Then Set dctSections = dctPPtwinSections _
-        Else Set dctSections = StringAsDictionary(p_sections)
-        
-        For Each vSect In dctPPtwinSections
-            If dctSections.Exists(vSect) Then
-                PPtwinSectionSet vSect
-                For Each vValue In dctPPtwinValues
-                    PPtwinValueSet vValue
-                    If Not dct.Exists(vValue) Then
-                        dct.Add vValue, vPPtwinValue
-                    End If
-                Next vValue
-            End If
-        Next vSect
-        Set PPtwinValues = dct
-        Set dct = Nothing
-    End If
-                              
 End Function
 
 Public Sub ValueRemove(ByVal name_value As String, _

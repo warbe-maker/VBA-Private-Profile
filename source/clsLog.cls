@@ -60,7 +60,7 @@ Option Base 1 ' ensures the index conforms with the column number
 ' - Path           w Sepcifies the log-file's location/folder, defaults to the
 '                    ActiveWorkbook's parent folder
 '
-' W. Rauschenberger, Berlin Jan 2024
+' W. Rauschenberger, Berlin May 2024
 ' See: https://github.com/warbe-maker/VBA-Log-Service
 ' -----------------------------------------------------------------------------------
 Private aAlignmentsHeader   As Variant
@@ -104,7 +104,7 @@ Private sTitleFill          As String
 
 Private Declare PtrSafe Function apiShellExecute Lib "shell32.dll" _
     Alias "ShellExecuteA" _
-    (ByVal hWnd As Long, _
+    (ByVal hwnd As Long, _
     ByVal lpOperation As String, _
     ByVal lpFile As String, _
     ByVal lpParameters As String, _

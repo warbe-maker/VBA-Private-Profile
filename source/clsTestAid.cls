@@ -84,9 +84,28 @@ Public FSo               As New FileSystemObject
 
 Private Const RESULT_PASSED As String = " Passed "
 Private Const RESULT_FAILED As String = " F a i l e d ! "
+Private Declare PtrSafe Function FindWindow Lib "user32" Alias "FindWindowA" _
+(ByVal lpClassName As String, ByVal lpWindowName As String) As Long
+
+Private Declare PtrSafe Function FindWindowEx Lib "user32" Alias "FindWindowExA" _
+(ByVal hWnd1 As Long, ByVal hWnd2 As Long, ByVal lpsz1 As String, _
+ByVal lpsz2 As String) As Long
+
+Private Declare PtrSafe Function GetWindowText Lib "user32" Alias "GetWindowTextA" _
+(ByVal hwnd As Long, ByVal lpString As String, ByVal cch As Long) As Long
+
+Private Declare PtrSafe Function GetWindowTextLength Lib "user32" Alias _
+"GetWindowTextLengthA" (ByVal hwnd As Long) As Long
+
+Private Declare PtrSafe Function SendMessage Lib "user32" Alias "SendMessageA" _
+(ByVal hwnd As Long, ByVal wMsg As Long, ByVal wParam As Long, lParam As Any) As Long
+
+Private Const WM_SETTEXT = &HC
+Private Const BM_CLICK = &HF5
+
 Private Declare PtrSafe Function apiShellExecute Lib "shell32.dll" _
     Alias "ShellExecuteA" _
-    (ByVal hWnd As Long, _
+    (ByVal hwnd As Long, _
     ByVal lpOperation As String, _
     ByVal lpFile As String, _
     ByVal lpParameters As String, _
@@ -211,6 +230,21 @@ Public Property Get ResultExpected() As Variant
 
 End Property
 
+Public Sub EndOfTest()
+
+    If Not ModeRegression Then
+
+#If clsTrc = 1 Then
+        If FSo.FileExists(Trc.FileFullName) Then Trc.Dsply
+#End If
+#If mTrc = 1 Then
+        If FSo.FileExists(mTrc.FileFullName) Then mTrc.Dsply
+#End If
+    End If
+    TestFilesRemove
+
+End Sub
+
 Public Property Let ResultExpected(ByVal r_var As Variant)
 ' ------------------------------------------------------------------------------
 ' Register in dctResultExpected a new expected test result. When the
@@ -229,6 +263,8 @@ End Property
 Public Property Let TestDscrpt(ByVal s As String):  sTestDscrpt = s:                    End Property
 
 Public Property Let TestedComp(ByVal s As String):  sTestedComp = s:                    End Property
+
+Public Property Get TestedComp() As String:         TestedComp = sTestedComp:           End Property
 
 Public Property Let TestedProc(ByVal s As String):  sTestedProc = s
                                                     lMaxLenTestProc = _
@@ -488,10 +524,11 @@ Public Function CollectionAsArray(ByVal v_items As Collection) As Variant
 '
 ' ----------------------------------------------------------------------------
     Dim arr As Variant
+    Dim s   As String
     
     For Each v In v_items
-        If IsObject(v) _
-        Then ArrayAdd arr, ObjectAsString(v) _
+        If IsObject(v, s) _
+        Then ArrayAdd arr, s _
         Else ArrayAdd arr, v
     Next v
     CollectionAsArray = arr
@@ -540,23 +577,51 @@ Public Function CollectionAsFile(ByVal c_items As Collection, _
 
 End Function
 
-Public Function CollectionAsString(ByVal v_items As Collection) As String
+Public Function CollectionAsString(ByVal c_coll As Collection, _
+                          Optional ByVal c_delimiter As String = vbCrLf) As String
 ' ----------------------------------------------------------------------------
-'
+' Returns a collection's (c_coll) items as string with the items delimited
+' by a vbCrLf. Itmes are converted into a string, if an item is an object its
+' Name property is used (an error is raised when the object has no Name
+' property.
+' Note when copied: Originates in mVarTrans
+'                   See https://github.com/warbe-maker/Excel_VBA_VarTrans
 ' ----------------------------------------------------------------------------
     Dim s       As String
     Dim sDelim  As String
+    Dim sName   As String
+    Dim v       As Variant
     
-    For Each v In v_items
-        Select Case True
-            Case VBA.IsObject(v):           s = s & sDelim & ObjectAsString(v)
-            Case VarType(v) = vbBoolean:    s = s & sDelim & BooleanAsString(v)
-            Case Else:                      s = s & sDelim & CStr(v)
-        End Select
-        sDelim = vbCrLf
+    For Each v In c_coll
+        If IsObject(v, sName) _
+        Then s = s & sDelim & sName _
+        Else s = s & sDelim & v
+        sDelim = c_delimiter
     Next v
     CollectionAsString = s
 
+End Function
+
+Private Function IsObject(ByVal i_var As Variant, _
+                          ByRef i_name As String) As Boolean
+' ----------------------------------------------------------------------------
+' Returns TRUE and the object's (i_var) name (i_name) when a variant (i_var)
+' is an object. When the object does not have a Name property an error is
+' raised.
+' ----------------------------------------------------------------------------
+    Const PROC = "IsObject"
+    
+    If Not VBA.IsObject(i_var) Then Exit Function
+    IsObject = True
+    On Error Resume Next
+    i_name = i_var.Name
+    If Err.Number <> 0 _
+    Then Err.Raise AppErr(1), ErrSrc(PROC), _
+         "VarTrans tries to use the Name property of an object when it is to be " & _
+         "transferred into a string which is the case when String, Array, or File " & _
+         "is the target format. However, the current item is an object which does " & _
+         "not have a Name property!"
+    
 End Function
 
 Public Function DictionaryAsArray(ByVal v_items As Dictionary) As Variant
@@ -564,10 +629,11 @@ Public Function DictionaryAsArray(ByVal v_items As Dictionary) As Variant
 '
 ' ----------------------------------------------------------------------------
     Dim arr As Variant
+    Dim s   As String
     
     For Each v In v_items
-        If IsObject(v) _
-        Then ArrayAdd arr, ObjectAsString(v) _
+        If IsObject(v, s) _
+        Then ArrayAdd arr, s _
         Else ArrayAdd arr, v
     Next v
     DictionaryAsArray = arr
@@ -969,7 +1035,7 @@ Public Function FileAsString(Optional ByVal f_file_full_name As String, _
     On Error Resume Next
     Open f_file_full_name For Input As #1
     If Err.Number <> 0 Then GoTo xt
-    FileAsString = Input$(LOF(1), 1)
+    FileAsString = Input$(lOf(1), 1)
     Close #1
     
     Select Case True
@@ -1106,7 +1172,7 @@ Private Function KeySort(ByRef k_dct As Dictionary) As Dictionary
     '~~ Transfer based on sorted keys
     For i = LBound(arr) To UBound(arr)
         vKey = arr(i)
-        dct.Add Key:=vKey, item:=k_dct.item(vKey)
+        dct.Add key:=vKey, item:=k_dct.item(vKey)
     Next i
     
 xt: Set k_dct = dct
@@ -1684,4 +1750,89 @@ Public Function VarAsString(ByVal v_items As Variant) As String
     
 End Function
 
+Public Sub CondCompArgSet(ByVal c_arg As String)
+    Const PROC = "CondCompArgSet"
+    
+    On Error GoTo eh
+    Dim sArg        As String
+    Dim xlApp       As Application
+    Dim wbTarget    As Workbook
+    Dim cmb         As CommandBar
+    Dim lngHWnd     As Long
+    Dim lngHDialog  As Long
+    Dim lngHEdit    As Long
+    Dim lngHButton  As Long
+    Dim cbb         As CommandBarButton
+    
+    sArg = c_arg
+
+    Set xlApp = CreateObject("Excel.Application")
+'    xlApp.Visible = False
+
+    Set wbTarget = ThisWorkbook
+
+    'Launch the VBA Project Properties Dialog
+    Set cbb = xlApp.VBE.CommandBars(1).FindControl(id:=2578, recursive:=True)
+    Debug.Print cbb.Caption
+    cbb.Execute
+    
+
+    'Get the handle of the "VBAProject" Window
+    lngHWnd = FindWindow("#32770", vbNullString)
+    If lngHWnd = 0 Then
+        MsgBox "VBAProject Property Window not found!"
+        GoTo xt
+    End If
+
+    'Get the handle of the dialog
+    lngHDialog = FindWindowEx(lngHWnd, ByVal 0&, "#32770", vbNullString)
+    If lngHDialog = 0 Then
+        MsgBox "VBAProject Property Window could not be accessed!"
+        GoTo xt
+    End If
+
+    'Get the handle of the 5th edit box
+    lngHEdit = fctLngGetHandle("Edit", lngHDialog, 5)
+    If lngHEdit = 0 Then
+        MsgBox "Conditional Compilation Arguments box could not be accessed!"
+        GoTo xt
+    End If
+
+    'Enter new argument
+    SendMessage lngHEdit, WM_SETTEXT, False, ByVal sArg
+    DoEvents
+
+    'Get the handle of the second button box (=OK button)
+    lngHButton = fctLngGetHandle("Button", lngHWnd)
+    If lngHButton = 0 Then
+        MsgBox "Could not find OK button!"
+        GoTo xt
+    End If
+
+    'Click the OK Button
+    SendMessage lngHButton, BM_CLICK, 0, vbNullString
+
+xt: xlApp.Visible = True
+    Exit Sub
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+End Sub
+
+Private Function fctLngGetHandle(strClass As String, lngHParent As Long, _
+    Optional Nth As Integer = 1) As Long
+    Dim lngHandle As Long
+    Dim i As Integer
+
+    lngHandle = FindWindowEx(lngHParent, ByVal 0&, strClass, vbNullString)
+    If Nth = 1 Then GoTo Finalize
+
+    For i = 2 To Nth
+        lngHandle = FindWindowEx(lngHParent, lngHandle, strClass, vbNullString)
+    Next
+Finalize:
+    fctLngGetHandle = lngHandle
+End Function
 
