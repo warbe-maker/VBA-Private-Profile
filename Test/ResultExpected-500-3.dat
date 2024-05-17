@@ -6,12 +6,6 @@ ExportFileExtention=cls
 Last_Modified_InWbkName=CompMan.xlsb
 LastModExpFileFullNameOrigin=E:\Sync\Excel VBA\DevAndTest\CompMan\source\clsLog.cls
 
-[clsLog
-clsQ]
-ExportFileExtention=cls
-Last_Modified_InWbkName=CompMan.xlsb
-LastModExpFileFullNameOrigin=E:\Excel VBA\DevAndTest\VBA-Component-Management\source\clsQ.cls
-
 [clsPrivProf]
 ExportFileExtention=cls
 Last_Modified_AtDateTime=2024-05-08 12:24:55 (UTC)

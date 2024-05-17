@@ -92,20 +92,20 @@ Private Declare PtrSafe Function FindWindowEx Lib "user32" Alias "FindWindowExA"
 ByVal lpsz2 As String) As Long
 
 Private Declare PtrSafe Function GetWindowText Lib "user32" Alias "GetWindowTextA" _
-(ByVal hwnd As Long, ByVal lpString As String, ByVal cch As Long) As Long
+(ByVal hWnd As Long, ByVal lpString As String, ByVal cch As Long) As Long
 
 Private Declare PtrSafe Function GetWindowTextLength Lib "user32" Alias _
-"GetWindowTextLengthA" (ByVal hwnd As Long) As Long
+"GetWindowTextLengthA" (ByVal hWnd As Long) As Long
 
 Private Declare PtrSafe Function SendMessage Lib "user32" Alias "SendMessageA" _
-(ByVal hwnd As Long, ByVal wMsg As Long, ByVal wParam As Long, lParam As Any) As Long
+(ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, lParam As Any) As Long
 
 Private Const WM_SETTEXT = &HC
 Private Const BM_CLICK = &HF5
 
 Private Declare PtrSafe Function apiShellExecute Lib "shell32.dll" _
     Alias "ShellExecuteA" _
-    (ByVal hwnd As Long, _
+    (ByVal hWnd As Long, _
     ByVal lpOperation As String, _
     ByVal lpFile As String, _
     ByVal lpParameters As String, _
@@ -590,12 +590,20 @@ Public Function CollectionAsString(ByVal c_coll As Collection, _
     Dim s       As String
     Dim sDelim  As String
     Dim sName   As String
-    Dim v       As Variant
+    Dim v2      As Variant
     
     For Each v In c_coll
-        If IsObject(v, sName) _
-        Then s = s & sDelim & sName _
-        Else s = s & sDelim & v
+        Select Case True
+            Case IsObject(v, sName)
+                s = s & sDelim & sName
+            Case VarType(v) = 8200
+                For Each v2 In v
+                    s = s & sDelim & v
+                    sDelim = c_delimiter
+                Next v2
+            Case Else
+                s = s & sDelim & v
+        End Select
         sDelim = c_delimiter
     Next v
     CollectionAsString = s
@@ -695,20 +703,21 @@ Public Function BooleanAsString(ByVal b As Boolean) As String
     If b Then BooleanAsString = "TRUE" Else BooleanAsString = "FALSE"
 End Function
 
-Public Function DictionaryAsString(ByVal v_items As Dictionary) As String
+Public Function DictionaryAsString(ByVal d_items As Dictionary, _
+                          Optional ByVal d_delimiter As String = vbCrLf) As String
 ' ----------------------------------------------------------------------------
 '
 ' ----------------------------------------------------------------------------
     Dim s       As String
     Dim sDelim  As String
     
-    For Each v In v_items
+    For Each v In d_items
         Select Case True
             Case VBA.IsObject(v):           s = s & sDelim & ObjectAsString(v)
             Case VarType(v) = vbBoolean:    s = s & sDelim & BooleanAsString(v)
             Case Else:                      s = s & sDelim & CStr(v)
         End Select
-        sDelim = vbCrLf
+        sDelim = d_delimiter
     Next v
     DictionaryAsString = s
 
@@ -1521,16 +1530,17 @@ Public Function StringAsFile(ByVal s_strng As String, _
 End Function
 
 Public Function StringAsString(ByVal s_items As String, _
-                      Optional ByVal s_split As String = vbNullString) As String
+                      Optional ByVal s_delimiter As String = vbCrLf) As String
 ' ----------------------------------------------------------------------------
-' Returns a string (v_item) with any delimiter string replaced with vbCrLf.
+' Returns a string (v_item) with any delimiter delimited by vbCrLf by default.
 ' ----------------------------------------------------------------------------
     Const PROC = "StringAsString"
     
     On Error GoTo eh
-    If s_split = vbNullString Then s_split = SplitIndctr(s_items)
+    Dim sSplit As String
+    sSplit = SplitIndctr(s_items)
 
-    StringAsString = Replace(s_items, s_split, vbCrLf)
+    StringAsString = Replace(s_items, sSplit, s_delimiter)
     
 xt: Exit Function
 
@@ -1742,7 +1752,7 @@ Public Function VarAsString(ByVal v_items As Variant) As String
         Case TypeName(v_items) = "Collection":  VarAsString = CollectionAsString(v_items)
         Case TypeName(v_items) = "File":        VarAsString = FileAsString(v_items)
         Case TypeName(v_items) = "Dictionary":  VarAsString = DictionaryAsString(v_items)
-        Case VarType(v_items) = vbArray:        VarAsString = ArrayAsString(v_items)
+        Case VarType(v_items) = 8200:           VarAsString = ArrayAsString(v_items)
         Case VarType(v_items) = vbBoolean:      VarAsString = BooleanAsString(v_items)
         Case VarType(v_items) = vbString:       VarAsString = StringAsString(v_items)
         Case Else:                              VarAsString = CStr(v_items)

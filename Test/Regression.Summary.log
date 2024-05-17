@@ -1,4 +1,4 @@
-Summary Regression-Test for component "clsPrivProf" on 2024.05.14 at 18.20.29
+Summary Regression-Test for component "clsPrivProf" on 2024.05.17 at 12.06.09
 -----------------------------------------------------------------------------
 001-2.1 Property clsTestAid.Result and .ResultExpected ................. Result is the result expected..............................................:  Passed 
 001-3.1 Property clsTestAid.Result and .ResultExpected ................. Result is  F a i l e d  because the result/expected boolean differs........:  F a i l e d ! 
@@ -30,8 +30,9 @@ Summary Regression-Test for component "clsPrivProf" on 2024.05.14 at 18.20.29
 410-1.1 Method   clsPrivProf.ValueNameRename ........................... Rename a value name in each section........................................:  Passed 
 500-1.1 Method   clsPrivProf.ValueRemove ............................... Remove a value from a section including its comments.......................:  Passed 
 500-2.1 Method   clsPrivProf.SectionRemove ............................. Removes a section including its comments...................................:  Passed 
-500-3.1 Method   clsPrivProf.ValueRemove ............................... Removes several names in several sections..................................:  Passed 
+500-3.1 Method   clsPrivProf.ValueRemove ............................... Remove 2 names in 2 sections...............................................:  Passed 
 500-4.1 Method   clsPrivProf.ValueRemove ............................... Removes all values in one section which removes the section................:  Passed 
+500-5.1 Method   clsPrivProf.ValueRemove ............................... Remove all values in all sections - file is removed........................:  Passed 
 600-1.1 Property clsPrivProf.Value-Let ................................. Writes a new file with 1 section, 1 value and  a file header/footer........:  Passed 
 600-2.1 Method   clsPrivProf.Let Comment/Footer ........................ Writes a footer and a header into an empty file............................:  Passed 
 600-3.1 Method   clsPrivProf.ValueRemove ............................... Removes the only value in the only section.................................:  Passed 

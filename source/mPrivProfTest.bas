@@ -478,7 +478,7 @@ End Sub
 
 Public Sub Test_200_Property_Comments()
 ' ----------------------------------------------------------------------------
-'
+' Let/Get comments (FileHeader, FileFooter, SectionComment, ValueComment)
 ' ----------------------------------------------------------------------------
     Const PROC = "Test_200_Property_Comments"
 
@@ -713,6 +713,7 @@ Public Sub Test_500_Method_Remove()
     Const PROC = "Test_500_Method_Remove"
     
     On Error GoTo eh
+    Dim sFile As String
     
     BoP ErrSrc(PROC)
     Prepare ' Test preparation
@@ -746,11 +747,11 @@ Public Sub Test_500_Method_Remove()
         Prepare 2
         .TestedProc = "ValueRemove"
         .TestedType = "Method"
-        .TestDscrpt = "Removes several names in several sections."
+        .TestDscrpt = "Remove 2 names in 2 sections."
+        .ResultExpected = .ExpectedTestResultFile(.TestNumber)
         .BoTP
         PrivProf.ValueRemove name_value:="Last_Modified_AtDateTime,Last_Modified_InWbkFullName", name_section:="clsLog,clsQ"
         .Result = PrivProfTests.PrivProfFile
-        .ResultExpected = .ExpectedTestResultFile(.TestNumber)
         .EoTP
         ' ======================================================================
     
@@ -759,6 +760,7 @@ Public Sub Test_500_Method_Remove()
         .TestedProc = "ValueRemove"
         .TestedType = "Method"
         .TestDscrpt = "Removes all values in one section which removes the section."
+        .ResultExpected = .ExpectedTestResultFile(.TestNumber)
         .BoTP
         PrivProf.ValueRemove name_value:="ExportFileExtention" & _
                                          ",Last_Modified_AtDateTime" & _
@@ -768,10 +770,27 @@ Public Sub Test_500_Method_Remove()
                            , name_section:="clsQ"
         
         .Result = PrivProfTests.PrivProfFile
-        .ResultExpected = .ExpectedTestResultFile(.TestNumber)
         .EoTP
         ' ======================================================================
-    
+       
+        .TestNumber = "500-5"
+        Prepare 2
+        .TestedProc = "ValueRemove"
+        .TestedType = "Method"
+        .TestDscrpt = "Remove all values in all sections - file is removed."
+        sFile = PrivProfTests.PrivProfFile
+        .ResultExpected = False
+        .BoTP
+        PrivProf.ValueRemove name_value:="ExportFileExtention" & _
+                                         ",Last_Modified_AtDateTime" & _
+                                         ",Last_Modified_InWbkFullName" & _
+                                         ",Last_Modified_InWbkName" & _
+                                         ",LastModExpFileFullNameOrigin" & _
+                                         ",DoneNamesHskpng"
+        
+        .Result = FSo.FileExists(sFile) ' is False
+        .EoTP
+        ' ======================================================================
     End With
 
 xt: EoP ErrSrc(PROC)
