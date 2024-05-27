@@ -1,0 +1,263 @@
+24-05-23 18:35:34 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-05-23 18:35:34 seconds seconds >> Export Changed Components (by CompMan.xlsb) for PrivProf.xlsb
+24-05-23 18:35:34 00,0000         |  >> mCompMan.ExportChangedComponents
+24-05-23 18:35:34 00,0010         |  |  >> clsServices.Initiate
+24-05-23 18:35:34 00,0020         |  |  |  >> clsCompManDat.Class_Initialize
+24-05-23 18:35:34 00,0060         |  |  |  |  >> clsPrivProf.FileName-Let
+24-05-23 18:35:34 00,0074         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\CompMan.dat)
+24-05-23 18:35:34 00,0107 00,0033 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\CompMan.dat)
+24-05-23 18:35:34 00,0714 00,0654 |  |  |  |  << clsPrivProf.FileName-Let
+24-05-23 18:35:34 00,0770 00,0750 |  |  |  << clsCompManDat.Class_Initialize
+24-05-23 18:35:34 00,0775         |  |  |  >> clsCommonPublic.Class_Initialize
+24-05-23 18:35:34 00,0792         |  |  |  |  >> clsPrivProf.FileName-Let
+24-05-23 18:35:34 00,0848         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\Common-Components\CommComps.dat)
+24-05-23 18:35:34 00,1011 00,0163 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\Common-Components\CommComps.dat)
+24-05-23 18:35:34 00,1424 00,0632 |  |  |  |  << clsPrivProf.FileName-Let
+24-05-23 18:35:34 00,1560 00,0785 |  |  |  << clsCommonPublic.Class_Initialize
+24-05-23 18:35:34 00,1568         |  |  |  >> clsCommonPublic.Hskpng
+24-05-23 18:35:34 00,1726         |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\CompMan\CompMan.dat)
+24-05-23 18:35:34 00,1768 00,0042 |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\CompMan\CompMan.dat)
+24-05-23 18:35:34 00,2038         |  |  |  |  >> clsCommonPublic.HskpngSectionsObsolete
+24-05-23 18:35:34 00,2106 00,0068 |  |  |  |  << clsCommonPublic.HskpngSectionsObsolete
+24-05-23 18:35:34 00,2111         |  |  |  |  >> clsCommonPublic.HskpngSectionsMissing
+24-05-23 18:35:35 00,5293 00,3181 |  |  |  |  << clsCommonPublic.HskpngSectionsMissing
+24-05-23 18:35:35 00,5297         |  |  |  |  >> clsCommonPublic.HskpngUsedOrPrivate
+24-05-23 18:35:35 00,5984         |  |  |  |  |  >> clsPendingRelease.ManageComponent (fMsg)
+24-05-23 18:35:35 00,6035 00,0052 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 18:35:35 00,6256         |  |  |  |  |  >> clsPendingRelease.ManageComponent (mErH)
+24-05-23 18:35:35 00,6302 00,0046 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 18:35:35 00,6604         |  |  |  |  |  >> clsPendingRelease.ManageComponent (mMsg)
+24-05-23 18:35:35 00,6660 00,0056 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 18:35:35 00,6981         |  |  |  |  |  >> clsPendingRelease.ManageComponent (clsLog)
+24-05-23 18:35:35 00,7026 00,0045 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 18:35:35 00,7281         |  |  |  |  |  >> clsPendingRelease.ManageComponent (mTrc)
+24-05-23 18:35:35 00,7327 00,0046 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 18:35:35 00,7579         |  |  |  |  |  >> clsPendingRelease.ManageComponent (mCompManClient)
+24-05-23 18:35:35 00,7624 00,0045 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 18:35:35 00,7657 00,2360 |  |  |  |  << clsCommonPublic.HskpngUsedOrPrivate
+24-05-23 18:35:35 00,7661         |  |  |  |  >> clsCommonPublic.HskpngHosted
+24-05-23 18:35:35 00,7904         |  |  |  |  |  >> clsPendingRelease.ManageComponent (clsPrivProf)
+24-05-23 18:35:35 00,7949 00,0045 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 18:35:35 00,7978 00,0317 |  |  |  |  << clsCommonPublic.HskpngHosted
+24-05-23 18:35:35 00,7982 00,6413 |  |  |  << clsCommonPublic.Hskpng
+24-05-23 18:35:35 00,7985         |  |  |  >> clsCompManDat.Hskpng
+24-05-23 18:35:35 00,7988         |  |  |  |  >> clsCompManDat.HskpngObsolete
+24-05-23 18:35:35 00,8022 00,0035 |  |  |  |  << clsCompManDat.HskpngObsolete
+24-05-23 18:35:35 00,8026         |  |  |  |  >> clsCompManDat.HskpngHosted
+24-05-23 18:35:35 00,8061 00,0034 |  |  |  |  << clsCompManDat.HskpngHosted
+24-05-23 18:35:35 00,8064 00,0080 |  |  |  << clsCompManDat.Hskpng
+24-05-23 18:35:35 00,8086 00,8076 |  |  << clsServices.Initiate
+24-05-23 18:35:35 00,8719         |  |  >> clsServices.ExportChangedComponents
+24-05-23 18:35:35 00,8724         |  |  |  >> mExport.ChangedComponents
+24-05-23 18:35:35 01,2267         |  |  |  |  >> clsServices.RemoveTempRenamed
+24-05-23 18:35:35 01,2276 00,0008 |  |  |  |  << clsServices.RemoveTempRenamed
+24-05-23 18:35:35 01,2291 00,3567 |  |  |  << mExport.ChangedComponents
+24-05-23 18:35:35 01,2295 00,3576 |  |  << clsServices.ExportChangedComponents
+24-05-23 18:35:35 01,2299 01,2299 |  << mCompMan.ExportChangedComponents
+24-05-23 18:35:35 01,2299 01,2299 << Export Changed Components (by CompMan.xlsb) for PrivProf.xlsb
+24-05-23 18:35:35                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-05-23 18:35:35                 Impact on the overall performance (caused by the trace itself): 0,3 milliseconds!
+===========================================================================================================================================
+24-05-23 18:38:14 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-05-23 18:38:14 seconds seconds >> Export Changed Components (by CompMan.xlsb) for PrivProf.xlsb
+24-05-23 18:38:14 00,0000         |  >> mCompMan.ExportChangedComponents
+24-05-23 18:38:14 00,0013         |  |  >> clsServices.Initiate
+24-05-23 18:38:14 00,0024         |  |  |  >> clsCompManDat.Class_Initialize
+24-05-23 18:38:14 00,0039         |  |  |  |  >> clsPrivProf.FileName-Let
+24-05-23 18:38:14 00,0053         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\CompMan.dat)
+24-05-23 18:38:14 00,0085 00,0032 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\CompMan.dat)
+24-05-23 18:38:14 00,0197 00,0158 |  |  |  |  << clsPrivProf.FileName-Let
+24-05-23 18:38:14 00,0246 00,0221 |  |  |  << clsCompManDat.Class_Initialize
+24-05-23 18:38:14 00,0250         |  |  |  >> clsCommonPublic.Class_Initialize
+24-05-23 18:38:14 00,0263         |  |  |  |  >> clsPrivProf.FileName-Let
+24-05-23 18:38:14 00,0298         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\Common-Components\CommComps.dat)
+24-05-23 18:38:14 00,0385 00,0087 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\Common-Components\CommComps.dat)
+24-05-23 18:38:14 00,0713 00,0450 |  |  |  |  << clsPrivProf.FileName-Let
+24-05-23 18:38:15 00,0828 00,0578 |  |  |  << clsCommonPublic.Class_Initialize
+24-05-23 18:38:15 00,0836         |  |  |  >> clsCommonPublic.Hskpng
+24-05-23 18:38:15 00,0999         |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\CompMan\CompMan.dat)
+24-05-23 18:38:15 00,1044 00,0044 |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\CompMan\CompMan.dat)
+24-05-23 18:38:15 00,1311         |  |  |  |  >> clsCommonPublic.HskpngSectionsObsolete
+24-05-23 18:38:15 00,1391 00,0080 |  |  |  |  << clsCommonPublic.HskpngSectionsObsolete
+24-05-23 18:38:15 00,1398         |  |  |  |  >> clsCommonPublic.HskpngSectionsMissing
+24-05-23 18:38:15 00,4909 00,3511 |  |  |  |  << clsCommonPublic.HskpngSectionsMissing
+24-05-23 18:38:15 00,4913         |  |  |  |  >> clsCommonPublic.HskpngUsedOrPrivate
+24-05-23 18:38:15 00,5615         |  |  |  |  |  >> clsPendingRelease.ManageComponent (fMsg)
+24-05-23 18:38:15 00,5682 00,0067 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 18:38:15 00,5919         |  |  |  |  |  >> clsPendingRelease.ManageComponent (mErH)
+24-05-23 18:38:15 00,5972 00,0053 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 18:38:15 00,6259         |  |  |  |  |  >> clsPendingRelease.ManageComponent (mMsg)
+24-05-23 18:38:15 00,6307 00,0049 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 18:38:15 00,6630         |  |  |  |  |  >> clsPendingRelease.ManageComponent (clsLog)
+24-05-23 18:38:15 00,6675 00,0044 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 18:38:15 00,6930         |  |  |  |  |  >> clsPendingRelease.ManageComponent (mTrc)
+24-05-23 18:38:15 00,6975 00,0045 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 18:38:15 00,7250         |  |  |  |  |  >> clsPendingRelease.ManageComponent (mCompManClient)
+24-05-23 18:38:15 00,7300 00,0050 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 18:38:15 00,7334 00,2420 |  |  |  |  << clsCommonPublic.HskpngUsedOrPrivate
+24-05-23 18:38:15 00,7337         |  |  |  |  >> clsCommonPublic.HskpngHosted
+24-05-23 18:38:15 00,7660         |  |  |  |  |  >> clsPendingRelease.ManageComponent (clsPrivProf)
+24-05-23 18:38:15 00,7726 00,0066 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 18:38:15 00,7759 00,0421 |  |  |  |  << clsCommonPublic.HskpngHosted
+24-05-23 18:38:15 00,7764 00,6928 |  |  |  << clsCommonPublic.Hskpng
+24-05-23 18:38:15 00,7768         |  |  |  >> clsCompManDat.Hskpng
+24-05-23 18:38:15 00,7772         |  |  |  |  >> clsCompManDat.HskpngObsolete
+24-05-23 18:38:15 00,7810 00,0039 |  |  |  |  << clsCompManDat.HskpngObsolete
+24-05-23 18:38:15 00,7815         |  |  |  |  >> clsCompManDat.HskpngHosted
+24-05-23 18:38:15 00,7870 00,0056 |  |  |  |  << clsCompManDat.HskpngHosted
+24-05-23 18:38:15 00,7877 00,0109 |  |  |  << clsCompManDat.Hskpng
+24-05-23 18:38:15 00,7911 00,7898 |  |  << clsServices.Initiate
+24-05-23 18:38:15 00,9086         |  |  >> clsServices.ExportChangedComponents
+24-05-23 18:38:15 00,9090         |  |  |  >> mExport.ChangedComponents
+24-05-23 18:38:16 01,3308         |  |  |  |  >> clsServices.RemoveTempRenamed
+24-05-23 18:38:16 01,3314 00,0007 |  |  |  |  << clsServices.RemoveTempRenamed
+24-05-23 18:38:16 01,3327 00,4237 |  |  |  << mExport.ChangedComponents
+24-05-23 18:38:16 01,3330 00,4244 |  |  << clsServices.ExportChangedComponents
+24-05-23 18:38:16 01,3334 01,3334 |  << mCompMan.ExportChangedComponents
+24-05-23 18:38:16 01,3334 01,3334 << Export Changed Components (by CompMan.xlsb) for PrivProf.xlsb
+24-05-23 18:38:16                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-05-23 18:38:16                 Impact on the overall performance (caused by the trace itself): 0,3 milliseconds!
+===========================================================================================================================================
+24-05-23 19:16:34 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-05-23 19:16:34 seconds seconds >> Export Changed Components (by CompMan.xlsb) for PrivProf.xlsb
+24-05-23 19:16:34 00,0000         |  >> mCompMan.ExportChangedComponents
+24-05-23 19:16:34 00,0011         |  |  >> clsServices.Initiate
+24-05-23 19:16:34 00,0022         |  |  |  >> clsCompManDat.Class_Initialize
+24-05-23 19:16:39 04,8639         |  |  |  |  >> clsPrivProf.FileName-Let
+24-05-23 19:16:39 04,8660         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\CompMan\CompMan.dat)
+24-05-23 19:16:39 04,8704 00,0043 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\CompMan\CompMan.dat)
+24-05-23 19:16:39 04,8838 00,0199 |  |  |  |  << clsPrivProf.FileName-Let
+24-05-23 19:16:39 04,8902 04,8880 |  |  |  << clsCompManDat.Class_Initialize
+24-05-23 19:16:39 04,8907         |  |  |  >> clsCommonPublic.Class_Initialize
+24-05-23 19:16:39 04,8919         |  |  |  |  >> clsCompManDat.Class_Initialize
+24-05-23 19:16:39 04,8933         |  |  |  |  |  >> clsPrivProf.FileName-Let
+24-05-23 19:16:39 04,8947         |  |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\CompMan\CompMan.dat)
+24-05-23 19:16:39 04,8982 00,0035 |  |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\CompMan\CompMan.dat)
+24-05-23 19:16:39 04,9088 00,0155 |  |  |  |  |  << clsPrivProf.FileName-Let
+24-05-23 19:16:39 04,9142 00,0223 |  |  |  |  << clsCompManDat.Class_Initialize
+24-05-23 19:16:43 08,6983         |  |  |  |  >> clsPrivProf.FileName-Let
+24-05-23 19:16:43 08,7029         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\Common-Components\CommComps.dat)
+24-05-23 19:16:43 08,7144 00,0115 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\Common-Components\CommComps.dat)
+24-05-23 19:16:43 08,7517 00,0535 |  |  |  |  << clsPrivProf.FileName-Let
+24-05-23 19:16:46 11,6109 06,7202 |  |  |  << clsCommonPublic.Class_Initialize
+24-05-23 19:16:46 11,6118         |  |  |  >> clsCommonPublic.Hskpng
+24-05-23 19:16:46 11,6313         |  |  |  |  >> clsCommonPublic.HskpngSectionsObsolete
+24-05-23 19:16:46 11,6358 00,0045 |  |  |  |  << clsCommonPublic.HskpngSectionsObsolete
+24-05-23 19:16:46 11,6363         |  |  |  |  >> clsCommonPublic.HskpngSectionsMissing
+24-05-23 19:16:46 12,2660 00,6298 |  |  |  |  << clsCommonPublic.HskpngSectionsMissing
+24-05-23 19:16:46 12,2664         |  |  |  |  >> clsCommonPublic.HskpngUsedOrPrivate
+24-05-23 19:16:46 12,3335         |  |  |  |  |  >> clsPendingRelease.ManageComponent (fMsg)
+24-05-23 19:16:46 12,3383 00,0048 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 19:16:46 12,3608         |  |  |  |  |  >> clsPendingRelease.ManageComponent (mErH)
+24-05-23 19:16:46 12,3654 00,0046 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 19:16:46 12,3938         |  |  |  |  |  >> clsPendingRelease.ManageComponent (mMsg)
+24-05-23 19:16:46 12,3985 00,0047 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 19:16:46 12,4318         |  |  |  |  |  >> clsPendingRelease.ManageComponent (clsLog)
+24-05-23 19:16:46 12,4365 00,0047 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 19:16:46 12,4662         |  |  |  |  |  >> clsPendingRelease.ManageComponent (mTrc)
+24-05-23 19:16:46 12,4737 00,0075 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 19:16:46 12,4999         |  |  |  |  |  >> clsPendingRelease.ManageComponent (mCompManClient)
+24-05-23 19:16:46 12,5042 00,0043 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 19:16:46 12,5078 00,2414 |  |  |  |  << clsCommonPublic.HskpngUsedOrPrivate
+24-05-23 19:16:46 12,5083         |  |  |  |  >> clsCommonPublic.HskpngHosted
+24-05-23 19:16:46 12,5369         |  |  |  |  |  >> clsPendingRelease.ManageComponent (clsPrivProf)
+24-05-23 19:16:46 12,5411 00,0042 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 19:16:46 12,5439 00,0357 |  |  |  |  << clsCommonPublic.HskpngHosted
+24-05-23 19:16:46 12,5444 00,9325 |  |  |  << clsCommonPublic.Hskpng
+24-05-23 19:16:46 12,5448         |  |  |  >> clsCompManDat.Hskpng
+24-05-23 19:16:46 12,5451         |  |  |  |  >> clsCompManDat.HskpngObsolete
+24-05-23 19:16:46 12,5486 00,0035 |  |  |  |  << clsCompManDat.HskpngObsolete
+24-05-23 19:16:46 12,5489         |  |  |  |  >> clsCompManDat.HskpngHosted
+24-05-23 19:16:46 12,5519 00,0030 |  |  |  |  << clsCompManDat.HskpngHosted
+24-05-23 19:16:46 12,5522 00,0074 |  |  |  << clsCompManDat.Hskpng
+24-05-23 19:16:46 12,5539 12,5528 |  |  << clsServices.Initiate
+24-05-23 19:16:47 12,6133         |  |  >> clsServices.ExportChangedComponents
+24-05-23 19:16:47 12,6137         |  |  |  >> mExport.ChangedComponents
+24-05-23 19:16:47 12,9970         |  |  |  |  >> clsServices.RemoveTempRenamed
+24-05-23 19:16:47 12,9977 00,0007 |  |  |  |  << clsServices.RemoveTempRenamed
+24-05-23 19:16:47 12,9994 00,3858 |  |  |  << mExport.ChangedComponents
+24-05-23 19:16:47 13,0000 00,3868 |  |  << clsServices.ExportChangedComponents
+24-05-23 19:16:47 13,0004 13,0004 |  << mCompMan.ExportChangedComponents
+24-05-23 19:16:47 13,0004 13,0004 << Export Changed Components (by CompMan.xlsb) for PrivProf.xlsb
+24-05-23 19:16:47                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-05-23 19:16:47                 Impact on the overall performance (caused by the trace itself): 0,3 milliseconds!
+===========================================================================================================================================
+24-05-23 19:18:12 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-05-23 19:18:12 seconds seconds >> Export Changed Components (by CompMan.xlsb) for PrivProf.xlsb
+24-05-23 19:18:12 00,0000         |  >> mCompMan.ExportChangedComponents
+24-05-23 19:18:12 00,0011         |  |  >> clsServices.Initiate
+24-05-23 19:18:12 00,0022         |  |  |  >> clsCompManDat.Class_Initialize
+24-05-23 19:18:12 00,0059         |  |  |  |  >> clsPrivProf.FileName-Let
+24-05-23 19:18:12 00,0073         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\CompMan\CompMan.dat)
+24-05-23 19:18:12 00,0104 00,0031 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\CompMan\CompMan.dat)
+24-05-23 19:18:12 00,0197 00,0138 |  |  |  |  << clsPrivProf.FileName-Let
+24-05-23 19:18:13 00,0353 00,0331 |  |  |  << clsCompManDat.Class_Initialize
+24-05-23 19:18:13 00,0357         |  |  |  >> clsCommonPublic.Class_Initialize
+24-05-23 19:18:13 00,0370         |  |  |  |  >> clsCompManDat.Class_Initialize
+24-05-23 19:18:13 00,0383         |  |  |  |  |  >> clsPrivProf.FileName-Let
+24-05-23 19:18:13 00,0395         |  |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\CompMan\CompMan.dat)
+24-05-23 19:18:13 00,0432 00,0036 |  |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\PrivProf\CompMan\CompMan.dat)
+24-05-23 19:18:13 00,0529 00,0146 |  |  |  |  |  << clsPrivProf.FileName-Let
+24-05-23 19:18:13 00,0686 00,0317 |  |  |  |  << clsCompManDat.Class_Initialize
+24-05-23 19:18:13 00,0692         |  |  |  |  >> clsPrivProf.FileName-Let
+24-05-23 19:18:13 00,0724         |  |  |  |  |  >> clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\Common-Components\CommComps.dat)
+24-05-23 19:18:13 00,0822 00,0099 |  |  |  |  |  << clsPrivProf.PPfileAsPPtwin (E:\Sync\Excel VBA\DevAndTest\Common-Components\CommComps.dat)
+24-05-23 19:18:13 00,1220 00,0529 |  |  |  |  << clsPrivProf.FileName-Let
+24-05-23 19:18:13 00,1350 00,0993 |  |  |  << clsCommonPublic.Class_Initialize
+24-05-23 19:18:13 00,1359         |  |  |  >> clsCommonPublic.Hskpng
+24-05-23 19:18:13 00,1522         |  |  |  |  >> clsCommonPublic.HskpngSectionsObsolete
+24-05-23 19:18:13 00,1568 00,0046 |  |  |  |  << clsCommonPublic.HskpngSectionsObsolete
+24-05-23 19:18:13 00,1573         |  |  |  |  >> clsCommonPublic.HskpngSectionsMissing
+24-05-23 19:18:13 00,9612 00,8039 |  |  |  |  << clsCommonPublic.HskpngSectionsMissing
+24-05-23 19:18:13 00,9618         |  |  |  |  >> clsCommonPublic.HskpngUsedOrPrivate
+24-05-23 19:18:14 01,0683         |  |  |  |  |  >> clsPendingRelease.ManageComponent (fMsg)
+24-05-23 19:18:14 01,0753 00,0070 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 19:18:14 01,1058         |  |  |  |  |  >> clsPendingRelease.ManageComponent (mErH)
+24-05-23 19:18:14 01,1147 00,0089 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 19:18:14 01,1534         |  |  |  |  |  >> clsPendingRelease.ManageComponent (mMsg)
+24-05-23 19:18:14 01,1584 00,0050 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 19:18:14 01,1933         |  |  |  |  |  >> clsPendingRelease.ManageComponent (clsLog)
+24-05-23 19:18:14 01,1978 00,0045 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 19:18:14 01,2277         |  |  |  |  |  >> clsPendingRelease.ManageComponent (mTrc)
+24-05-23 19:18:14 01,2326 00,0049 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 19:18:14 01,2585         |  |  |  |  |  >> clsPendingRelease.ManageComponent (mCompManClient)
+24-05-23 19:18:14 01,2636 00,0052 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 19:18:14 01,2672 00,3054 |  |  |  |  << clsCommonPublic.HskpngUsedOrPrivate
+24-05-23 19:18:14 01,2676         |  |  |  |  >> clsCommonPublic.HskpngHosted
+24-05-23 19:18:14 01,2953         |  |  |  |  |  >> clsPendingRelease.ManageComponent (clsPrivProf)
+24-05-23 19:18:14 01,2995 00,0041 |  |  |  |  |  << clsPendingRelease.ManageComponent
+24-05-23 19:18:14 01,3030 00,0354 |  |  |  |  << clsCommonPublic.HskpngHosted
+24-05-23 19:18:14 01,3035 01,1676 |  |  |  << clsCommonPublic.Hskpng
+24-05-23 19:18:14 01,3038         |  |  |  >> clsCompManDat.Hskpng
+24-05-23 19:18:14 01,3041         |  |  |  |  >> clsCompManDat.HskpngObsolete
+24-05-23 19:18:14 01,3071 00,0029 |  |  |  |  << clsCompManDat.HskpngObsolete
+24-05-23 19:18:14 01,3075         |  |  |  |  >> clsCompManDat.HskpngHosted
+24-05-23 19:18:14 01,3113 00,0038 |  |  |  |  << clsCompManDat.HskpngHosted
+24-05-23 19:18:14 01,3117 00,0079 |  |  |  << clsCompManDat.Hskpng
+24-05-23 19:18:14 01,3134 01,3123 |  |  << clsServices.Initiate
+24-05-23 19:18:14 01,4020         |  |  >> clsServices.ExportChangedComponents
+24-05-23 19:18:14 01,4025         |  |  |  >> mExport.ChangedComponents
+24-05-23 19:18:14 01,7469         |  |  |  |  >> clsServices.RemoveTempRenamed
+24-05-23 19:18:14 01,7476 00,0007 |  |  |  |  << clsServices.RemoveTempRenamed
+24-05-23 19:18:14 01,7487 00,3462 |  |  |  << mExport.ChangedComponents
+24-05-23 19:18:14 01,7490 00,3470 |  |  << clsServices.ExportChangedComponents
+24-05-23 19:18:14 01,7494 01,7494 |  << mCompMan.ExportChangedComponents
+24-05-23 19:18:14 01,7494 01,7494 << Export Changed Components (by CompMan.xlsb) for PrivProf.xlsb
+24-05-23 19:18:14                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-05-23 19:18:14                 Impact on the overall performance (caused by the trace itself): 0,3 milliseconds!
+===========================================================================================================================================
+24-05-23 19:20:45 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-05-23 19:20:45 seconds seconds >> Export Changed Components (by CompMan.xlsb) for PrivProf.xlsb
+24-05-23 19:20:45 00,0000         |  >> mAddin.IsOpen
+24-05-23 19:20:45 00,0012 00,0012 |  << mAddin.IsOpen
+24-05-23 19:20:45 00,0012 00,0012 << Export Changed Components (by CompMan.xlsb) for PrivProf.xlsb
+24-05-23 19:20:45                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-05-23 19:20:45                 Impact on the overall performance (caused by the trace itself): 1,1 milliseconds!
+===========================================================================================================================================
+24-05-23 19:20:45 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-05-23 19:20:45 seconds seconds >> Export Changed Components (by CompMan.xlsb) for PrivProf.xlsb
+24-05-23 19:20:45 00,0000         |  >> mAddin.IsOpen
+24-05-23 19:20:45 00,0012 00,0012 |  << mAddin.IsOpen
+24-05-23 19:20:45 00,0012 00,0012 << Export Changed Components (by CompMan.xlsb) for PrivProf.xlsb
+24-05-23 19:20:45                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+24-05-23 19:20:45                 Impact on the overall performance (caused by the trace itself): 1,0 milliseconds!

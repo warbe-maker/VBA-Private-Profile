@@ -33,36 +33,58 @@ Option Compare Text
 '
 ' Public methods:
 ' ---------------
+' Exists          Returns TRUE when a given value name exists in a given
+'                 section exists in a given Private Profile File. The
+'                 method requires a Private Profile file's full name,
+'                 section and value name are optional.
+' HskpngNames     Service supporting the fact that a value-name may change
+'                 over time. The argument is a list of list of strings
+'                 (ParamArray), where each string specifies a value-name
+'                 history in the form:
+'                 [[sect:][sect:]][current-name]<prev-name<prev-name or
+'                 [[sect:][sect:]]prev-name>prev-name>[current-name]
+'                 with the following syntax rules:
+'                 1. > or < indicate the history sequence pointing from
+'                    the predecessor to the new name, whereby the history
+'                    may grow when a changed name is changed again.
+'                 2. One or more sections are optional. When omitted, the
+'                    names history applies to all sections any history
+'                    name is used.
+'                 3. The current name is optional. When omitted, the life of
+'                    the history name has ended. I. e. the name is no longer
+'                    used at all and thus will be removed in all or the
+'                    specified sections only (rule 2).
 ' NamesRemove     Removes provided value names, in a given Private
 '                 Properties File, when provided in a specific section,
 '                 else in all sections.
-' Reorg
-' Exists          Returns TRUE when a given section exists in a given
-'                 Private Profile File.
-' SectionNames    Returns a Dictionary of all section names [...] in a
-'                 Private Profile File whereby each item is a Dictionary of
-'                 value-names as key and the value as item, and the key of
-'                 the item is the section name.
-' Sections        Returns a Dictionary with the Section names as the key.
-' SectionNames
-' SectionRemove
-' SectionsCopy
-' ValueNames      Returns a Dictionary of all value-names within given
-'                 sections in a Private Profile File with the value-name and
-'                 the section name as key (<name>[section]) and the value as
-'                 item, the names in ascending order in a Dictionary.
-'                 Section names may be provided as a comma delimited string,
-'                 a Dictionary or Collection. Non existing sections are
-'                 ignored.
+' SectionNames    Returns all section names in a Private Profile file as
+'                 Dictionary and optionally as Collection with all
+'                 Section names in ascending order.
+' Sections        Returns a Dictionary with all sections in a Private
+'                 Profile file with the section name as the key.
+'                 The item is a Collection where the first item is a
+'                 Collection of the section comments and the second is a
+'                 Dictionary of values.
+' SectionNames    Returns all section names in a Private Profile file as
+'                 Dictionary and optionally as Collection with all Section
+'                 names in ascending order.
+' SectionRemove   Removes one or more specified sections in a Private Profile
+'                 file whereby several sections may be provided as a comma
+'                 separated string.
+' ValueNames      Returns a Dictionary with all value-names as key, whereby
+'                 the item is a Collection with two items: the first is a
+'                 Collection of the value comment lines, the second is the
+'                 value. The value names are in ascending order.
 ' ValueRename     Function replaces an old value name with a new one
 '                 either in a specific section or in all sections when no
 '                 specific section is provided. Optionally not reorgs the
 '                 file, returns True when at least one name has been
 '                 replaced.
-' ValueRemove
-' Values          Returns the value-names and values of a given section in a
-'                 Private Profile File as Dictionary with the value-name as
-'                 the key (in ascending order) and the value as item.
+' ValueRemove     Removes a specified value from an (optionally) specified
+'                 section in an (optionally) specified Private Profile file.
+'                 When the section is omitted, the value is removed from all
+'                 sections, when the file name is omitted it defaults to the
+'                 file specified by the FileName property.
 '
 ' Requires:
 ' ---------
@@ -362,27 +384,18 @@ Private Property Let PPtwinHskpngNamesDone(Optional ByVal h_file As String, _
 ' Keeps a record of a done name housekeeping (h_hist) in a Private Profile
 ' file (h_file).
 ' ----------------------------------------------------------------------------
-    Dim s As String
+    Dim s           As String
+    Dim dct         As Dictionary
+    Dim lDoneNew    As Long
     
-    If PPtwinSectionExists(NAMES_HSKPNG_SECT_NAME, h_file) Then                             ' cllPPtwinSection, cllPPtwinSectionComments, dctPPtwinValues
-        If PPtwinValueExists(NAMES_HSKPNG_VALUE_NAME, NAMES_HSKPNG_SECT_NAME, h_file) Then  ' cllPPtwin, cllPPtwinHeader, dctPPtwinSections, cllPPtwinFooter
-                                                                                            ' cllPPtwinValue, cllPPtwinValueComments, vPPtwinValue
-            s = vPPtwinValue
-            If InStr(s, ">") = 0 And InStr(s, "<") = 0 Then
-                '~~ There is either no "done record" yet or the current "done record"
-                '~~ adheres to a different syntax and is thus replaced
-                s = h_hist
-            Else
-                s = s & NAMES_HSKPNG_DONE_DELIM & h_hist
-            End If
-        End If
-        PPtwinValue(NAMES_HSKPNG_VALUE_NAME, NAMES_HSKPNG_SECT_NAME, h_file) = s
-    Else
-        '~~ Add a new section with a new value (empty sections do not exist)
-        PPtwinNewSection NAMES_HSKPNG_VALUE_NAME, NAMES_HSKPNG_SECT_NAME, h_hist
-        PPtwinReplace h_file
-    End If
+    If PPtwinHskpngNamesIsDone(h_file, h_hist) Then GoTo xt
+    Set dct = PPtwinHskpngNamesNames(h_file)
+    lDoneNew = dct.Count + 1
+    
+    PPtwinValue(NAMES_HSKPNG_VALUE_NAME & "_" & lDoneNew, NAMES_HSKPNG_SECT_NAME, h_file) = h_hist
                     
+xt: Exit Property
+
 End Property
 
 Private Property Get PPtwinSectionComments(Optional ByVal p_sect As String, _
@@ -422,21 +435,6 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
         Case Else:      GoTo xt
     End Select
 End Property
-                                                                                
-Private Function PPtwinSectionCommentsLet(ByVal p_comments As Collection) As Collection
-    Dim cll As New Collection
-    Dim v   As Variant
-    
-    If bSectionsSeparated Then cll.Add vbNullString
-    For Each v In p_comments
-        If cll.Count = 0 And v = vbNullString Then
-        Else
-            cll.Add Comment(v)
-        End If
-    Next v
-    Set PPtwinSectionCommentsLet = cll
-    
-End Function
 
 Private Property Get PPtwinValue(Optional ByVal p_name As String, _
                                  Optional ByVal p_sect As String, _
@@ -536,17 +534,6 @@ Private Property Let PPtwinValueComments(Optional ByVal p_name As String, _
 
 End Property
 
-Private Function PPtwinValueCommentsLet(ByVal p_comments As Collection) As Collection
-    Dim cll As New Collection
-    Dim v   As Variant
-    
-    For Each v In p_comments
-        cll.Add Comment(v)
-    Next v
-    Set PPtwinValueCommentsLet = cll
-    Set cll = Nothing
-    
-End Function
 Public Property Get Section() As String:        Section = sSection: End Property
 
 Public Property Let Section(ByVal s As String)
@@ -601,6 +588,28 @@ End Property
 
 Public Property Let SectionsSeparated(ByVal b As Boolean):          bSectionsSeparated = b:         End Property
 
+Public Property Get Value(Optional ByVal name_value As String = vbNullString, _
+                          Optional ByVal name_section As String = vbNullString, _
+                          Optional ByVal name_file As String = vbNullString, _
+                          Optional ByVal value_default As Variant) As Variant
+' ----------------------------------------------------------------------------
+' Returns value name's (name_value) value from a section (name_section) in a
+' Private Profile file (name_file) - plus its comment (it any) as a string of
+' comment lines delimited with a "||".
+' When no file (name_file) is provided it defaults to the file name specified
+' by the property FileName, when no section (name_section) is provided, the
+' section defaults to the section name provided by the property Section.
+' ----------------------------------------------------------------------------
+    Const PROC  As String = "Value-Get"
+           
+    If Not IsValidFile(name_file) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
+    If Not IsValidNameSection(name_section) Then Err.Raise AppErr(2), ErrSrc(PROC), ErrInvalidSectName(name_section)
+    If Not IsValidNameValue(name_value) Then Err.Raise AppErr(3), ErrSrc(PROC), ErrInvalidValuName(name_value)
+    
+    Value = PPtwinValue(name_value, name_section, name_file, value_default)
+    
+End Property
+
 Public Property Let Value(Optional ByVal name_value As String = vbNullString, _
                           Optional ByVal name_section As String = vbNullString, _
                           Optional ByVal name_file As String = vbNullString, _
@@ -632,28 +641,6 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Property
 
-Public Property Get Value(Optional ByVal name_value As String = vbNullString, _
-                          Optional ByVal name_section As String = vbNullString, _
-                          Optional ByVal name_file As String = vbNullString, _
-                          Optional ByVal value_default As Variant) As Variant
-' ----------------------------------------------------------------------------
-' Returns value name's (name_value) value from a section (name_section) in a
-' Private Profile file (name_file) - plus its comment (it any) as a string of
-' comment lines delimited with a "||".
-' When no file (name_file) is provided it defaults to the file name specified
-' by the property FileName, when no section (name_section) is provided, the
-' section defaults to the section name provided by the property Section.
-' ----------------------------------------------------------------------------
-    Const PROC  As String = "Value-Get"
-           
-    If Not IsValidFile(name_file) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(name_file)
-    If Not IsValidNameSection(name_section) Then Err.Raise AppErr(2), ErrSrc(PROC), ErrInvalidSectName(name_section)
-    If Not IsValidNameValue(name_value) Then Err.Raise AppErr(3), ErrSrc(PROC), ErrInvalidValuName(name_value)
-    
-    Value = PPtwinValue(name_value, name_section, name_file, value_default)
-    
-End Property
-
 Public Property Get ValueComment(Optional ByVal name_value As String = vbNullString, _
                                  Optional ByVal name_section As String = vbNullString, _
                                  Optional ByVal name_file As String = vbNullString) As String
@@ -669,28 +656,6 @@ Public Property Get ValueComment(Optional ByVal name_value As String = vbNullStr
     ValueComment = CommentsGet(PPtwinValueComments(name_value, name_section, name_file))
 
 End Property
-
-Private Function CommentsGet(ByVal c_comments As Collection) As String
-' ------------------------------------------------------------------------------
-' Returns a collection (c_comments) with a first empty item ignored and all
-' the other items with the comment prefix "; " unstripped.
-' ------------------------------------------------------------------------------
-
-    Dim s       As String
-    Dim sDelim  As String
-    Dim v       As Variant
-    
-    For Each v In c_comments
-        If v = vbNullString And s = vbNullString Then
-            '~~ A first empty comment is ignored
-        Else
-            s = s & sDelim & Right(v, Len(v) - 2)
-            sDelim = vbCrLf
-        End If
-    Next v
-    CommentsGet = s
-    
-End Function
 
 Public Property Let ValueComment(Optional ByVal name_value As String = vbNullString, _
                                  Optional ByVal name_section As String = vbNullString, _
@@ -966,6 +931,28 @@ Private Function Comment(ByVal s As String) As String
             Comment = "; " & Right(Comment, Len(Comment) - 1)
         End If
     End If
+    
+End Function
+
+Private Function CommentsGet(ByVal c_comments As Collection) As String
+' ------------------------------------------------------------------------------
+' Returns a collection (c_comments) with a first empty item ignored and all
+' the other items with the comment prefix "; " unstripped.
+' ------------------------------------------------------------------------------
+
+    Dim s       As String
+    Dim sDelim  As String
+    Dim v       As Variant
+    
+    For Each v In c_comments
+        If v = vbNullString And s = vbNullString Then
+            '~~ A first empty comment is ignored
+        Else
+            s = s & sDelim & Right(v, Len(v) - 2)
+            sDelim = vbCrLf
+        End If
+    Next v
+    CommentsGet = s
     
 End Function
 
@@ -1491,8 +1478,10 @@ Public Sub HskpngNames(ByVal h_file As String, _
     If Not IsValidFile(h_file) Then Err.Raise AppErr(1), ErrSrc(PROC), ErrInvalidFileName(h_file)
     
     If Not ArrayIsAllocated(h_hist) Then GoTo xt
+    ValueRemove NAMES_HSKPNG_VALUE_NAME, NAMES_HSKPNG_SECT_NAME, h_file ' obsolete since history is saved in value names with sequ no suffix
+    
     For Each v In h_hist
-        If Not PPtwinHskpngIsDone(h_file, v) Then
+        If Not PPtwinHskpngNamesIsDone(h_file, v) Then
             sSects = vbNullString
             If InStr(v, ":") <> 0 Then
                 '~~ Do names forwarding for specified section/s
@@ -2433,16 +2422,6 @@ Private Function PPtwinFileFooterPrepare(ByVal f_comments As Collection) As Coll
     
 End Function
 
-Private Function PPtwinHasChanged(ByVal p_file As String) As Boolean
-' ----------------------------------------------------------------------------
-' Returns TRUE when the Private Profile's twin (f_file) has changed.
-' ----------------------------------------------------------------------------
-    PPtwinHasChanged = StrComp(PPtwinAsString(p_file) _
-                             , dctPPtwinsAsString(p_file) _
-                             , vbBinaryCompare) <> 0
-    
-End Function
-
 Private Function PPtwinFileHeaderPrepare(ByVal f_comments As Collection) As Collection
 ' ----------------------------------------------------------------------------
 ' Returns comments (f_comments) as Collection representing a Private Profile
@@ -2466,26 +2445,50 @@ Private Function PPtwinFileHeaderPrepare(ByVal f_comments As Collection) As Coll
     
 End Function
 
-Private Function PPtwinHskpngIsDone(ByVal h_file As String, _
-                                    ByVal h_hist As String) As Boolean
+Private Function PPtwinHasChanged(ByVal p_file As String) As Boolean
 ' ----------------------------------------------------------------------------
-' Returns TRUE when a name's (h_hist) housekeeping is done
+' Returns TRUE when the Private Profile's twin (f_file) has changed.
 ' ----------------------------------------------------------------------------
-    Dim s As String
-    Dim v As Variant
-    
-    s = PPtwinValue(NAMES_HSKPNG_VALUE_NAME, NAMES_HSKPNG_SECT_NAME, h_file)
-    If s <> vbNullString Then
-        For Each v In StringAsArray(s, NAMES_HSKPNG_DONE_DELIM)
-            '~~ Loop through all names housekeeping done strings
-            If v = h_hist Then
-                PPtwinHskpngIsDone = True
-                Exit For
-            End If
-        Next v
-    End If
+    PPtwinHasChanged = StrComp(PPtwinAsString(p_file) _
+                             , dctPPtwinsAsString(p_file) _
+                             , vbBinaryCompare) <> 0
     
 End Function
+
+Private Function PPtwinHskpngNamesIsDone(ByVal h_file As String, _
+                                         ByVal h_hist As String) As Boolean
+' ----------------------------------------------------------------------------
+' Returns TRUE when a name's (h_hist) housekeeping is done.
+' Note: Each h_hist when done is registered under a NAMES_HSKPNG_VALUE_NAME
+'       with a sequence number suffix.
+' ----------------------------------------------------------------------------
+    Dim s   As String
+    Dim v   As Variant
+    Dim dct As Dictionary
+    Dim cll As Collection
+    Dim sHist As String
+    
+    Set dct = PPtwinHskpngNamesNames(h_file)
+    For Each v In dct
+        Set cll = dct(v)
+        sHist = cll(2)
+        If sHist = h_hist Then
+            PPtwinHskpngNamesIsDone = True
+            Exit For
+        End If
+    Next v
+        
+End Function
+
+Private Function PPtwinHskpngNamesNames(ByVal h_file As String) As Dictionary
+    Dim dct As New Dictionary
+    If PPtwinSectionExists(NAMES_HSKPNG_SECT_NAME, h_file) Then
+        Set dct = dctPPtwinValues
+    End If
+    Set PPtwinHskpngNamesNames = dct
+    Set dct = Nothing
+End Function
+
                           
 Private Function PPtwinNew(ByVal p_name As String, _
                            ByVal p_sect As String, _
@@ -2559,6 +2562,7 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
         Case Else:      GoTo xt
     End Select
 End Function
+
           
 Private Function PPtwinNewValue(ByVal p_valu As Variant) As Collection
 ' ----------------------------------------------------------------------------
@@ -2661,6 +2665,22 @@ Private Sub PPtwinReplaceValue(ByVal p_name As String)
     
 End Sub
 
+                                                                                
+Private Function PPtwinSectionCommentsLet(ByVal p_comments As Collection) As Collection
+    Dim cll As New Collection
+    Dim v   As Variant
+    
+    If bSectionsSeparated Then cll.Add vbNullString
+    For Each v In p_comments
+        If cll.Count = 0 And v = vbNullString Then
+        Else
+            cll.Add Comment(v)
+        End If
+    Next v
+    Set PPtwinSectionCommentsLet = cll
+    
+End Function
+
 Private Function PPtwinSectionExists(ByVal p_sect As String, _
                                      ByVal p_file As String) As Boolean
 ' ----------------------------------------------------------------------------
@@ -2727,6 +2747,18 @@ Private Sub PPtwinSet(ByVal p_file As String)
     Set dctPPtwinSections = cllPPtwin(2)
     Set cllPPtwinFooter = cllPPtwin(3)
 End Sub
+
+Private Function PPtwinValueCommentsLet(ByVal p_comments As Collection) As Collection
+    Dim cll As New Collection
+    Dim v   As Variant
+    
+    For Each v In p_comments
+        cll.Add Comment(v)
+    Next v
+    Set PPtwinValueCommentsLet = cll
+    Set cll = Nothing
+    
+End Function
 
 Private Function PPtwinValueExists(ByVal p_name As String, _
                                    ByVal p_sect As String, _
@@ -2994,11 +3026,9 @@ Public Function SectionNames(Optional ByVal name_file As String, _
                              Optional ByRef names_cll As Collection, _
                              Optional ByRef names_dct As Dictionary) As Dictionary
 ' ----------------------------------------------------------------------------
-' Returns all section names in a Private Profile file (name_file)
-' - As Dictionary
-' - As Dictionary (names_ddct)
-' - As Collection
-' with all Section names in ascending order.
+' Returns all section names in a Private Profile file (name_file) as
+' Dictionary and optionally as Collection (names_cll) with all Section names
+' in ascending order.
 ' ----------------------------------------------------------------------------
     Const PROC = "SectionNames"
     

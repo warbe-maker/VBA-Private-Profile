@@ -910,9 +910,9 @@ Public Sub Test_700_HskpngNames()
     Prepare 2   ' uses a ready for test file copied from a backup
     With TestAid
         .TestNumber = "700-1"
-        .TestedProc = "Houskeeping Names for dedicated sections"
+        .TestedProc = "HouskeepingNames"
         .TestedType = "Method"
-        .TestDscrpt = "Maintains outdated valu-names by forwarding them to a new name."
+        .TestDscrpt = "One value-name change in two sections."
         .ResultExpected = .ExpectedTestResultFile(.TestNumber)
         .BoTP
         PrivProf.HskpngNames PrivProf.FileName, "clsLog:clsQ:Last_Modified_AtDateTime>Last_Modified_UTC_AtDateTime"
@@ -922,12 +922,13 @@ Public Sub Test_700_HskpngNames()
                 
         .TestNumber = "700-2"
         Prepare 2   ' uses a ready for test file copied from a backup
-        .TestedProc = "Houskeeping Names for all sections"
+        .TestedProc = "HouskeepingNames"
         .TestedType = "Method"
-        .TestDscrpt = "Maintains outdated valu-names by forwarding them to a new name."
+        .TestDscrpt = "Two value-names changes in all sections"
         .ResultExpected = .ExpectedTestResultFile(.TestNumber)
         .BoTP
-        PrivProf.HskpngNames PrivProf.FileName, "Last_Modified_AtDateTime>Last_Modified_UTC_AtDateTime"
+        PrivProf.HskpngNames PrivProf.FileName, "Last_Modified_AtDateTime>Last_Modified_UTC_AtDateTime" _
+                                              , "LastModExpFileFullNameOrigin>Last_Modified_ExpFileFullNameOrigin"
         .Result = PrivProfTests.PrivProfFile
         .EoTP
         ' ======================================================================

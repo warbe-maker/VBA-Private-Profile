@@ -1,26 +1,28 @@
+
 [@NamesHousekeeping]
-DoneNamesHskpng=Last_Modified_AtDateTime>Last_Modified_UTC_AtDateTime
+DoneNamesHskpng_1=Last_Modified_AtDateTime>Last_Modified_UTC_AtDateTime
+DoneNamesHskpng_2=LastModExpFileFullNameOrigin>Last_Modified_ExpFileFullNameOrigin
 
 [clsLog]
 ExportFileExtention=cls
+Last_Modified_ExpFileFullNameOrigin=E:\Sync\Excel VBA\DevAndTest\CompMan\source\clsLog.cls
 Last_Modified_InWbkFullName=E:\Sync\Excel VBA\DevAndTest\CompMan\CompMan.xlsb
 Last_Modified_InWbkName=CompMan.xlsb
 Last_Modified_UTC_AtDateTime=2024-04-11-12-32-01 (UTC)
-LastModExpFileFullNameOrigin=E:\Sync\Excel VBA\DevAndTest\CompMan\source\clsLog.cls
 
 [clsPrivProf]
 ExportFileExtention=cls
+Last_Modified_ExpFileFullNameOrigin=E:\Sync\Excel VBA\DevAndTest\PrivProf\source\clsPrivProf.cls
 Last_Modified_InWbkFullName=E:\Sync\Excel VBA\DevAndTest\PrivProf\PrivProf.xlsb
 Last_Modified_InWbkName=PrivProf.xlsb
 Last_Modified_UTC_AtDateTime=2024-05-08 12:24:55 (UTC)
-LastModExpFileFullNameOrigin=E:\Sync\Excel VBA\DevAndTest\PrivProf\source\clsPrivProf.cls
 
 [clsQ]
 ExportFileExtention=cls
+Last_Modified_ExpFileFullNameOrigin=E:\Excel VBA\DevAndTest\VBA-Component-Management\source\clsQ.cls
 Last_Modified_InWbkFullName=E:\Excel VBA\DevAndTest\VBA-Component-Management\CompMan.xlsb
 Last_Modified_InWbkName=CompMan.xlsb
 Last_Modified_UTC_AtDateTime=2024-01-24-16-30-53 (UTC)
-LastModExpFileFullNameOrigin=E:\Excel VBA\DevAndTest\VBA-Component-Management\source\clsQ.cls
 
 [clsStk]
 Last_Modified_InWbkFullName=D:\Ablage\Excel VBA\DevAndTest\VBA-Queue-and-Stack\SaQ.xlsb
@@ -28,24 +30,24 @@ Last_Modified_UTC_AtDateTime=2023-02-17.001
 
 [clsTestAid]
 ExportFileExtention=cls
+Last_Modified_ExpFileFullNameOrigin=E:\Sync\Excel VBA\DevAndTest\PrivProf\source\clsTestAid.cls
 Last_Modified_InWbkFullName=E:\Sync\Excel VBA\DevAndTest\PrivProf\PrivProf.xlsb
 Last_Modified_InWbkName=PrivProf.xlsb
 Last_Modified_UTC_AtDateTime=2024-05-08 12:24:54 (UTC)
-LastModExpFileFullNameOrigin=E:\Sync\Excel VBA\DevAndTest\PrivProf\source\clsTestAid.cls
 
 [clsTrc]
 ExportFileExtention=cls
+Last_Modified_ExpFileFullNameOrigin=E:\Sync\Excel VBA\DevAndTest\CompMan\source\clsTrc.cls
 Last_Modified_InWbkFullName=E:\Sync\Excel VBA\DevAndTest\CompMan\CompMan.xlsb
 Last_Modified_InWbkName=CompMan.xlsb
 Last_Modified_UTC_AtDateTime=2024-05-01 08:27:59 (UTC)
-LastModExpFileFullNameOrigin=E:\Sync\Excel VBA\DevAndTest\CompMan\source\clsTrc.cls
 
 [fMsg]
 ExportFileExtention=frm
+Last_Modified_ExpFileFullNameOrigin=E:\Sync\Excel VBA\DevAndTest\CompMan\source\fMsg.frm
 Last_Modified_InWbkFullName=E:\Sync\Excel VBA\DevAndTest\CompMan\CompMan.xlsb
 Last_Modified_InWbkName=CompMan.xlsb
 Last_Modified_UTC_AtDateTime=2024-02-08-14-35-34 (UTC)
-LastModExpFileFullNameOrigin=E:\Sync\Excel VBA\DevAndTest\CompMan\source\fMsg.frm
 
 [fMsgProcTest]
 Last_Modified_InWbkFullName=E:\Excel VBA\DevAndTest\VBA-Message\Msg.xlsb
@@ -53,10 +55,10 @@ Last_Modified_UTC_AtDateTime=2023-12-08-12-19-08 (UTC)
 
 [mBasic]
 ExportFileExtention=bas
+Last_Modified_ExpFileFullNameOrigin=E:\Sync\Excel VBA\DevAndTest\Basic\source\mBasic.bas
 Last_Modified_InWbkFullName=E:\Sync\Excel VBA\DevAndTest\Basic\Basic.xlsm
 Last_Modified_InWbkName=Basic.xlsm
 Last_Modified_UTC_AtDateTime=2024-02-10-18-01-12 (UTC)
-LastModExpFileFullNameOrigin=E:\Sync\Excel VBA\DevAndTest\Basic\source\mBasic.bas
 
 [mCodingGuidelines]
 ExportFileExtention=bas
@@ -78,24 +80,24 @@ Last_Modified_UTC_AtDateTime=2024-01-22-15-38-50 (UTC)
 
 [mCompManClient]
 ExportFileExtention=bas
+Last_Modified_ExpFileFullNameOrigin=E:\Sync\Excel VBA\DevAndTest\CompMan\source\mCompManClient.bas
 Last_Modified_InWbkFullName=E:\Sync\Excel VBA\DevAndTest\CompMan\CompMan.xlsb
 Last_Modified_InWbkName=CompMan.xlsb
 Last_Modified_UTC_AtDateTime=2024-02-08-14-21-51 (UTC)
-LastModExpFileFullNameOrigin=E:\Sync\Excel VBA\DevAndTest\CompMan\source\mCompManClient.bas
 
 [mDct]
 ExportFileExtention=bas
+Last_Modified_ExpFileFullNameOrigin=E:\Excel VBA\DevAndTest\VBA-Component-Management\source\mDct.bas
 Last_Modified_InWbkFullName=E:\Excel VBA\DevAndTest\VBA-Component-Management\CompMan.xlsb
 Last_Modified_InWbkName=CompMan.xlsb
 Last_Modified_UTC_AtDateTime=2024-01-24-16-30-53 (UTC)
-LastModExpFileFullNameOrigin=E:\Excel VBA\DevAndTest\VBA-Component-Management\source\mDct.bas
 
 [mErH]
 ExportFileExtention=bas
+Last_Modified_ExpFileFullNameOrigin=E:\Excel VBA\DevAndTest\VBA-Log\source\mErH.bas
 Last_Modified_InWbkFullName=E:\Excel VBA\DevAndTest\VBA-Log\Log.xlsb
 Last_Modified_InWbkName=Log.xlsb
 Last_Modified_UTC_AtDateTime=2024-01-24-16-47-51 (UTC)
-LastModExpFileFullNameOrigin=E:\Excel VBA\DevAndTest\VBA-Log\source\mErH.bas
 
 [mFile]
 Last_Modified_InWbkFullName=E:\Ablage\Excel VBA\DevAndTest\Common-VBA-File-Services\File.xlsb
@@ -103,17 +105,17 @@ Last_Modified_UTC_AtDateTime=2022-06-28.001
 
 [mFso]
 ExportFileExtention=bas
+Last_Modified_ExpFileFullNameOrigin=E:\Sync\Excel VBA\DevAndTest\CompMan\source\mFso.bas
 Last_Modified_InWbkFullName=E:\Sync\Excel VBA\DevAndTest\CompMan\CompMan.xlsb
 Last_Modified_InWbkName=CompMan.xlsb
 Last_Modified_UTC_AtDateTime=2024-04-30 16:53:04 (UTC)
-LastModExpFileFullNameOrigin=E:\Sync\Excel VBA\DevAndTest\CompMan\source\mFso.bas
 
 [mMsg]
 ExportFileExtention=bas
+Last_Modified_ExpFileFullNameOrigin=E:\Sync\Excel VBA\DevAndTest\PrivProf\source\mMsg.bas
 Last_Modified_InWbkFullName=E:\Sync\Excel VBA\DevAndTest\PrivProf\PrivProf.xlsb
 Last_Modified_InWbkName=PrivProf.xlsb
 Last_Modified_UTC_AtDateTime=2024-04-18-17-07-43 (UTC)
-LastModExpFileFullNameOrigin=E:\Sync\Excel VBA\DevAndTest\PrivProf\source\mMsg.bas
 
 [mMsgTestProcs]
 Last_Modified_InWbkFullName=E:\Excel VBA\DevAndTest\VBA-Message\Msg.xlsb
@@ -125,10 +127,10 @@ Last_Modified_UTC_AtDateTime=2023-12-08-12-19-08 (UTC)
 
 [mNme]
 ExportFileExtention=bas
+Last_Modified_ExpFileFullNameOrigin=E:\Excel VBA\DevAndTest\VBA-Component-Management\source\mNme.bas
 Last_Modified_InWbkFullName=E:\Excel VBA\DevAndTest\VBA-Component-Management\CompMan.xlsb
 Last_Modified_InWbkName=CompMan.xlsb
 Last_Modified_UTC_AtDateTime=2024-01-24-16-30-52 (UTC)
-LastModExpFileFullNameOrigin=E:\Excel VBA\DevAndTest\VBA-Component-Management\source\mNme.bas
 
 [mObject]
 Last_Modified_InWbkFullName=unknown
@@ -144,17 +146,17 @@ Last_Modified_UTC_AtDateTime=2023-06-23.001
 
 [mReg]
 ExportFileExtention=bas
+Last_Modified_ExpFileFullNameOrigin=E:\Excel VBA\DevAndTest\VBA-Component-Management\source\mReg.bas
 Last_Modified_InWbkFullName=E:\Excel VBA\DevAndTest\VBA-Component-Management\CompMan.xlsb
 Last_Modified_InWbkName=CompMan.xlsb
 Last_Modified_UTC_AtDateTime=2024-01-24-16-07-50 (UTC)
-LastModExpFileFullNameOrigin=E:\Excel VBA\DevAndTest\VBA-Component-Management\source\mReg.bas
 
 [mRng]
 ExportFileExtention=bas
+Last_Modified_ExpFileFullNameOrigin=E:\Excel VBA\DevAndTest\VBA-Component-Management\source\mRng.bas
 Last_Modified_InWbkFullName=E:\Excel VBA\DevAndTest\VBA-Component-Management\CompMan.xlsb
 Last_Modified_InWbkName=CompMan.xlsb
 Last_Modified_UTC_AtDateTime=2024-01-24-16-30-53 (UTC)
-LastModExpFileFullNameOrigin=E:\Excel VBA\DevAndTest\VBA-Component-Management\source\mRng.bas
 
 [mRows]
 Last_Modified_InWbkFullName=D:\Ablage\Excel VBA\DevAndTest\Common-VBA-Excel-Rows-Services\Rows.xlsm
@@ -166,28 +168,28 @@ Last_Modified_UTC_AtDateTime=2023-06-23.001
 
 [mTrc]
 ExportFileExtention=bas
+Last_Modified_ExpFileFullNameOrigin=E:\Excel VBA\DevAndTest\VBA-Trace\source\mTrc.bas
 Last_Modified_InWbkFullName=E:\Excel VBA\DevAndTest\VBA-Trace\Trc.xlsm
 Last_Modified_InWbkName=Trc.xlsm
 Last_Modified_UTC_AtDateTime=2024-01-24-16-30-53 (UTC)
-LastModExpFileFullNameOrigin=E:\Excel VBA\DevAndTest\VBA-Trace\source\mTrc.bas
 
 [mVarTrans]
 ExportFileExtention=bas
+Last_Modified_ExpFileFullNameOrigin=E:\Sync\Excel VBA\DevAndTest\VarTrans\source\mVarTrans.bas
 Last_Modified_InWbkFullName=E:\Sync\Excel VBA\DevAndTest\VarTrans\VarTrans.xlsb
 Last_Modified_InWbkName=VarTrans.xlsb
 Last_Modified_UTC_AtDateTime=2024-04-15 09:15:24 (UTC)
-LastModExpFileFullNameOrigin=E:\Sync\Excel VBA\DevAndTest\VarTrans\source\mVarTrans.bas
 
 [mWbk]
 ExportFileExtention=bas
+Last_Modified_ExpFileFullNameOrigin=E:\Excel VBA\DevAndTest\VBA-Component-Management\source\mWbk.bas
 Last_Modified_InWbkFullName=E:\Excel VBA\DevAndTest\VBA-Component-Management\CompMan.xlsb
 Last_Modified_InWbkName=CompMan.xlsb
 Last_Modified_UTC_AtDateTime=2024-01-24-16-30-52 (UTC)
-LastModExpFileFullNameOrigin=E:\Excel VBA\DevAndTest\VBA-Component-Management\source\mWbk.bas
 
 [mWsh]
 ExportFileExtention=bas
+Last_Modified_ExpFileFullNameOrigin=E:\Excel VBA\DevAndTest\VBA-Component-Management\source\mWsh.bas
 Last_Modified_InWbkFullName=E:\Excel VBA\DevAndTest\VBA-Component-Management\CompMan.xlsb
 Last_Modified_InWbkName=CompMan.xlsb
 Last_Modified_UTC_AtDateTime=2024-01-24-16-30-53 (UTC)
-LastModExpFileFullNameOrigin=E:\Excel VBA\DevAndTest\VBA-Component-Management\source\mWsh.bas
