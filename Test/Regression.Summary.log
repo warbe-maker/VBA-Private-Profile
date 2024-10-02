@@ -1,40 +1,42 @@
-Summary Regression-Test for component "clsPrivProf" on 2024.05.22 at 20.07.17
------------------------------------------------------------------------------
-001-2.1 Property clsTestAid.Result and .ResultExpected .. Result is the result expected..............................................:  Passed 
-001-3.1 Property clsTestAid.Result and .ResultExpected .. Result is  F a i l e d  because the result/expected boolean differs........:  F a i l e d ! 
-001-4.1 Property clsTestAid.Result and .ResultExpected .. Result is  F a i l e d  because the result/expected files differ...........:  F a i l e d ! 
-001-5.1 Property clsTestAid.Result and .ResultExpected .. Result is  F a i l e d  because result/expected files differ...............:  F a i l e d ! 
-100-1.1 Property clsPrivProf.FileName_Let ............... Initialize PP-file.........................................................:  Passed 
-100-2.1 Property clsPrivProf.Let FileName ............... Specifying a file valid name...............................................:  Passed 
-110-1.1 Method   clsPrivProf.Exists ..................... Section not exists.........................................................:  Passed 
-110-3.1 Method   clsPrivProf.Exists ..................... Section exists.............................................................:  Passed 
-110-3.2 Method   clsPrivProf.Exists ..................... Value-Name exists..........................................................:  Passed 
-110-4.1 Method   clsPrivProf.Exists ..................... Value-Name not exists......................................................:  Passed 
-120-1.1 Property clsPrivProf.Get Value .................. Read non-existing value from a non-existing file...........................:  Passed 
-120-2.1 Property clsPrivProf.Get Value .................. Read existing value........................................................:  Passed 
-120-3.1 Property clsPrivProf.Let Value .................. Write changed value........................................................:  Passed 
-120-4.1 Property clsPrivProf.Let Value .................. Write new value in existing section........................................:  Passed 
-120-5.1 Property clsPrivProf.Let Value .................. Write new value in new section.............................................:  Passed 
-120-6.1 Property clsPrivProf.Let Value .................. Change value plus the value and the section comments.......................:  Passed 
-120-7.1 Property clsPrivProf.Let Value .................. Changed again..............................................................:  Passed 
-200-1.1 Property clsPrivProf.FileHeader-Let ............. Write a file header........................................................:  Passed 
-200-3.1 Property clsPrivProf.FileHeader-Get ............. File comment read..........................................................:  Passed 
-200-4.1 Property clsPrivProf.SectionComment-Let ......... Write section comment......................................................:  Passed 
-200-5.1 Property clsPrivProf.SectionComment-Get ......... Read section comment.......................................................:  Passed 
-200-6.1 Property clsPrivProf.ValueComment-Let ........... Write value comment........................................................:  Passed 
-200-7.1 Property clsPrivProf.Value-Comment-Get .......... Read value comment.........................................................:  Passed 
-300-1.1 Function clsPrivProf.SectionNames ............... Get all section names in a Dictionary......................................:  Passed 
-400-1.1 Function clsPrivProf.ValueNames ................. Get all value names of all sections in a Dictionary........................:  Passed 
-400-2.1 Function clsPrivProf.ValueNames ................. Get all value names of a certain section in a Dictionary...................:  Passed 
-400-3.1 Function clsPrivProf.ValueNames ................. Get all value names of all sections in a Dictionary........................:  Passed 
-410-1.1 Method   clsPrivProf.ValueNameRename ............ Rename a value name in each section........................................:  Passed 
-500-1.1 Method   clsPrivProf.ValueRemove ................ Remove a value from a section including its comments.......................:  Passed 
-500-2.1 Method   clsPrivProf.SectionRemove .............. Removes a section including its comments...................................:  Passed 
-500-3.1 Method   clsPrivProf.ValueRemove ................ Remove 2 names in 2 sections...............................................:  Passed 
-500-4.1 Method   clsPrivProf.ValueRemove ................ Removes all values in one section which removes the section................:  Passed 
-500-5.1 Method   clsPrivProf.ValueRemove ................ Remove all values in all sections - file is removed........................:  Passed 
-600-1.1 Property clsPrivProf.Value-Let .................. Writes a new file with 1 section, 1 value and  a file header/footer........:  Passed 
-600-2.1 Method   clsPrivProf.Let Comment/Footer ......... Writes a footer and a header into an empty file............................:  Passed 
-600-3.1 Method   clsPrivProf.ValueRemove ................ Removes the only value in the only section.................................:  Passed 
-700-1.1 Method   clsPrivProf.HouskeepingNames ........... One value-name change in two sections......................................:  Passed 
-700-2.1 Method   clsPrivProf.HouskeepingNames ........... Two value-names changes in all sections....................................:  Passed 
+--------------------------------------------------+---------+-------------+-----------+--------------------------------+-----------------------------------------------------------------------------------+-----------------
+                       Test                       |  Test   |  Component  | Component |           Procedure            |                                   Verification                                    |      Test       
+                      Title                       |   Id    |    Name     |   Type    |              Name              |                                                                                   |     Result      
+--------------------------------------------------+---------+-------------+-----------+--------------------------------+-----------------------------------------------------------------------------------+-----------------
+ clsTestAid Result versus ResultExpected          | 001-2.1 | clsTestAid  | Property  | Result and .ResultExpected     | Verification: Result is the result expected                                       |  Passed         
+                                                  | 001-3.1 | clsTestAid  | Property  | Result and .ResultExpected     | Verification: Result is  F a i l e d  because the result/expected boolean differs |  F a i l e d !  
+                                                  | 001-4.1 | clsTestAid  | Property  | Result and .ResultExpected     | Verification: Result is  F a i l e d  because the result/expected files differ    |  F a i l e d !  
+                                                  | 001-5.1 | clsTestAid  | Property  | Result and .ResultExpected     | Verification: Result is  F a i l e d  because result/expected files differ        |  F a i l e d !  
+ Property FileName                                | 100-1.1 | clsPrivProf | Property  | FileName_Let                   | Verification: Initialize PP-file                                                  |  F a i l e d !  
+                                                  | 100-2.1 | clsPrivProf | Property  | Let FileName                   | Verification: Specifying a file valid name                                        |  Passed         
+ Exists method                                    | 110-1.1 | clsPrivProf | Method    | Exists                         | Verification: Section not exists                                                  |  Passed         
+                                                  | 110-3.1 | clsPrivProf | Method    | Exists                         | Verification: Section exists                                                      |  Passed         
+                                                  | 110-3.2 | clsPrivProf | Method    | Exists                         | Verification: Value-Name exists                                                   |  Passed         
+                                                  | 110-4.1 | clsPrivProf | Method    | Exists                         | Verification: Value-Name not exists                                               |  Passed         
+ Property Value                                   | 120-1.1 | clsPrivProf | Property  | Get Value                      | Verification: Read non-existing value from a non-existing file                    |  Passed         
+                                                  | 120-2.1 | clsPrivProf | Property  | Get Value                      | Verification: Read existing value                                                 |  Passed         
+                                                  | 120-3.1 | clsPrivProf | Property  | Let Value                      | Verification: Write changed value                                                 |  Passed         
+                                                  | 120-4.1 | clsPrivProf | Property  | Let Value                      | Verification: Write new value in existing section                                 |  Passed         
+                                                  | 120-5.1 | clsPrivProf | Property  | Let Value                      | Verification: Write new value in new section                                      |  Passed         
+                                                  | 120-6.1 | clsPrivProf | Property  | Let Value                      | Verification: Change value plus the value and the section comments                |  Passed         
+                                                  | 120-7.1 | clsPrivProf | Property  | Let Value                      | Verification: Changed again                                                       |  Passed         
+ Comment/header service (file-, section-, value-) | 200-1.1 | clsPrivProf | Property  | FileHeader-Let                 | Verification: Write a file header (not provided delimiter line added by system)   |  Passed         
+                                                  | 200-3.1 | clsPrivProf | Property  | FileHeader-Get                 | Verification: File header read (returned without delimiter line)                  |  Passed         
+                                                  | 200-4.1 | clsPrivProf | Property  | SectionComment-Let             | Verification: Write section comment                                               |  Passed         
+                                                  | 200-5.1 | clsPrivProf | Property  | SectionComment-Get             | Verification: Read section comment                                                |  Passed         
+                                                  | 200-6.1 | clsPrivProf | Property  | ValueComment-Let               | Verification: Write value comment                                                 |  Passed         
+                                                  | 200-7.1 | clsPrivProf | Property  | Value-Comment-Get              | Verification: Read value comment                                                  |  Passed         
+ SectionNames service                             | 300-1.1 | clsPrivProf | Function  | SectionNames                   | Verification: Get all section names in a Dictionary                               |  Passed         
+ ValueNames service                               | 400-1.1 | clsPrivProf | Function  | ValueNames                     | Verification: Get all value names of all sections in a Dictionary                 |  Passed         
+                                                  | 400-2.1 | clsPrivProf | Function  | ValueNames                     | Verification: Get all value names of a certain section in a Dictionary            |  Passed         
+                                                  | 400-3.1 | clsPrivProf | Function  | ValueNames                     | Verification: Get all value names of all sections in a Dictionary                 |  Passed         
+ ValueNameRename service                          | 410-1.1 | clsPrivProf | Method    | ValueNameRename                | Verification: Rename a value name in each section.                                |  Passed         
+ Remove service                                   | 500-1.1 | clsPrivProf | Method    | ValueRemove                    | Verification: Remove a value from a section including its comments.               |  Passed         
+                                                  | 500-2.1 | clsPrivProf | Method    | SectionRemove                  | Verification: Removes a section including its comments.                           |  Passed         
+                                                  | 500-3.1 | clsPrivProf | Method    | ValueRemove                    | Verification: Remove 2 names in 2 sections.                                       |  Passed         
+                                                  | 500-4.1 | clsPrivProf | Method    | ValueRemove                    | Verification: Removes all values in one section which removes the section.        |  Passed         
+                                                  | 500-5.1 | clsPrivProf | Method    | ValueRemove                    | Verification: Remove all values in all sections - file is removed.                |  Passed         
+ A PrivateProfile file life-cycle                 | 600-1.1 | clsPrivProf | Property  | Value-Let                      | Verification: Writes new file with 1 section and 1 value                          |  Passed         
+                                                  | 600-2.1 | clsPrivProf | Property  | FileHeader-Let, FileFooter-Let | Verification: Add file header and footer                                          |  Passed         
+                                                  | 600-3.1 | clsPrivProf | Method    | ValueRemove                    | Verification: Removes the only value in the only section removes file             |  Passed         
+ Names housekeeping                               | 700-1.1 | clsPrivProf | Method    | HouskeepingNames               | Verification: One value-name change in two sections.                              |  Passed         
+                                                  | 700-2.1 | clsPrivProf | Method    | HouskeepingNames               | Verification: Two value-name changes in all sections                              |  Passed         

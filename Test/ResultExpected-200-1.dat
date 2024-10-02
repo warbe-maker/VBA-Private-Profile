@@ -1,6 +1,6 @@
-; File Comment Line 1 (the comments delimiter below is adjusted to the longest comment)
+; File Comment Line 1 (the header delimiter is adjusted to the longest header line)
 ; File Comment Line 2
-; =====================================================================================
+; =================================================================================
 [Section_02]
 Section_02_Name_02=Section_02-Value-02
 Section_02_Name_04=Section_02-Value-04
