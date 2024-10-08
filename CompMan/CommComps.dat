@@ -1,11 +1,14 @@
-; Common Components used/hosted/private in the serviced Workbook. The values are maintained for any Common Component used or hosted when it is exported due
-; to a modification. In case, these values are copied to the pending release registered Common Component.
+; ----------------------------------------------------------------------------------------------
+; Used or hosted Common Components in the corresponding serviced Workbook "PrivProf.xlsb".
+; The values are provided when a Common Component's code has been modified in the serviced Workbook or
+; when a used or hosted Common Component has been updated with code modified elsewhere.
 ; - LastModAt           : Date/time of the last modification date/time (the export file's creation date repectively)
 ; - LastModBy           : User, which had made the last modification
 ; - LastModExpFileOrigin: Indicates the 'origin'! of the export file (may point to an export file not available on or not accessable by the used compunter)
 ; - LastModIn           : The Workbook/VB-Project in which the last code modification had been made (may point to a Workbook om another computer)
 ; - LastModOn           : The computer on which the last modification had been made in the above Workbook.
 ; =========================================================================================================================================================
+
 [@NamesHousekeeping]
 DoneNamesHskpng_1=LastModAt<LastUpdateAtDatTime<LastModAtDatTime<LastModifiedAtDatTime<RawRevisionNumber
 DoneNamesHskpng_2=LastModExpFileOrigin<RawExpFileFullName
@@ -16,7 +19,7 @@ DoneNamesHskpng_6=UsedExportFolder>
 
 [clsLog]
 KindOfComponent=used
-LastModAt=2024-10-08 13:44:12 (UTC)
+LastModAt=2024-10-08 21:23:49 (UTC)
 LastModBy=warbe
 LastModExpFileOrigin=E:\Sync\Excel VBA\DevAndTest\PrivProf\CompMan\source\clsLog.cls
 LastModIn=E:\Sync\Excel VBA\DevAndTest\PrivProf\PrivProf.xlsb
@@ -24,7 +27,7 @@ LastModOn=THINKPAD-YOGA
 
 [clsPrivProf]
 KindOfComponent=hosted
-LastModAt=2024-10-08 13:44:12 (UTC)
+LastModAt=2024-10-08 21:23:49 (UTC)
 LastModBy=warbe
 LastModExpFileOrigin=E:\Sync\Excel VBA\DevAndTest\PrivProf\CompMan\source\clsPrivProf.cls
 LastModIn=E:\Sync\Excel VBA\DevAndTest\PrivProf\PrivProf.xlsb
@@ -32,7 +35,7 @@ LastModOn=THINKPAD-YOGA
 
 [clsTestAid]
 KindOfComponent=used
-LastModAt=2024-10-08 13:44:12 (UTC)
+LastModAt=2024-10-08 21:23:49 (UTC)
 LastModBy=warbe
 LastModExpFileOrigin=E:\Sync\Excel VBA\DevAndTest\PrivProf\CompMan\source\clsTestAid.cls
 LastModIn=E:\Sync\Excel VBA\DevAndTest\PrivProf\PrivProf.xlsb
@@ -40,7 +43,7 @@ LastModOn=THINKPAD-YOGA
 
 [fMsg]
 KindOfComponent=used
-LastModAt=2024-10-08 13:44:12 (UTC)
+LastModAt=2024-10-08 21:23:49 (UTC)
 LastModBy=warbe
 LastModExpFileOrigin=E:\Sync\Excel VBA\DevAndTest\PrivProf\CompMan\source\fMsg.frm
 LastModIn=E:\Sync\Excel VBA\DevAndTest\PrivProf\PrivProf.xlsb
@@ -48,7 +51,7 @@ LastModOn=THINKPAD-YOGA
 
 [mCompManClient]
 KindOfComponent=used
-LastModAt=2024-10-08 13:44:12 (UTC)
+LastModAt=2024-10-08 21:23:49 (UTC)
 LastModBy=warbe
 LastModExpFileOrigin=E:\Sync\Excel VBA\DevAndTest\PrivProf\CompMan\source\mCompManClient.bas
 LastModIn=E:\Sync\Excel VBA\DevAndTest\PrivProf\PrivProf.xlsb
@@ -56,7 +59,7 @@ LastModOn=THINKPAD-YOGA
 
 [mErH]
 KindOfComponent=used
-LastModAt=2024-10-08 13:44:12 (UTC)
+LastModAt=2024-10-08 21:23:49 (UTC)
 LastModBy=warbe
 LastModExpFileOrigin=E:\Sync\Excel VBA\DevAndTest\PrivProf\CompMan\source\mErH.bas
 LastModIn=E:\Sync\Excel VBA\DevAndTest\PrivProf\PrivProf.xlsb
@@ -64,7 +67,7 @@ LastModOn=THINKPAD-YOGA
 
 [mMsg]
 KindOfComponent=used
-LastModAt=2024-10-08 13:44:12 (UTC)
+LastModAt=2024-10-08 21:23:49 (UTC)
 LastModBy=warbe
 LastModExpFileOrigin=E:\Sync\Excel VBA\DevAndTest\PrivProf\CompMan\source\mMsg.bas
 LastModIn=E:\Sync\Excel VBA\DevAndTest\PrivProf\PrivProf.xlsb
@@ -72,7 +75,7 @@ LastModOn=THINKPAD-YOGA
 
 [mTrc]
 KindOfComponent=used
-LastModAt=2024-10-08 13:44:12 (UTC)
+LastModAt=2024-10-08 21:23:49 (UTC)
 LastModBy=warbe
 LastModExpFileOrigin=E:\Sync\Excel VBA\DevAndTest\PrivProf\CompMan\source\mTrc.bas
 LastModIn=E:\Sync\Excel VBA\DevAndTest\PrivProf\PrivProf.xlsb

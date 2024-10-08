@@ -22,6 +22,7 @@ Public PrivProfTests    As New clsPrivProfTests
 Public TestAid          As clsTestAid
 Private cllExpctd       As Collection
 Private FSo             As New FileSystemObject
+Private vResult         As Variant
 
 Private Function AppErr(ByVal app_err_no As Long) As Long
 ' ------------------------------------------------------------------------------
@@ -208,9 +209,9 @@ Public Sub Test_001_TestAid()
         .TestedType = "Property"
         .Verification = "Verification: Result is the result expected"
         .ResultExpected = True
-        .BoTP
+        .TimerStart
         .Result = True
-        .EoTP
+        .TimerEnd
         ' ======================================================================
         .TestHeadLine = vbNullString
         
@@ -219,9 +220,9 @@ Public Sub Test_001_TestAid()
         .TestedType = "Property"
         .Verification = "Verification: Result is  F a i l e d  because the result/expected boolean differs"
         .ResultExpected = True
-        .BoTP
+        .TimerStart
         .Result = False
-        .EoTP
+        .TimerEnd
         ' ======================================================================
         
         .TestNumber = "001-4"
@@ -234,9 +235,9 @@ Public Sub Test_001_TestAid()
         .ResultExpected = "AAAAAA," & sFileExpected
         .TestItem = sFileExpected
         '~~ Prepare test ResultExpected file
-        .BoTP
+        .TimerStart
         .Result = "BBBBBBBB," & sFileResult
-        .EoTP
+        .TimerEnd
         .TestItem = sFileResult
         ' ======================================================================
         
@@ -247,9 +248,9 @@ Public Sub Test_001_TestAid()
         .Verification = "Verification: Result is  F a i l e d  because result/expected files differ"
         .ResultExpected = "ResultExpected," & sFileExpected
         .TestItem = sFileExpected
-        .BoTP
+        .TimerStart
         .Result = "Result," & sFileResult
-        .EoTP
+        .TimerEnd
         .TestItem = sFileResult
         ' ======================================================================
         If Not mErH.Regression Then .ResultSummaryLog
@@ -281,10 +282,10 @@ Public Sub Test_100_Property_FileName()
         
         .Verification = "Verification: Initialize PP-file"
         .ResultExpected = .ResultExpected
-        .BoTP
+        .TimerStart
         PrivProf.FileName = PrivProfTests.PrivProfFileFullName
         .Result = PrivProfTests.PrivProfFile
-        .EoTP
+        .TimerEnd
         ' ======================================================================
         
         .TestNumber = "100-2"
@@ -294,9 +295,9 @@ Public Sub Test_100_Property_FileName()
         .Verification = "Verification: Specifying a file valid name"
         PrivProf.FileName = PrivProfTests.PrivProfFileFullName ' continue with current test file
         .ResultExpected = PrivProfTests.ExpectedTestResultFile(.TestNumber)
-        .BoTP
+        .TimerStart
         .Result = PrivProfTests.PrivProfFile
-        .EoTP
+        .TimerEnd
         ' ======================================================================
     End With
     
@@ -327,9 +328,10 @@ Public Sub Test_110_Method_Exists()
         
         .Verification = "Verification: Section not exists"
         .ResultExpected = False
-        .BoTP
-        .Result = PrivProf.Exists(PrivProf.FileName, PrivProfTests.SectionName(7))
-        .EoTP
+        .TimerStart
+        vResult = PrivProf.Exists(PrivProf.FileName, PrivProfTests.SectionName(7))
+        .TimerEnd
+        .Result = vResult
         ' ======================================================================
         .TestHeadLine = vbNullString
         
@@ -339,31 +341,34 @@ Public Sub Test_110_Method_Exists()
         
         .Verification = "Verification: Section exists"
         .ResultExpected = True
-        .BoTP
-        .Result = PrivProf.Exists(PrivProf.FileName, PrivProfTests.SectionName(8))
-        .EoTP
-        ' ======================================================================
-        
-        .TestNumber = "110-3"
-        .TestedProc = "Exists"
-        .TestedType = "Method"
-        
-        .Verification = "Verification: Value-Name exists"
-        .ResultExpected = True
-        .BoTP
-        .Result = PrivProf.Exists(PrivProf.FileName, PrivProfTests.SectionName(6), PrivProfTests.ValueName(6, 4))
-        .EoTP
+        .TimerStart
+        vResult = PrivProf.Exists(PrivProf.FileName, PrivProfTests.SectionName(8))
+        .TimerEnd
+        .Result = vResult
         ' ======================================================================
         
         .TestNumber = "110-4"
         .TestedProc = "Exists"
         .TestedType = "Method"
         
+        .Verification = "Verification: Value-Name exists"
+        .ResultExpected = True
+        .TimerStart
+        vResult = PrivProf.Exists(PrivProf.FileName, PrivProfTests.SectionName(6), PrivProfTests.ValueName(6, 4))
+        .TimerEnd
+        .Result = vResult
+        ' ======================================================================
+        
+        .TestNumber = "110-5"
+        .TestedProc = "Exists"
+        .TestedType = "Method"
+        
         .Verification = "Verification: Value-Name not exists"
         .ResultExpected = False
-        .BoTP
-        .Result = PrivProf.Exists(PrivProf.FileName, PrivProfTests.SectionName(6), PrivProfTests.ValueName(6, 3))
-        .EoTP
+        .TimerStart
+        vResult = PrivProf.Exists(PrivProf.FileName, PrivProfTests.SectionName(6), PrivProfTests.ValueName(6, 3))
+        .TimerEnd
+        .Result = vResult
         ' ======================================================================
     End With
     
@@ -397,10 +402,11 @@ Public Sub Test_120_Property_Value()
         
         .Verification = "Verification: Read non-existing value from a non-existing file"
         .ResultExpected = vbNullString
-        .BoTP
-        .Result = PrivProf.Value(name_value:="Any" _
+        .TimerStart
+        vResult = PrivProf.Value(name_value:="Any" _
                                , name_section:="Any")
-        .EoTP
+        .TimerEnd
+        .Result = vResult
         ' ======================================================================
         .TestHeadLine = vbNullString
         
@@ -410,24 +416,25 @@ Public Sub Test_120_Property_Value()
         
         .Verification = "Verification: Read existing value"
         .ResultExpected = PrivProfTests.ValueString(2, 4)
-        .BoTP
-        .Result = PrivProf.Value(name_value:=PrivProfTests.ValueName(2, 4) _
+        .TimerStart
+        vResult = PrivProf.Value(name_value:=PrivProfTests.ValueName(2, 4) _
                                , name_section:=PrivProfTests.SectionName(2))
-        .EoTP
+        .TimerEnd
+        .Result = vResult
         ' ======================================================================
         
         .TestNumber = "120-3"
         .TestedProc = "Let Value"
         .TestedType = "Property"
         
-        .Verification = "Verification: Write changed value"
+        .Verification = "Verification: Write value"
         .ResultExpected = "Changed value"
-        .BoTP
+        .TimerStart
         PrivProf.Value(name_value:=PrivProfTests.ValueName(4, 2) _
                      , name_section:=PrivProfTests.SectionName(4)) = "Changed value"
+        .TimerEnd
         .Result = PrivProf.Value(name_value:=PrivProfTests.ValueName(4, 2) _
                                , name_section:=PrivProfTests.SectionName(4))
-        .EoTP
         ' ======================================================================
         
         .TestNumber = "120-4"
@@ -436,12 +443,12 @@ Public Sub Test_120_Property_Value()
         
         .Verification = "Verification: Write new value in existing section"
         .ResultExpected = "New value, existing section"
-        .BoTP
+        .TimerStart
         PrivProf.Value(PrivProfTests.ValueName(2, 17) _
                     , PrivProfTests.SectionName(2)) = "New value, existing section"
+        .TimerEnd
         .Result = PrivProf.Value(name_value:=PrivProfTests.ValueName(2, 17) _
                               , name_section:=PrivProfTests.SectionName(2))
-        .EoTP
         ' ======================================================================
         
         .TestNumber = "120-5"
@@ -450,11 +457,11 @@ Public Sub Test_120_Property_Value()
         
         .Verification = "Verification: Write new value in new section"
         .ResultExpected = PrivProfTests.ExpectedTestResultFile(.TestNumber)
-        .BoTP
+        .TimerStart
         PrivProf.Value(name_value:=PrivProfTests.ValueName(11, 1) _
                      , name_section:=PrivProfTests.SectionName(11)) = "New value, new section"
+        .TimerEnd
         .Result = PrivProfTests.PrivProfFile
-        .EoTP
         ' ======================================================================
         
         .TestNumber = "120-6"
@@ -463,12 +470,12 @@ Public Sub Test_120_Property_Value()
         
         .Verification = "Verification: Change value plus the value and the section comments"
         .ResultExpected = PrivProfTests.ExpectedTestResultFile(.TestNumber)
-        .BoTP
+        .TimerStart
         PrivProf.Value(name_value:=PrivProfTests.ValueName(11, 1) _
                      , name_section:=PrivProfTests.SectionName(11) _
                       ) = "Changed new value, new section"
+        .TimerEnd
         .Result = PrivProfTests.PrivProfFile
-        .EoTP
         ' ======================================================================
         
         .TestNumber = "120-7"
@@ -476,13 +483,13 @@ Public Sub Test_120_Property_Value()
         .TestedType = "Property"
         
         .Verification = "Verification: Changed again"
-        .BoTP
+        .ResultExpected = PrivProfTests.ExpectedTestResultFile(.TestNumber)
+        .TimerStart
         PrivProf.Value(name_value:=PrivProfTests.ValueName(11, 1) _
                      , name_section:=PrivProfTests.SectionName(11) _
                       ) = "Changed again new value, new section"
+        .TimerEnd
         .Result = PrivProfTests.PrivProfFile
-        .ResultExpected = PrivProfTests.ExpectedTestResultFile(.TestNumber)
-        .EoTP
         ' ======================================================================
     End With
     
@@ -528,13 +535,13 @@ Public Sub Test_200_Property_Comments()
 
         .Verification = "Verification: Write a file header (not provided delimiter line added by system)"
         .ResultExpected = PrivProfTests.ExpectedTestResultFile(.TestNumber)
-        .BoTP
+        .TimerStart
         '~~ Note: For the missing file name the property FileName is used
         '~~ and the missing section- and value-name indicate a file header
         PrivProf.FileHeader() = "File Comment Line 1 (the header delimiter is adjusted to the longest header line)" & vbCrLf & _
                                 "File Comment Line 2"
+        .TimerEnd
         .Result = PrivProfTests.PrivProfFile
-        .EoTP
         .TestHeadLine = vbNullString ' must not been repeated for each subsequent test
         ' ======================================================================
 
@@ -544,12 +551,13 @@ Public Sub Test_200_Property_Comments()
 
         .Verification = "Verification: File header read (returned without delimiter line)"
         Set cllResultExpectd = New Collection
-        cllResultExpectd.Add "; File Comment Line 1 (the header delimiter is adjusted to the longest header line)"
-        cllResultExpectd.Add "; File Comment Line 2"
+        cllResultExpectd.Add "File Comment Line 1 (the header delimiter is adjusted to the longest header line)"
+        cllResultExpectd.Add "File Comment Line 2"
         .ResultExpected = cllResultExpectd
-        .BoTP
-        .Result = PrivProf.FileHeader()
-        .EoTP
+        .TimerStart
+        vResult = PrivProf.FileHeader()
+        .TimerEnd
+        .Result = vResult
         ' ======================================================================
         
         .TestNumber = "200-4"
@@ -558,11 +566,11 @@ Public Sub Test_200_Property_Comments()
         
         .Verification = "Verification: Write section comment"
         .ResultExpected = PrivProfTests.ExpectedTestResultFile(.TestNumber)
-        .BoTP
+        .TimerStart
         PrivProf.SectionComment(PrivProfTests.SectionName(6)) = "Comment Section 06 Line 1" _
                                                      & vbCrLf & "Comment Section 06 Line 2"
+        .TimerEnd
         .Result = PrivProfTests.PrivProfFile
-        .EoTP
         ' ======================================================================
         
         .TestNumber = "200-5"
@@ -572,9 +580,10 @@ Public Sub Test_200_Property_Comments()
         .Verification = "Verification: Read section comment"
         .ResultExpected = "Comment Section 06 Line 1" _
                & vbCrLf & "Comment Section 06 Line 2"
-        .BoTP
-        .Result = PrivProf.SectionComment(PrivProfTests.SectionName(6))
-        .EoTP
+        .TimerStart
+        vResult = PrivProf.SectionComment(PrivProfTests.SectionName(6))
+        .TimerEnd
+        .Result = vResult
         ' =====================================================================
         
         .TestNumber = "200-6"
@@ -583,11 +592,11 @@ Public Sub Test_200_Property_Comments()
         
         .Verification = "Verification: Write value comment"
         .ResultExpected = PrivProfTests.ExpectedTestResultFile(.TestNumber)
-        .BoTP
+        .TimerStart
         PrivProf.ValueComment(PrivProfTests.ValueName(6, 2), PrivProfTests.SectionName(6)) = "Comment Section 06 Value 02 Line 1" _
                                                                                   & vbCrLf & "Comment Section 06 Value 02 Line 2"
+        .TimerEnd
         .Result = PrivProfTests.PrivProfFile
-        .EoTP
         ' ======================================================================
         
         .TestNumber = "200-7"
@@ -597,9 +606,10 @@ Public Sub Test_200_Property_Comments()
         .Verification = "Verification: Read value comment"
         .ResultExpected = "Comment Section 06 Value 02 Line 1" _
                & vbCrLf & "Comment Section 06 Value 02 Line 2"
-        .BoTP
-        .Result = PrivProf.ValueComment(PrivProfTests.ValueName(6, 2), PrivProfTests.SectionName(6))
-        .EoTP
+        .TimerStart
+        vResult = PrivProf.ValueComment(PrivProfTests.ValueName(6, 2), PrivProfTests.SectionName(6))
+        .TimerEnd
+        .Result = vResult
         ' ======================================================================
             
     End With
@@ -635,9 +645,10 @@ Public Sub Test_300_Method_SectionNames()
         
         .Verification = "Verification: Get all section names in a Dictionary"
         .ResultExpected = 5
-        .BoTP
-        .Result = PrivProf.SectionNames().Count
-        .EoTP
+        .TimerStart
+        vResult = PrivProf.SectionNames().Count
+        .TimerEnd
+        .Result = vResult
     End With
     
 xt: EoP ErrSrc(PROC)
@@ -670,10 +681,10 @@ Public Sub Test_400_Method_ValueNames()
         .TestedType = "Function"
         .Verification = "Verification: Get all value names of all sections in a Dictionary"
         .ResultExpected = 40
-        .BoTP
+        .TimerStart
         Set dct = PrivProf.ValueNames()
+        .TimerEnd
         .Result = dct.Count
-        .EoTP
         ' ======================================================================
         .TestHeadLine = vbNullString
     
@@ -682,9 +693,10 @@ Public Sub Test_400_Method_ValueNames()
         .TestedType = "Function"
         .Verification = "Verification: Get all value names of a certain section in a Dictionary"
         .ResultExpected = 8
-        .BoTP
-        .Result = PrivProf.ValueNames(, PrivProfTests.SectionName(6)).Count
-        .EoTP
+        .TimerStart
+        vResult = PrivProf.ValueNames(, PrivProfTests.SectionName(6)).Count
+        .TimerEnd
+        .Result = vResult
         ' ======================================================================
       
         .TestNumber = "400-3"
@@ -692,10 +704,11 @@ Public Sub Test_400_Method_ValueNames()
         .TestedProc = "ValueNames"
         .TestedType = "Function"
         .Verification = "Verification: Get all value names of all sections in a Dictionary"
-        .BoTP
-        .Result = PrivProf.ValueNames().Count
         .ResultExpected = 6
-        .EoTP
+        .TimerStart
+        vResult = PrivProf.ValueNames().Count
+        .TimerEnd
+        .Result = vResult
         ' ======================================================================
     End With
     
@@ -726,10 +739,10 @@ Public Sub Test_410_Method_ValueNameRename()
         .TestedType = "Method"
         .Verification = "Verification: Rename a value name in each section."
         .ResultExpected = PrivProfTests.ExpectedTestResultFile(.TestNumber)
-        .BoTP
+        .TimerStart
         PrivProf.ValueNameRename PrivProfTests.ValueName(2, 2), "Renamed_" & PrivProfTests.ValueName(2, 2)
+        .TimerEnd
         .Result = PrivProfTests.PrivProfFile
-        .EoTP
         ' ======================================================================
     End With
     
@@ -764,10 +777,10 @@ Public Sub Test_500_Method_Remove()
         
         .Verification = "Verification: Remove a value from a section including its comments."
         .ResultExpected = PrivProfTests.ExpectedTestResultFile(.TestNumber)
-        .BoTP
+        .TimerStart
         PrivProf.ValueRemove PrivProfTests.ValueName(6, 4), PrivProfTests.SectionName(6)
+        .TimerEnd
         .Result = PrivProfTests.PrivProfFile
-        .EoTP
         ' ======================================================================
         .TestHeadLine = vbNullString
         
@@ -778,10 +791,10 @@ Public Sub Test_500_Method_Remove()
         
         .Verification = "Verification: Removes a section including its comments."
         .ResultExpected = PrivProfTests.ExpectedTestResultFile(.TestNumber)
-        .BoTP
+        .TimerStart
         PrivProf.SectionRemove PrivProfTests.SectionName(6)
+        .TimerEnd
         .Result = PrivProfTests.PrivProfFile
-        .EoTP
         ' ======================================================================
     
         .TestNumber = "500-3"
@@ -791,10 +804,10 @@ Public Sub Test_500_Method_Remove()
         
         .Verification = "Verification: Remove 2 names in 2 sections."
         .ResultExpected = PrivProfTests.ExpectedTestResultFile(.TestNumber)
-        .BoTP
+        .TimerStart
         PrivProf.ValueRemove name_value:="Last_Modified_AtDateTime,Last_Modified_InWbkFullName", name_section:="clsLog,clsQ"
+        .TimerEnd
         .Result = PrivProfTests.PrivProfFile
-        .EoTP
         ' ======================================================================
     
         .TestNumber = "500-4"
@@ -804,16 +817,15 @@ Public Sub Test_500_Method_Remove()
         
         .Verification = "Verification: Removes all values in one section which removes the section."
         .ResultExpected = PrivProfTests.ExpectedTestResultFile(.TestNumber)
-        .BoTP
+        .TimerStart
         PrivProf.ValueRemove name_value:="ExportFileExtention" & _
                                          ",Last_Modified_AtDateTime" & _
                                          ",Last_Modified_InWbkFullName" & _
                                          ",Last_Modified_InWbkName" & _
                                          ",LastModExpFileFullNameOrigin" _
                            , name_section:="clsQ"
-        
+        .TimerEnd
         .Result = PrivProfTests.PrivProfFile
-        .EoTP
         ' ======================================================================
        
         .TestNumber = "500-5"
@@ -824,16 +836,15 @@ Public Sub Test_500_Method_Remove()
         .Verification = "Verification: Remove all values in all sections - file is removed."
         sFile = PrivProfTests.PrivProfFile
         .ResultExpected = False
-        .BoTP
+        .TimerStart
         PrivProf.ValueRemove name_value:="ExportFileExtention" & _
                                          ",Last_Modified_AtDateTime" & _
                                          ",Last_Modified_InWbkFullName" & _
                                          ",Last_Modified_InWbkName" & _
                                          ",LastModExpFileFullNameOrigin" & _
                                          ",DoneNamesHskpng"
-        
+        .TimerEnd
         .Result = FSo.FileExists(sFile) ' is False
-        .EoTP
         ' ======================================================================
     End With
 
@@ -875,14 +886,14 @@ Public Sub Test_600_Lifecycle()
         
         .Verification = "Verification: Writes new file with 1 section and 1 value"
         PrivProf.FileName = PrivProfTests.PrivProfFileFullName
-        .BoTP
+        .ResultExpected = PrivProfTests.ExpectedTestResultFile(.TestNumber)
+        .TimerStart
         PrivProf.Value(name_value:="Any-Value-Name" _
                     , name_section:="Any-Section-Name" _
                     , name_file:=PrivProfTests.PrivProfFileFullName _
                       ) = "Any-Value"
+        .TimerEnd
         .Result = PrivProfTests.PrivProfFile
-        .ResultExpected = PrivProfTests.ExpectedTestResultFile(.TestNumber)
-        .EoTP
         ' ======================================================================
         .TestHeadLine = vbNullString
         
@@ -900,15 +911,15 @@ Public Sub Test_600_Lifecycle()
         .Verification = "Verification: Add file header and footer"
         PrivProf.FileName = PrivProfTests.PrivProfFileFullName
         .ResultExpected = True
-        .BoTP
         mErH.Asserted AppErr(1) ' effective only when mErH.Regression = True
+        .TimerStart
         PrivProf.FileFooter() = "File Footer Line 1 (the delimiter below is adjusted to the longest comment)" & vbCrLf & _
                                 "File Footer Line 2"
         PrivProf.FileHeader() = "File Comment Line 1 (the delimiter below is adjusted to the longest comment)" & vbCrLf & _
                                 "File Comment Line 2"
+        .TimerEnd
         mErH.Asserted ' reset to none
         .Result = Not FSo.FileExists(PrivProfTests.PrivProfFileFullName)
-        .EoTP
         ' ======================================================================
         
         .TestNumber = "600-3"
@@ -923,13 +934,13 @@ Public Sub Test_600_Lifecycle()
         .Verification = "Verification: Removes the only value in the only section removes file"
         PrivProf.FileName = PrivProfTests.PrivProfFileFullName
         .ResultExpected = True
-        .BoTP
+        .TimerStart
         mErH.Asserted AppErr(1) ' effective only when mErH.Regression = True
         PrivProf.ValueRemove name_value:="Any-Value-Name" _
                            , name_section:="Any-Section-Name"
+        .TimerEnd
         mErH.Asserted ' reset to none
         .Result = Not FSo.FileExists(PrivProfTests.PrivProfFileFullName)
-        .EoTP
         ' ======================================================================
     
     End With
@@ -964,10 +975,10 @@ Public Sub Test_700_HskpngNames()
         
         .Verification = "Verification: One value-name change in two sections."
         .ResultExpected = PrivProfTests.ExpectedTestResultFile(.TestNumber)
-        .BoTP
+        .TimerStart
         PrivProf.HskpngNames PrivProf.FileName, "clsLog:clsQ:Last_Modified_AtDateTime>Last_Modified_UTC_AtDateTime"
+        .TimerEnd
         .Result = PrivProfTests.PrivProfFile
-        .EoTP
         ' ======================================================================
                 
         .TestNumber = "700-2"
@@ -975,11 +986,11 @@ Public Sub Test_700_HskpngNames()
         
         .Verification = "Verification: Two value-name changes in all sections"
         .ResultExpected = PrivProfTests.ExpectedTestResultFile(.TestNumber)
-        .BoTP
+        .TimerStart
         PrivProf.HskpngNames PrivProf.FileName, "Last_Modified_AtDateTime>Last_Modified_UTC_AtDateTime" _
                                               , "LastModExpFileFullNameOrigin>Last_Modified_ExpFileFullNameOrigin"
+        .TimerEnd
         .Result = PrivProfTests.PrivProfFile
-        .EoTP
         ' ======================================================================
                 
     End With

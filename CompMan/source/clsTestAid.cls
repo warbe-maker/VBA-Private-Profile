@@ -152,6 +152,7 @@ Private dctTestSummary          As New Dictionary
 Private lCols                   As Long
 Private lMaxLenTestProc         As Long
 Private sDelim                  As String
+Private dExecTimeMsecs          As Double
 Private sLogColsDelim           As String
 Private sLogFile                As String
 Private sLogResultSummaryFile   As String
@@ -200,7 +201,7 @@ Private Sub Class_Initialize()
     j = 10000
     For i = 1 To j
         TimerStart
-        c = c + TimerElapsedMsecs
+        c = c + TimerEnd
     Next i
     cTimerOverhead = c / j
 
@@ -2232,6 +2233,10 @@ Private Sub ResultEvaluation(Optional ByVal r_result As Collection = Nothing, _
             .Add sTestedProc
             .Add sVerification
             .Add sResultEvaluated
+            If dExecTimeMsecs = 0 _
+            Then .Add "n/a" _
+            Else .Add Format(dExecTimeMsecs, "###0,0000")
+            dExecTimeMsecs = 0
         End With
         Dict(dctTestSummary, r_test_id) = cll
 '        Debug.Print ErrSrc(PROC) & ": " & r_test_id & " added to dctTestSummary"
@@ -2339,11 +2344,13 @@ Public Sub ResultSummaryLog()
     Dim lRslt   As Long
     Dim lTtle   As Long
     Dim lType   As Long
+    Dim lMsec   As Long
     Dim s       As String
     Dim sComp   As String
     Dim sSpec   As String
     Dim sTtId   As String
     Dim sLine   As String
+    Dim sMsec   As String
     Dim sProc   As String
     Dim sRslt   As String
     Dim sTtle   As String
@@ -2367,14 +2374,15 @@ Public Sub ResultSummaryLog()
         lProc = Max(lProc, Len(cll(5)))
         lDesc = Max(lDesc, Len(cll(6)))
         lRslt = Max(lRslt, Len(cll(7)))
+        lMsec = Max(lMsec, Len(cll(8)))
     Next v
         
     '~~ Column specs and headers
-    LogColsSpecs = lTtle & ", " & lTtId & ", " & lComp & ", " & lType & ", " & lProc & ", " & lDesc & ", " & lRslt
+    LogColsSpecs = lTtle & ", " & lTtId & ", " & lComp & ", " & lType & ", " & lProc & ", " & lDesc & ", " & lRslt & ", " & lMsec
     LogColsDelim = "|"
     '~~ Specifiy headers (are all alligned centered)
-    LogColsHeader = "Test,  Test, Component, Component, Procedure, Verification, Test"
-    LogColsHeader = "Title, Id  , Name,      Type,      Name,                  , Result"
+    LogColsHeader = "Test,  Test, Component, Component, Procedure, Verification, Test, Exec time"
+    LogColsHeader = "Title, Id  , Name,      Type,      Name,                  , Result, (msec)"
     sTtle = "Regression Test Summary"
     
     For Each v In dctTestSummary
@@ -2386,8 +2394,8 @@ Public Sub ResultSummaryLog()
         sProc = cll(5)
         sSpec = cll(6)
         sRslt = cll(7)
-        
-        sLine = LogColsArrangedItems(sTtle, sTtId, sComp, sType, sProc, sSpec, sRslt)
+        sMsec = cll(8)
+        sLine = LogColsArrangedItems(sTtle, sTtId, sComp, sType, sProc, sSpec, sRslt, sMsec)
         LogColsHeaderWrite l_file:=sLogResultSummaryFile _
                          , l_title:=sTestHeadLineRegression _
                          , l_title_fill:=" =" _
@@ -2716,14 +2724,16 @@ Private Function TestResultFileName(Optional ByVal t_ext As String = "dat", _
     
 End Function
 
-Public Function TimerElapsedMsecs() As Double
+Public Function TimerEnd() As Double
 ' ----------------------------------------------------------------------------
-' Returns the elapsed time since start in milliseconds whereby the timer
-' overhead is deducted in order to rturn a result of 0 milliseconds when
-' nothing is measured between the TimerStart and TimerElapsedMsecs service.
-' The average timer overhead is calculated when the class is initialized.
+' Returns the elapsed time (t_elpsd) since start in milliseconds whereby the
+' timer overhead is deducted in order to rturn a result of 0 milliseconds
+' when nothing is measured between the TimerStart and TimerElapsedMsecs
+' service. The average timer overhead is calculated when the class is
+' initialized.
 ' ----------------------------------------------------------------------------
-    TimerElapsedMsecs = (TimerElapsedTicks() * 1000) - cTimerOverhead
+    dExecTimeMsecs = (TimerElapsedTicks() * 1000) - cTimerOverhead
+    TimerEnd = dExecTimeMsecs
 End Function
 
 Public Function TimerElapsedTicks() As Double
