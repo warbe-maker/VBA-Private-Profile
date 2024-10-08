@@ -1,8 +1,8 @@
 ## VBA _Private Profile_ file services
-Simplify and unify _Private Profile_ file services by supporting:
+Simplifies and unifies _Private Profile_ file services by supporting:
 - section separation (default)
-- file header and footer
-- section and value comments
+- file header and footer (optional)
+- section and value comments (optional)
 - content in ascending order (on the fly)
 - any number of _Private Profile_ files in one class instance [^1] 
 
@@ -20,7 +20,7 @@ The service has the following named arguments:
 | _name\_section_ | String expression, optional, specifies the _Section_ for the value, defaults to the section specified through the property _Section_.|
 | _name\_file_    | String expression, optional, specifies the full name of a _Private Profile_ file, defaults to file specified through the property _FileName_ when omitted.|
 
-### Other services
+### Summary of services
 
 | Service            | Type     | Description |
 |--------------------|---------------|-------------|
@@ -42,20 +42,62 @@ The service has the following named arguments:
 2. In the VBE add a Reference to _Microsoft Scripting Runtime_ and _Microsoft VBScript Regular Expression 5.5_
 
 ## Usage (example)
-In a Standard Module:  
-`Public Dim Cfg As New clsPrivProf`
+The following example uses a class module named `clsConfig` for read/write of values in a "<name>.cfg" file which provides a Get/Let property for each value.
 
-In any other module (for example):  
-```vb  
-    '~~ Specifiy the Private Profile's full file name and a section name which then can be
-    '~~ omitted with any subsequent service call
-    Cfg.FileName = ThisWorkbook.Path & "\App.cfg"
-    
-    '~~ Write a value
-    Cfg.Value("AnyValueName", "AnySection") = "Any value"
-    
-    '~~ Read a value
-    myvalue = Cfg.Value("AnyValueName", "AnySection") 
+```vb
+Option Explicit
+Private PPfile As clsPrivProf
+
+Private Sub Class_Initialize()
+    Set PPFile = New clsPrivProf
+    With PPFile
+        .FileName = <the-file's-full-name>
+        .FileHeader = "any" ' optional
+        .FileFooter = "any" ' optional
+        .Section = "Configuration" ' in this example, all values in one section
+    End With
+End Sub
+
+' -----------------------------------------------------------------------------------
+' Sample property for a certain value/value-name.
+' -----------------------------------------------------------------------------------
+Friend Property Get Example() As String:                Example = Value(<value-name>):          End Property
+Friend Property Let Example(ByVal l_value As String):   Value(<value-name>, <value>) = l_value: End Property
+
+' -----------------------------------------------------------------------------------
+' Interface to the clsPrivProf class Value service.
+' -----------------------------------------------------------------------------------
+Private Property Get Value(Optional ByVal v_section_name As String = vbNullString, _
+                           Optional ByVal v_value_name As String = vbNullString) As String
+    Const PROC = "Value/Let"
+    If v_section_name = vbNullString Then Err.Raise AppErr(1), ErrSrc(PROC), "No section-name provided!"
+    If v_value_name = vbNullString Then Err.Raise AppErr(2), ErrSrc(PROC), "No value-name provided!"
+    Value = PPFile.Value(v_value_name, v_section_name)
+End Property
+
+Private Property Let Value(Optional ByVal v_section_name As String = vbNullString, _
+                           Optional ByVal v_value_name As String = vbNullString, _
+                                    ByVal v_value As String)
+    Const PROC = "Value/Let"
+    If v_section_name = vbNullString Then Err.Raise AppErr(1), ErrSrc(PROC), "No section-name provided!"
+    If v_value_name = vbNullString Then Err.Raise AppErr(2), ErrSrc(PROC), "No value-name provided!"
+    PPFile.Value(v_value_name, v_section_name) = v_value
+End Property
+
+Private Function AppErr(ByVal app_err_no As Long) As Long
+' ------------------------------------------------------------------------------
+' Ensures that a programmed (i.e. an application) error number never conflicts
+' with VB runtime error. Thr function returns a given positive number
+' (app_err_no) with the vbObjectError added - which turns it to negative. When
+' the provided number is negative it returns the original positive "application"
+' error number e.g. for being used with an error message.
+' ------------------------------------------------------------------------------
+    If app_err_no >= 0 Then AppErr = app_err_no + vbObjectError Else AppErr = Abs(app_err_no - vbObjectError)
+End Function
+
+Private Function ErrSrc(ByVal e_proc As String) As String
+    ErrSrc = "clsConfig." & e_proc
+End Function
 ```
 
 > This _Common Component_ is prepared to function completely autonomously (download, import, use) but at the same time is prepared to integrate with my personal 'standard' VB-Project design. See [Conflicts with personal and public _Common Components_][2] for more details.
@@ -63,8 +105,8 @@ In any other module (for example):
 ## Contribution
 Any kind of contribution is welcome. Respecting the (more or less obvious) coding rules and guidelines will be appreciated. The module is available in a dedicated [Workbook][3] (public GitHub repository). This Workbook also provides a complete regression test covering all public services (methods and properties).
 
-[^1]: Though possible it will be more elegant to use a class instance for each individual _Private Profile_ file, provide the file by the _FileName_ property once and omit it in all other properties and methods.
+[^1]: It may be more elegant to use a class instance for each individual _Private Profile_ file, provide the file by the _FileName_ property once and omit it in all other properties and methods. This is reflected by the given example.
 
-[1]:https://github.com/warbe-maker/VBA-Private-Profile/blob/main/source/clsPrivProf.cls
+[1]:https://github.com/warbe-maker/VBA-Private-Profile/blob/main/CompMan/source/clsPrivProf.cls
 [2]:https://warbe-maker.github.io/vba/common/2022/02/15/Personal-and-public-Common-Components.html
 [3]:https://github.com/warbe-maker/VBA-Private-Profile

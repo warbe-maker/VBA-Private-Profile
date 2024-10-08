@@ -1,38 +1,3 @@
-24-08-30-17:00:40 ------------------------------------------------------------ Export Changed Components (by CompMan.xlsb) for PrivProf.xlsb ------------------------------------------------------------
-24-08-30-17:00:40 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-24-08-30-17:00:40 ExportChangedComponents (by CompMan.xlsb) for PrivProf.xlsb: 0 of 12 exported     See the VBE CompMan menu for 3 Common Components pending release!  (see Services.log for log details)
-24-08-30-17:01:30 =======================================================================================================================================================================================
-24-08-30-17:01:30 ------------------------------------------------------------ Export Changed Components (by CompMan.xlsb) for PrivProf.xlsb ------------------------------------------------------------
-24-08-30-17:01:30 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-24-08-30-17:01:30 ExportChangedComponents (by CompMan.xlsb) for PrivProf.xlsb: 0 of 12 exported     See the VBE CompMan menu for 3 Common Components pending release!  (see Services.log for log details)
-24-08-30-17:07:04 =================================================================================================================
-24-08-30-17:07:04 ------------------------- Export Changed Components (by CompMan.xlsb) for PrivProf.xlsb -------------------------
-24-08-30-17:07:04 -----------------------------------------------------------------------------------------------------------------
-24-08-30-17:07:04 ExportChangedComponents (by CompMan.xlsb) for PrivProf.xlsb: 0 of 12 exported  (see Services.log for log details)
-24-10-01-11:31:40 ================================================================================================
-24-10-01-11:31:40 --------------- Update Outdated Common Components (by Add-in) for PrivProf.xlsb ----------------
-24-10-01-11:31:40 ------------------------------------------------------------------------------------------------
-24-10-01-11:31:40  UserForm         fMsg              Serviced Common Component used is up-to-date                
-24-10-01-11:31:44  Standard-Module  mErH              Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
-24-10-01-11:31:47  Standard-Module  mMsg              Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
-24-10-01-11:31:50  Standard-Module  mTrc              Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
-24-10-01-11:31:52  Standard-Module  mCompManClient    Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
-24-10-01-11:31:55  Class-Module     clsLog            Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
-24-10-01-11:31:58  Class-Module     clsTestAid        Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
-24-10-01-11:32:05  Class-Module     clsPrivProf       Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
-24-10-01-15:39:24 ================================================================================================
-24-10-01-15:39:24 ------------------- Export Changed Components (by Add-in) for PrivProf.xlsb --------------------
-24-10-01-15:39:24 ------------------------------------------------------------------------------------------------
-24-10-01-15:39:24  Standard-Module  mPrivProfTest     Modified VBComponent e x p o r t e d !                      
-24-10-01-15:39:24 ExportChangedComponents (by CompMan.xlam) for PrivProf.xlsb: 3 of 12 exported (mPrivProfTest, clsTestAid, clsPrivProf)  (see Services.log for log details)
-24-10-01-15:42:19 ==================================================================================================
-24-10-01-15:42:19  Class-Module     clsPrivProf......:  Modified Common Component: Release registered pending       
-24-10-01-15:42:19                                       Serviced Common Component modified (code differs from public and LastModAt > LastmodAt public): Registered pending release
-24-10-01-15:42:19                                       Serviced Common Component modified: Properties pending set equal serviced                                                 
-24-10-01-15:42:20  Class-Module     clsTestAid.......:  Modified Common Component: Release registered pending                                                                     
-24-10-01-15:42:20                                       Serviced Common Component modified (code differs from public and LastModAt > LastmodAt public): Registered pending release
-24-10-01-15:42:20                                       Serviced Common Component modified: Properties pending set equal serviced                                                 
-24-10-01-15:42:21 ==============================================================================================================================================================
 24-10-01-15:42:21 -------------------------------------------------- Export Changed Components (by Add-in) for PrivProf.xlsb ---------------------------------------------------
 24-10-01-15:42:21 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 24-10-01-15:42:21  Class-Module     clsPrivProf       Modified Common Component: Release registered pending                                                                     
@@ -60,3 +25,41 @@
 24-10-02-17:51:10                                     Serviced Common Component modified: E x p o r t e d !       
 24-10-02-17:51:10                                     Serviced Common Component modified: Re-registered pending release
 24-10-02-17:51:10 ExportChangedComponents (by CompMan.xlam) for PrivProf.xlsb: 2 of 12 exported (mPrivProfTest, clsPrivProf)     See the VBE CompMan menu for 2 Common Components pending release!  (see Services.log for log details)
+24-10-08-13:24:41 ================================================================================================
+24-10-08-13:24:41 ------------ Update Outdated Common Components (by CompMan.xlsb) for PrivProf.xlsb -------------
+24-10-08-13:24:41 ------------------------------------------------------------------------------------------------
+24-10-08-13:24:41  UserForm         fMsg              Serviced Common Component used is up-to-date                
+24-10-08-13:24:41  Standard-Module  mErH              Serviced Common Component used is up-to-date                
+24-10-08-13:24:41  Standard-Module  mMsg              Serviced Common Component used is up-to-date                
+24-10-08-13:24:41  Standard-Module  mTrc              Serviced Common Component used is up-to-date                
+24-10-08-13:24:41  Standard-Module  mCompManClient    Serviced Common Component used is up-to-date                
+24-10-08-13:24:41  Class-Module     clsTestAid        Serviced Common Component used is up-to-date                
+24-10-08-13:24:47  Class-Module     clsLog            Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
+24-10-08-13:24:51  Class-Module     clsPrivProf       Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
+24-10-08-13:25:01 =================================================================================================================
+24-10-08-13:25:01 ------------------------- Export Changed Components (by CompMan.xlsb) for PrivProf.xlsb -------------------------
+24-10-08-13:25:01 -----------------------------------------------------------------------------------------------------------------
+24-10-08-13:25:01 ExportChangedComponents (by CompMan.xlsb) for PrivProf.xlsb: 0 of 12 exported  (see Services.log for log details)
+24-10-08-15:38:39 ================================================================================================
+24-10-08-15:38:39 ------------ Update Outdated Common Components (by CompMan.xlsb) for PrivProf.xlsb -------------
+24-10-08-15:38:39 ------------------------------------------------------------------------------------------------
+24-10-08-15:38:39  UserForm         fMsg              Serviced Common Component used is up-to-date                
+24-10-08-15:38:39  Standard-Module  mErH              Serviced Common Component used is up-to-date                
+24-10-08-15:38:39  Standard-Module  mMsg              Serviced Common Component used is up-to-date                
+24-10-08-15:38:39  Standard-Module  mTrc              Serviced Common Component used is up-to-date                
+24-10-08-15:38:39  Standard-Module  mCompManClient    Serviced Common Component used is up-to-date                
+24-10-08-15:38:39  Class-Module     clsTestAid        Serviced Common Component used is up-to-date                
+24-10-08-15:38:39  Class-Module     clsLog            Serviced Common Component used is up-to-date                
+24-10-08-15:38:39  Class-Module     clsPrivProf       Serviced Common Component used is up-to-date                
+24-10-08-15:44:12 ===============================================================================================================================
+24-10-08-15:44:12 -------------------------------- Export Changed Components (by CompMan.xlsb) for PrivProf.xlsb --------------------------------
+24-10-08-15:44:12 -------------------------------------------------------------------------------------------------------------------------------
+24-10-08-15:44:12 ExportChangedComponents (by CompMan.xlsb) for PrivProf.xlsb: 1 of 12 exported (clsPrivProf)  (see Services.log for log details)
+24-10-08-15:44:20 ==================================================================================================
+24-10-08-15:44:20  Class-Module     clsPrivProf......:  Modified Common Component: Release registered pending       
+24-10-08-15:44:20                                       Serviced Common Component modified (code differs from public and LastModAt > LastmodAt public): Registered pending release
+24-10-08-15:44:20                                       Serviced Common Component modified: Properties pending set equal serviced                                                 
+24-10-08-15:44:22 =========================================================================================================================================================================================
+24-10-08-15:44:22 ------------------------------------------------------------- Export Changed Components (by CompMan.xlsb) for PrivProf.xlsb -------------------------------------------------------------
+24-10-08-15:44:22 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+24-10-08-15:44:22 ExportChangedComponents (by CompMan.xlsb) for PrivProf.xlsb: 0 of 12 exported     See the VBE CompMan menu for 1 Common Component is pending release!  (see Services.log for log details)
