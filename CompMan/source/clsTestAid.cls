@@ -69,11 +69,14 @@ Option Base 1
 '                       test.
 ' TimerStart            Initiates a maximum precision timer
 ' TimerElapsedTicks     Returns the elapsed ticks since start
-' TimerElapsedMsecs     Returns the elapsed time since start in milliseconds
+' TimerEnd              Returns the elapsed time since start in milliseconds
 '                       whereby the timer overhead is deducted in order to
 '                       return a result of 0 milliseconds when nothing is
-'                       measured between TimerStart and TimerElapsedMsecs.
-' Verification    P   w A string describing the specific result verification.
+'                       measured between TimerStart and TimerEnd.
+' TimerOverhead   P r   Returns the milliseconds the TimerStart/TimerEnd
+'                       itself consumes when no taking any actual measurement.
+' Verification    P   w A string describing the specific verification of a
+'                       test.
 ' BoTP/EoTP       M     Effective only when the execution trace module (mTrc
 '                       or clsTrc) is installed, indicates the begin/end of a
 '                       procedure.
@@ -85,12 +88,13 @@ Option Base 1
 ' mTrc/clsTrc         Only when an execution trace is desired, indicated by
 '                     Cond. Comp. Arg. `mTrc = 1` or `clsTrc = 1`
 '
-' Note: In order to work completely autonomous the module integrates (i.e.
-'       uses code copies) functions from the Common Component "mAlign". This
-'       allows to use this module also for testing the Common Components
-'       "mAlign" and "clsLog".
+' Note 1: In order to work completely autonomous the module integrates code
+'         copies of services from the Common Components "mAlign" and clsLog".
+' Note 2: This Common Component is not "hosted" in a dedicated Workbook.
+'         It is developed, ammendet, modified and tested within the VB-Project
+'         making use of it.
 '
-' W. Rauschenberger, Berlin Sep 2024
+' W. Rauschenberger, Berlin Oct 2024
 ' ----------------------------------------------------------------------------
 Public FSo As New FileSystemObject
 
@@ -152,7 +156,7 @@ Private dctTestSummary          As New Dictionary
 Private lCols                   As Long
 Private lMaxLenTestProc         As Long
 Private sDelim                  As String
-Private dExecTimeMsecs          As Double
+Private cExecTimeMsecs          As Currency
 Private sLogColsDelim           As String
 Private sLogFile                As String
 Private sLogResultSummaryFile   As String
@@ -186,25 +190,35 @@ Private v                       As Variant
 
 Private Sub Class_Initialize()
     
-    Dim i As Long
-    Dim c As Currency
-    Dim j As Long
+    Const lLoop As Long = 1000
+    
+    Dim i               As Long
+    Dim c               As Currency
+    Dim cTicksAtStart   As Currency
+    Dim cElapsedTime    As Double
     
     TestFolder = ThisWorkbook.Path & "\Test"                        ' default test folder
     ResultSummaryLogFile = sTestFolder & "\Regression.Summary.log"  ' default regression test summary log file's full name
     sTestItems = sTestFolder & "\TestItems.dat"                     ' test items for being removed with CleanUp
     sSubTestId = 1
-    QueryPerformanceFrequency cFrequency
     
-    '~~ Maximizing the timer precision by calculating the average time the timer itself consumes
-    '~~ by the TimerStart and the TimerElapeseMsecs services
-    j = 10000
-    For i = 1 To j
+    ' ------------------------------------------------------------------------
+    ' Provide the milliseconds the timer itself consumes when it not does nay
+    ' actual measurement. This overhead is computed when the class is
+    ' initiated and deducted from any measurement result. This is the way the
+    ' timer service provided (TimerStart, TimerEnd) will return a figure with
+    ' an unavoidable precision failure which is a fraction of a milliseconds.
+    ' ------------------------------------------------------------------------
+    QueryPerformanceFrequency cFrequency
+    QueryPerformanceCounter cTicksAtStart
+    For i = 1 To lLoop
         TimerStart
-        c = c + TimerEnd
+        ' no time to be taken
+        TimerEnd
     Next i
-    cTimerOverhead = c / j
-
+    QueryPerformanceCounter cTicksCurrent
+    cTimerOverhead = (((cTicksCurrent - cTicksAtStart) / lLoop) / cFrequency) * 1000
+    
 End Sub
 
 Private Sub Class_Terminate()
@@ -216,8 +230,6 @@ Private Sub Class_Terminate()
     If FSo.FileExists(sTestItems) Then FSo.DeleteFile sTestItems
     
 End Sub
-
-Public Property Get TimerOverhead() As Currency: TimerOverhead = cTimerOverhead: End Property
 
 Private Property Get Arry(Optional ByRef c_arr As Variant, _
                           Optional ByVal c_index As Long = -1) As Variant
@@ -656,9 +668,11 @@ Friend Property Let TestNumber(ByVal s As String)
     
 End Property
 
-Friend Property Get TestResult() As String: TestResult = sResultEvaluated:   End Property
+Friend Property Get TestResult() As String:                     TestResult = sResultEvaluated:                  End Property
 
-Friend Property Let Verification(ByVal s As String):   sVerification = s:                    End Property
+Public Property Get TimerOverhead() As Currency:                TimerOverhead = cTimerOverhead:                 End Property
+
+Friend Property Let Verification(ByVal s As String):            sVerification = s:                              End Property
 
 Private Function AlignCntr(ByVal a_string As String, _
                            ByRef a_length As Long, _
@@ -2233,10 +2247,10 @@ Private Sub ResultEvaluation(Optional ByVal r_result As Collection = Nothing, _
             .Add sTestedProc
             .Add sVerification
             .Add sResultEvaluated
-            If dExecTimeMsecs = 0 _
+            If cExecTimeMsecs = 0 _
             Then .Add "n/a" _
-            Else .Add Format(dExecTimeMsecs, "###0,0000")
-            dExecTimeMsecs = 0
+            Else .Add TimerExecTimeFormatted(cExecTimeMsecs)
+            cExecTimeMsecs = 0
         End With
         Dict(dctTestSummary, r_test_id) = cll
 '        Debug.Print ErrSrc(PROC) & ": " & r_test_id & " added to dctTestSummary"
@@ -2378,11 +2392,11 @@ Public Sub ResultSummaryLog()
     Next v
         
     '~~ Column specs and headers
-    LogColsSpecs = lTtle & ", " & lTtId & ", " & lComp & ", " & lType & ", " & lProc & ", " & lDesc & ", " & lRslt & ", " & lMsec
+    LogColsSpecs = lTtle & ", " & lTtId & ", " & lComp & ", " & lType & ", " & lProc & ", " & lDesc & ", C" & lRslt & ", " & lMsec
     LogColsDelim = "|"
     '~~ Specifiy headers (are all alligned centered)
     LogColsHeader = "Test,  Test, Component, Component, Procedure, Verification, Test, Exec time"
-    LogColsHeader = "Title, Id  , Name,      Type,      Name,                  , Result, (msec)"
+    LogColsHeader = "Title, Id  , Name,      Type,      Name, (expected/tested result), Result, (msec)"
     sTtle = "Regression Test Summary"
     
     For Each v In dctTestSummary
@@ -2724,18 +2738,6 @@ Private Function TestResultFileName(Optional ByVal t_ext As String = "dat", _
     
 End Function
 
-Public Function TimerEnd() As Double
-' ----------------------------------------------------------------------------
-' Returns the elapsed time (t_elpsd) since start in milliseconds whereby the
-' timer overhead is deducted in order to rturn a result of 0 milliseconds
-' when nothing is measured between the TimerStart and TimerElapsedMsecs
-' service. The average timer overhead is calculated when the class is
-' initialized.
-' ----------------------------------------------------------------------------
-    dExecTimeMsecs = (TimerElapsedTicks() * 1000) - cTimerOverhead
-    TimerEnd = dExecTimeMsecs
-End Function
-
 Public Function TimerElapsedTicks() As Double
 ' ----------------------------------------------------------------------------
 ' Returns the elapsed number of ticks since start.
@@ -2744,9 +2746,33 @@ Public Function TimerElapsedTicks() As Double
     TimerElapsedTicks = (cTicksCurrent - cTicksStart) / cFrequency
 End Function
 
-Public Sub TimerStart()
-    QueryPerformanceCounter cTicksStart
-End Sub
+Public Function TimerEnd(Optional t_exec_time As Currency) As Currency
+' ----------------------------------------------------------------------------
+' Returns the elapsed time (t_elpsd) since start in milliseconds whereby the
+' timer overhead is deducted in order to rturn a result of 0 milliseconds
+' when nothing is measured between the TimerStart and TimerElapsedMsecs
+' service. The average timer overhead is calculated when the class is
+' initialized.
+' ----------------------------------------------------------------------------
+    t_exec_time = (TimerElapsedTicks() * 1000) - cTimerOverhead
+    If t_exec_time < 0 Then t_exec_time = 0.0001
+    cExecTimeMsecs = t_exec_time
+    TimerEnd = t_exec_time
+End Function
+
+Private Function TimerExecTimeFormatted(ByVal t_exec_time As Currency) As String
+' ------------------------------------------------------------------------------
+' Returns the Currency (t_exec_time) formatted with a length of 11.
+' ------------------------------------------------------------------------------
+    Dim s As String
+    
+    s = Split(FormatCurrency(t_exec_time, 4, vbTrue, vbUseDefault, vbFalse), " ")(0)
+    s = String(11 - Len(s), " ") & s
+    TimerExecTimeFormatted = s
+    
+End Function
+
+Public Sub TimerStart():    QueryPerformanceCounter cTicksStart:    End Sub
 
 Private Function TruncateIfApplicable(ByRef t_string As String, _
                                       ByVal t_length As Long, _
